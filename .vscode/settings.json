@@ -1,0 +1,7 @@
+{
+  "editor.formatOnSave": true,
+  "standard.engine": "ts-standard",
+  "volar.format.initialIndent": {
+    "html": false
+  }
+}
