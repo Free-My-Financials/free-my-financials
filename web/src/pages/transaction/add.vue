@@ -8,7 +8,7 @@ const date = ref(Date.now())
 const transactions = useCookie(
   "transactions",
   {
-    default: () => [{ Store: "_", Amount: 0, Transaction_Date: 0 }]
+    default: () => [{ Key: 0.0, Store: "_", Amount: 0, Transaction_Date: 0 }]
   }
 )
 
@@ -20,6 +20,7 @@ async function submit() {
   // console.log(result)
   if (transactions.value && transactions.value !== null) {
     transactions.value?.push({
+      Key: Math.random(),
       Store: store.value,
       Amount: amount.value,
       Transaction_Date: date.value,
@@ -41,6 +42,5 @@ async function submit() {
   <input type="date" name="Date" id="date" v-model="date" />
   <input type="submit" value="submit" />
 </form>
-<div>{{ transactions }}</div>
 </template>
 
