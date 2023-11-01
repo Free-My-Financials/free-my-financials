@@ -4,11 +4,17 @@ const store = ref("")
 const amount = ref(0)
 const date = ref(Date.now())
 
+type transaction = {
+  Key: number,
+  Store: string,
+  Amount: number,
+  Transaction_Date: number
+}
 
 const transactions = useCookie(
   "transactions",
   {
-    default: () => [{ Key: 0.0, Store: "_", Amount: 0, Transaction_Date: 0 }]
+    default: (): transaction[] => []
   }
 )
 
@@ -42,5 +48,6 @@ async function submit() {
   <input type="date" name="Date" id="date" v-model="date" />
   <input type="submit" value="submit" />
 </form>
+<div>{{ transactions }}</div>
 </template>
 
