@@ -48,6 +48,4 @@ async function submit() {
   <input type="date" name="Date" id="date" v-model="date" />
   <input type="submit" value="submit" />
 </form>
-<div>{{ transactions }}</div>
 </template>
-
