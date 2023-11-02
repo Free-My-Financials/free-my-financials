@@ -1,5 +1,20 @@
-<script lang="ts" setup>
+<template>
+<table>
+  <tr>
+    <th>Store</th>
+    <th>Amount</th>
+    <th>Date</th>
+  </tr>
+  <tr v-for="transaction in transactions.sort((a, b) => a.Transaction_Date < b.Transaction_Date ? 1 : -1)"
+    class="transaction">
+    <td>{{ transaction.Store }}</td>
+    <td>${{ transaction.Amount }}</td>
+    <td>{{ transaction.Transaction_Date }}</td>
+  </tr>
+</table>
+</template>
 
+<script lang="ts" setup>
 type transaction = {
   Key: number,
   Store: string,
@@ -13,11 +28,14 @@ const transactions = useCookie(
     default: (): transaction[] => []
   }
 )
-
 </script>
 
-<template>
-<p v-for="transaction in transactions">
-  {{ transaction.Store }} ${{ transaction.Amount }} {{ transaction.Transaction_Date }}
-</p>
-</template>
+<style lang="scss" scoped>
+table {
+  width: 80%;
+
+  td {
+    text-align: center;
+  }
+}
+</style>
