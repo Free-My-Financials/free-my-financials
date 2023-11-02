@@ -1,4 +1,5 @@
 <template>
+<NuxtLink to="/">home</NuxtLink>
 <h3> TOTAL BALANCE: {{ transactions.reduce<number>((a, b) => a - b.Amount, 0) }}</h3>
 <table>
   <tr>

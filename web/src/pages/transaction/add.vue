@@ -42,6 +42,7 @@ async function submit() {
 <h1>
   Add Transaction
 </h1>
+<NuxtLink to="/">home</NuxtLink>
 <form @submit.prevent="submit">
   <input type="text" name="Store" id="store" v-model="store" />
   <input type="number" name="Amount" id="amount" v-model="amount" />
