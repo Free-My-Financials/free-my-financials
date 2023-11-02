@@ -1,4 +1,5 @@
 <template>
+<NuxtLink to="/">home</NuxtLink>
 <table>
   <tr>
     <th>Store</th>
