@@ -1,5 +1,6 @@
 <template>
 <NuxtLink to="/">home</NuxtLink>
+<h3> TOTAL BALANCE: {{ transactions.reduce<number>((a, b) => a - b.Amount, 0) }}</h3>
 <table>
   <tr>
     <th>Store</th>
@@ -9,7 +10,7 @@
   <tr v-for="transaction in transactions.sort((a, b) => a.Transaction_Date < b.Transaction_Date ? 1 : -1)"
     class="transaction">
     <td>{{ transaction.Store }}</td>
-    <td>${{ transaction.Amount }}</td>
+    <td>{{ transaction.Amount * -1 }}</td>
     <td>{{ transaction.Transaction_Date }}</td>
   </tr>
 </table>
