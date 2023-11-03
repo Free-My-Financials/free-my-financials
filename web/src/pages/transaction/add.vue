@@ -59,5 +59,5 @@ async function submit() {
   <input type="date" name="Date" id="date" v-model="date" />
   <input type="submit" value="submit" />
 </form>
-<p>{{ message }}</p>
+<UAlert :title="message" />
 </template>

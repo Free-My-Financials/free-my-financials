@@ -4,6 +4,7 @@
     "editorconfig.editorconfig",
     "formulahendry.auto-close-tag",
     "standard.vscode-standard",
-    "vue.vscode-typescript-vue-plugin"
+    "vue.vscode-typescript-vue-plugin",
+    "bradlc.vscode-tailwindcss"
   ]
 }
