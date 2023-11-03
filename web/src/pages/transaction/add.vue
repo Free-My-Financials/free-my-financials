@@ -8,7 +8,7 @@ type transaction = {
   Key: number,
   Store: string,
   Amount: number,
-  Transaction_Date: number
+  Transaction_Date: number | string;
 }
 
 const transactions = useCookie(
@@ -17,6 +17,7 @@ const transactions = useCookie(
     default: (): transaction[] => []
   }
 )
+const message = ref('');
 
 async function submit() {
   // const result = await useFetch("/api/transaction/add", {
@@ -24,16 +25,25 @@ async function submit() {
   //   query: { store, amount, date }
   // })
   // console.log(result)
-  if (transactions.value && transactions.value !== null) {
-    transactions.value?.push({
+
+  if (store.value && amount.value && date.value) {
+    transactions.value.push({
       Key: Math.random(),
       Store: store.value,
       Amount: amount.value,
       Transaction_Date: date.value,
-    })
-    transactions.value = [...transactions.value]
+    });
+    transactions.value = [...transactions.value];
+    message.value = 'Transaction added successfully!';
+    store.value = '';
+    amount.value = 0;
+  } else {
+    message.value = 'Please fill in all the fields.';
   }
 
+  setTimeout(() => {
+    message.value = '';
+  }, 2000);
 }
 </script>
 
@@ -44,9 +54,10 @@ async function submit() {
 </h1>
 <NuxtLink to="/">home</NuxtLink>
 <form @submit.prevent="submit">
-  <input type="text" name="Store" id="store" v-model="store" />
-  <input type="number" name="Amount" id="amount" v-model="amount" />
+  <input type="text" name="Store" id="store" v-model="store" placeholder="Store" />
+  <input type="number" name="Amount" id="amount" v-model="amount" placeholder="Total" />
   <input type="date" name="Date" id="date" v-model="date" />
   <input type="submit" value="submit" />
 </form>
+<p>{{ message }}</p>
 </template>
