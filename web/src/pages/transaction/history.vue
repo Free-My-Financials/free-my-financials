@@ -10,7 +10,7 @@
   <tr v-for="transaction in transactions.sort((a, b) => a.Transaction_Date < b.Transaction_Date ? 1 : -1)"
     class="transaction">
     <td>{{ transaction.Store }}</td>
-    <td>{{ transaction.Amount * -1 }}</td>
+    <td>{{ transaction.Type === 'expense' ? transaction.Amount * -1 : transaction.Amount }}</td>
     <td>{{ transaction.Transaction_Date }}</td>
   </tr>
 </table>
@@ -21,6 +21,7 @@ type transaction = {
   Key: number,
   Store: string,
   Amount: number,
+  Type: string,
   Transaction_Date: number
 }
 
