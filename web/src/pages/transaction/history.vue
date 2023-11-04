@@ -1,6 +1,6 @@
 <template>
 <NuxtLink to="/">home</NuxtLink>
-<h3> TOTAL BALANCE: {{ transactions.reduce<number>((a, b) => a - b.Amount, 0) }}</h3>
+<h3> TOTAL BALANCE: {{ calculateTotalBalance }}</h3>
 <table>
   <tr>
     <th>Store</th>
@@ -31,6 +31,13 @@ const transactions = useCookie(
     default: (): transaction[] => []
   }
 )
+
+const calculateTotalBalance = computed(() =>
+  transactions.value.reduce((total, transaction) => {
+    return transaction.Type === 'expense' ? total - transaction.Amount : total + transaction.Amount;
+  }, 0)
+);
+
 </script>
 
 <style lang="scss" scoped>
