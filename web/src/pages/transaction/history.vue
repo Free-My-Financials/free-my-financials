@@ -1,19 +1,11 @@
 <template>
 <NuxtLink to="/">home</NuxtLink>
-<h3> TOTAL BALANCE: {{ transactions.reduce<number>((a, b) => a - b.Amount, 0) }}</h3>
-<table>
-  <tr>
-    <th>Store</th>
-    <th>Amount</th>
-    <th>Date</th>
-  </tr>
-  <tr v-for="transaction in transactions.sort((a, b) => a.Transaction_Date < b.Transaction_Date ? 1 : -1)"
-    class="transaction">
-    <td>{{ transaction.Store }}</td>
-    <td>{{ transaction.Amount * -1 }}</td>
-    <td>{{ transaction.Transaction_Date }}</td>
-  </tr>
-</table>
+<h3>TOTAL BALANCE: <DollarAmount :amount="transactions.reduce<number>((a, b) => a - b.Amount, 0)" /></h3>
+<UTable :sort="{ 'column': 'Transaction_Date', direction: 'desc' }" :rows="transactions" :columns="columns">
+  <template #Amount-data="{ row }">
+    <DollarAmount :amount="-row.Amount" />
+  </template>
+</UTable>
 </template>
 
 <script lang="ts" setup>
@@ -21,8 +13,23 @@ type transaction = {
   Key: number,
   Store: string,
   Amount: number,
-  Transaction_Date: number
+  Transaction_Date: number,
 }
+
+const columns = [{
+  key: 'Store',
+  label: 'Store',
+  class: 'italic',
+  sortable: true,
+}, {
+  key: 'Amount',
+  label: 'Amount',
+  sortable: true,
+}, {
+  key: 'Transaction_Date',
+  label: 'Date',
+  sortable: true,
+}]
 
 const transactions = useCookie(
   "transactions",
@@ -31,13 +38,3 @@ const transactions = useCookie(
   }
 )
 </script>
-
-<style lang="scss" scoped>
-table {
-  width: 80%;
-
-  td {
-    text-align: center;
-  }
-}
-</style>
