@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-
+const toast = useToast()
 const store = ref("")
 const amount = ref(0)
 const date = ref(Date.now())
@@ -17,15 +17,8 @@ const transactions = useCookie(
     default: (): transaction[] => []
   }
 )
-const message = ref('');
 
 async function submit() {
-  // const result = await useFetch("/api/transaction/add", {
-  //   method: "POST",
-  //   query: { store, amount, date }
-  // })
-  // console.log(result)
-
   if (store.value && amount.value && date.value) {
     transactions.value.push({
       Key: Math.random(),
@@ -34,16 +27,18 @@ async function submit() {
       Transaction_Date: date.value,
     });
     transactions.value = [...transactions.value];
-    message.value = 'Transaction added successfully!';
     store.value = '';
     amount.value = 0;
+    toast.add({
+      title: 'Success',
+      description: 'Transaction added successfully!',
+    });
   } else {
-    message.value = 'Please fill in all the fields.';
+    toast.add({
+      title: 'Invalid Input',
+      description: 'Please fill in all the fields.',
+    });
   }
-
-  setTimeout(() => {
-    message.value = '';
-  }, 2000);
 }
 </script>
 
@@ -59,5 +54,4 @@ async function submit() {
   <input type="date" name="Date" id="date" v-model="date" />
   <input type="submit" value="submit" />
 </form>
-<UAlert :title="message" />
 </template>
