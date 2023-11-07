@@ -3,12 +3,14 @@ const toast = useToast()
 const store = ref("")
 const amount = ref(0)
 const date = ref(Date.now())
+const transactionType = ref('expense');
 
 type transaction = {
   Key: number,
   Store: string,
   Amount: number,
   Transaction_Date: number | string;
+  Type: string;
 }
 
 const transactions = useCookie(
@@ -25,6 +27,7 @@ async function submit() {
       Store: store.value,
       Amount: amount.value,
       Transaction_Date: date.value,
+      Type: transactionType.value,
     });
     transactions.value = [...transactions.value];
     store.value = '';
@@ -42,6 +45,9 @@ async function submit() {
 }
 </script>
 
+<style lang="scss">
+@import "add.scss";
+</style>
 
 <template>
 <h1>
@@ -49,9 +55,15 @@ async function submit() {
 </h1>
 <NuxtLink to="/">home</NuxtLink>
 <form @submit.prevent="submit">
-  <input type="text" name="Store" id="store" v-model="store" placeholder="Store" />
-  <input type="number" name="Amount" id="amount" v-model="amount" placeholder="Total" />
+  <input type="text" name="Store" id="store" v-model="store"
+    :placeholder="transactionType === 'income' ? 'Source of Income' : 'Place of Purchase'" />
+  <input type="number" name="Amount" id="amount" v-model="amount"
+    :placeholder="transactionType === 'income' ? 'Amount Gained' : 'Amount Spent'" />
   <input type="date" name="Date" id="date" v-model="date" />
-  <input type="submit" value="submit" />
+  <select v-model="transactionType">
+    <option value="expense">Expense</option>
+    <option value="income">Income</option>
+  </select>
+  <input type="submit" value="Submit" />
 </form>
 </template>

@@ -1,9 +1,11 @@
 <template>
 <NuxtLink to="/">home</NuxtLink>
-<h3>TOTAL BALANCE: <DollarAmount :amount="transactions.reduce<number>((a, b) => a - b.Amount, 0)" /></h3>
+<h3>TOTAL BALANCE:
+  <DollarAmount :amount="calculateTotalBalance" />
+</h3>
 <UTable :sort="{ 'column': 'Transaction_Date', direction: 'desc' }" :rows="transactions" :columns="columns">
   <template #Amount-data="{ row }">
-    <DollarAmount :amount="-row.Amount" />
+    <DollarAmount :amount="row.Amount * (row.Type == 'expense' ? -1 : 1)" />
   </template>
 </UTable>
 </template>
@@ -13,7 +15,8 @@ type transaction = {
   Key: number,
   Store: string,
   Amount: number,
-  Transaction_Date: number,
+  Type: string,
+  Transaction_Date: number
 }
 
 const columns = [{
@@ -37,4 +40,11 @@ const transactions = useCookie(
     default: (): transaction[] => []
   }
 )
+
+const calculateTotalBalance = computed(() =>
+  transactions.value.reduce((total, transaction) => {
+    return transaction.Type === 'expense' ? total - transaction.Amount : total + transaction.Amount;
+  }, 0)
+);
+
 </script>
