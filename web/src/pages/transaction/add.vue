@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 
+
 const store = ref("")
 const amount = ref(0)
 const date = ref(Date.now())
@@ -50,6 +51,9 @@ async function submit() {
 }
 </script>
 
+<style lang="scss">
+@import "add.scss";
+</style>
 
 <template>
 <h1>
