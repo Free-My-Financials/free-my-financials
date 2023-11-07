@@ -1,8 +1,9 @@
 <template>
 <div>
   <h1>Free My Financials</h1>
-  <main>
+  <UContainer>
     <slot></slot>
-  </main>
+  </UContainer>
+  <UNotifications />
 </div>
 </template>

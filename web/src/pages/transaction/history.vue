@@ -1,19 +1,13 @@
 <template>
 <NuxtLink to="/">home</NuxtLink>
-<h3> TOTAL BALANCE: {{ calculateTotalBalance }}</h3>
-<table>
-  <tr>
-    <th>Store</th>
-    <th>Amount</th>
-    <th>Date</th>
-  </tr>
-  <tr v-for="transaction in transactions.sort((a, b) => a.Transaction_Date < b.Transaction_Date ? 1 : -1)"
-    class="transaction">
-    <td>{{ transaction.Store }}</td>
-    <td>{{ transaction.Type === 'expense' ? transaction.Amount * -1 : transaction.Amount }}</td>
-    <td>{{ transaction.Transaction_Date }}</td>
-  </tr>
-</table>
+<h3>TOTAL BALANCE:
+  <DollarAmount :amount="calculateTotalBalance" />
+</h3>
+<UTable :sort="{ 'column': 'Transaction_Date', direction: 'desc' }" :rows="transactions" :columns="columns">
+  <template #Amount-data="{ row }">
+    <DollarAmount :amount="row.Amount * (row.Type == 'expense' ? -1 : 1)" />
+  </template>
+</UTable>
 </template>
 
 <script lang="ts" setup>
@@ -24,6 +18,21 @@ type transaction = {
   Type: string,
   Transaction_Date: number
 }
+
+const columns = [{
+  key: 'Store',
+  label: 'Store',
+  class: 'italic',
+  sortable: true,
+}, {
+  key: 'Amount',
+  label: 'Amount',
+  sortable: true,
+}, {
+  key: 'Transaction_Date',
+  label: 'Date',
+  sortable: true,
+}]
 
 const transactions = useCookie(
   "transactions",
@@ -39,13 +48,3 @@ const calculateTotalBalance = computed(() =>
 );
 
 </script>
-
-<style lang="scss" scoped>
-table {
-  width: 80%;
-
-  td {
-    text-align: center;
-  }
-}
-</style>
