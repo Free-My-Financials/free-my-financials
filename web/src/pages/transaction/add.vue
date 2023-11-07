@@ -1,9 +1,5 @@
 <script lang="ts" setup>
 const toast = useToast()
-const store = ref("")
-const amount = ref(0)
-const date = ref(Date.now())
-const transactionType = ref('expense');
 
 type transaction = {
   Key: number,
@@ -13,6 +9,15 @@ type transaction = {
   Type: string;
 }
 
+const state = reactive({
+  store: "",
+  amount: 0,
+  date: Date.now(),
+  type: ""
+})
+
+const transactionTypes = ['expense', 'income']
+
 const transactions = useCookie(
   "transactions",
   {
@@ -21,17 +26,17 @@ const transactions = useCookie(
 )
 
 async function submit() {
-  if (store.value && amount.value && date.value) {
+  if (state.store && state.amount && state.date) {
     transactions.value.push({
       Key: Math.random(),
-      Store: store.value,
-      Amount: amount.value,
-      Transaction_Date: date.value,
-      Type: transactionType.value,
+      Store: state.store,
+      Amount: state.amount,
+      Transaction_Date: state.date,
+      Type: state.type,
     });
     transactions.value = [...transactions.value];
-    store.value = '';
-    amount.value = 0;
+    state.store = '';
+    state.amount = 0;
     toast.add({
       title: 'Success',
       description: 'Transaction added successfully!',
@@ -43,10 +48,12 @@ async function submit() {
     });
   }
 }
+
+
 </script>
 
 <style lang="scss">
-@import "add.scss";
+//@import "add.scss";
 </style>
 
 <template>
@@ -54,16 +61,26 @@ async function submit() {
   Add Transaction
 </h1>
 <NuxtLink to="/">home</NuxtLink>
-<form @submit.prevent="submit">
-  <input type="text" name="Store" id="store" v-model="store"
-    :placeholder="transactionType === 'income' ? 'Source of Income' : 'Place of Purchase'" />
-  <input type="number" name="Amount" id="amount" v-model="amount"
-    :placeholder="transactionType === 'income' ? 'Amount Gained' : 'Amount Spent'" />
-  <input type="date" name="Date" id="date" v-model="date" />
-  <select v-model="transactionType">
-    <option value="expense">Expense</option>
-    <option value="income">Income</option>
-  </select>
-  <input type="submit" value="Submit" />
-</form>
+<UForm :state="state" @submit="submit">
+
+  <UFormGroup label="Store">
+    <UInput type="text" name="Store" id="store" v-model="state.store"
+      :placeholder="state.type === 'income' ? 'Source of Income' : 'Place of Purchase'" />
+  </UFormGroup>
+
+  <UFormGroup label="Amount in cents">
+    <UInput type="number" name="Amount" id="amount" v-model="state.amount"
+      :placeholder="state.type === 'income' ? 'Amount Gained' : 'Amount Spent'" />
+  </UFormGroup>
+
+  <UFormGroup label="Date">
+    <UInput type="date" name="Date" id="date" v-model="state.date" />
+  </UFormGroup>
+
+  <UFormGroup label="Type of Transaction">
+    <USelect :options="transactionTypes" v-model="state.type" />
+  </UFormGroup>
+
+  <UButton type="submit">Submit</UButton>
+</UForm>
 </template>
