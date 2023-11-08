@@ -1,19 +1,16 @@
 <template>
 <NuxtLink to="/">home</NuxtLink>
-<h3> TOTAL BALANCE: {{ transactions.reduce<number>((a, b) => a - b.Amount, 0) }}</h3>
-<table>
-  <tr>
-    <th>Store</th>
-    <th>Amount</th>
-    <th>Date</th>
-  </tr>
-  <tr v-for="transaction in transactions.sort((a, b) => a.Transaction_Date < b.Transaction_Date ? 1 : -1)"
-    class="transaction">
-    <td>{{ transaction.Store }}</td>
-    <td>{{ transaction.Amount * -1 }}</td>
-    <td>{{ transaction.Transaction_Date }}</td>
-  </tr>
-</table>
+<h3>TOTAL BALANCE:
+  <DollarAmount :amount="calculateTotalBalance" />
+</h3>
+<UTable :sort="{ 'column': 'Transaction_Date', direction: 'desc' }" :rows="transactions" :columns="columns">
+  <template #Amount-data="{ row }">
+    <DollarAmount :amount="row.Amount * (row.Type == 'expense' ? -1 : 1)" />
+  </template>
+  <template #Delete-data="{ row }">
+    <UButton @click="deleteTransaction(row.Key)">Remove Transaction</UButton>
+  </template>
+</UTable>
 </template>
 
 <script lang="ts" setup>
@@ -21,8 +18,30 @@ type transaction = {
   Key: number,
   Store: string,
   Amount: number,
+  Type: string,
   Transaction_Date: number
 }
+
+const columns = [{
+  key: 'Store',
+  label: 'Store',
+  class: 'italic',
+  sortable: true,
+}, {
+  key: 'Amount',
+  label: 'Amount',
+  sortable: true,
+}, {
+  key: 'Transaction_Date',
+  label: 'Date',
+  sortable: true,
+},
+{
+  key: 'Delete',
+  label: '',
+  sortable: false,
+}
+]
 
 const transactions = useCookie(
   "transactions",
@@ -30,14 +49,34 @@ const transactions = useCookie(
     default: (): transaction[] => []
   }
 )
-</script>
 
-<style lang="scss" scoped>
-table {
-  width: 80%;
+const calculateTotalBalance = computed(() => {
+  let total = 0
+  Number()
+  transactions.value.forEach(transaction => {
+    console.log(transaction.Amount)
+    if (transaction.Type === 'expense') {
+      total -= Number(transaction.Amount);
+    } else if (transaction.Type === 'income') {
+      total += Number(transaction.Amount);
+    }
+  });
 
-  td {
-    text-align: center;
+  return total;
+});
+
+
+function deleteTransaction(key: number) {
+  const index = transactions.value.findIndex(transaction => transaction.Key === key);
+  if (index !== -1) {
+    transactions.value.splice(index, 1);
+    updateLocalStorage();
   }
 }
-</style>
+
+function updateLocalStorage() {
+  localStorage.setItem('transactions', JSON.stringify(transactions.value));
+}
+
+
+</script>

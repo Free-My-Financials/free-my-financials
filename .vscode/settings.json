@@ -3,5 +3,12 @@
   "standard.engine": "ts-standard",
   "volar.format.initialIndent": {
     "html": false
+  },
+  "files.associations": {
+    "*.css": "tailwindcss",
+    "*.scss": "tailwindcss"
+  },
+  "editor.quickSuggestions": {
+    "strings": true
   }
 }
