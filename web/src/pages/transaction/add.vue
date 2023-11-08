@@ -13,7 +13,7 @@ const state = reactive({
   store: "",
   amount: 0,
   date: Date.now(),
-  type: ""
+  type: "expense"
 })
 
 const transactionTypes = ['expense', 'income']
@@ -61,8 +61,12 @@ async function submit() {
   Add Transaction
 </h1>
 <NuxtLink to="/">home</NuxtLink>
+<UFormGroup label="Type of Transaction">
+  <USelect :options="transactionTypes" v-model="state.type" />
+</UFormGroup>
+
 <UForm :state="state" @submit="submit">
-  <UFormGroup label="Store">
+  <UFormGroup :label="state.type === 'income' ? 'Source of Income' : 'Place of Purchase'">
     <UInput type="text" name="Store" id="store" v-model="state.store"
       :placeholder="state.type === 'income' ? 'Source of Income' : 'Place of Purchase'" />
   </UFormGroup>
@@ -76,9 +80,6 @@ async function submit() {
     <UInput type="date" name="Date" id="date" v-model="state.date" />
   </UFormGroup>
 
-  <UFormGroup label="Type of Transaction">
-    <USelect :options="transactionTypes" v-model="state.type" />
-  </UFormGroup>
 
   <UButton type="submit">Submit</UButton>
 </UForm>
