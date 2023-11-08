@@ -8,7 +8,7 @@
     <DollarAmount :amount="row.Amount * (row.Type == 'expense' ? -1 : 1)" />
   </template>
   <template #Delete-data="{ row }">
-    <UButton @click="deleteTransaction(row.Key)">Delete</UButton>
+    <UButton @click="deleteTransaction(row.Key)">Remove Transaction</UButton>
   </template>
 </UTable>
 </template>
@@ -38,7 +38,7 @@ const columns = [{
 },
 {
   key: 'Delete',
-  label: 'Delete',
+  label: '',
   sortable: false,
 }
 ]
@@ -50,11 +50,21 @@ const transactions = useCookie(
   }
 )
 
-const calculateTotalBalance = computed(() =>
-  transactions.value.reduce((total, transaction) => {
-    return transaction.Type === 'expense' ? total - transaction.Amount : total + transaction.Amount;
-  }, 0)
-);
+const calculateTotalBalance = computed(() => {
+  let totalExpense = 0;
+  let totalIncome = 0;
+
+  transactions.value.forEach(transaction => {
+    if (transaction.Type === 'expense') {
+      totalExpense += transaction.Amount;
+    } else if (transaction.Type === 'income') {
+      totalIncome += transaction.Amount;
+    }
+  });
+
+  return totalIncome - totalExpense;
+});
+
 
 function deleteTransaction(key: number) {
   const index = transactions.value.findIndex(transaction => transaction.Key === key);

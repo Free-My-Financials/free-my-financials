@@ -11,7 +11,7 @@ type transaction = {
 
 const state = reactive({
   store: "",
-  amount: 0,
+  amount: "",
   date: Date.now(),
   type: "expense"
 })
