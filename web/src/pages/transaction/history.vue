@@ -51,18 +51,18 @@ const transactions = useCookie(
 )
 
 const calculateTotalBalance = computed(() => {
-  let totalExpense = 0;
-  let totalIncome = 0;
-
+  let total = 0
+  Number()
   transactions.value.forEach(transaction => {
+    console.log(transaction.Amount)
     if (transaction.Type === 'expense') {
-      totalExpense += transaction.Amount;
+      total -= Number(transaction.Amount);
     } else if (transaction.Type === 'income') {
-      totalIncome += transaction.Amount;
+      total += Number(transaction.Amount);
     }
   });
 
-  return totalIncome - totalExpense;
+  return total;
 });
 
 
