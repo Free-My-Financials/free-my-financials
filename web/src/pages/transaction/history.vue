@@ -7,6 +7,9 @@
   <template #Amount-data="{ row }">
     <DollarAmount :amount="row.Amount * (row.Type == 'expense' ? -1 : 1)" />
   </template>
+  <template #Delete-data="{ row }">
+    <UButton @click="deleteTransaction(row.Key)">Delete</UButton>
+  </template>
 </UTable>
 </template>
 
@@ -32,7 +35,13 @@ const columns = [{
   key: 'Transaction_Date',
   label: 'Date',
   sortable: true,
-}]
+},
+{
+  key: 'Delete',
+  label: 'Delete',
+  sortable: false,
+}
+]
 
 const transactions = useCookie(
   "transactions",
@@ -46,5 +55,18 @@ const calculateTotalBalance = computed(() =>
     return transaction.Type === 'expense' ? total - transaction.Amount : total + transaction.Amount;
   }, 0)
 );
+
+function deleteTransaction(key: number) {
+  const index = transactions.value.findIndex(transaction => transaction.Key === key);
+  if (index !== -1) {
+    transactions.value.splice(index, 1);
+    updateLocalStorage();
+  }
+}
+
+function updateLocalStorage() {
+  localStorage.setItem('transactions', JSON.stringify(transactions.value));
+}
+
 
 </script>

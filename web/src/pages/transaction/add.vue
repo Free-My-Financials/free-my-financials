@@ -62,7 +62,6 @@ async function submit() {
 </h1>
 <NuxtLink to="/">home</NuxtLink>
 <UForm :state="state" @submit="submit">
-
   <UFormGroup label="Store">
     <UInput type="text" name="Store" id="store" v-model="state.store"
       :placeholder="state.type === 'income' ? 'Source of Income' : 'Place of Purchase'" />
