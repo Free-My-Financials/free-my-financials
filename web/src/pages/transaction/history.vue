@@ -1,5 +1,4 @@
 <template>
-<NuxtLink to="/">home</NuxtLink>
 <h3>TOTAL BALANCE:
   <DollarAmount :amount="calculateTotalBalance" />
 </h3>
@@ -8,7 +7,7 @@
     <DollarAmount :amount="row.Amount * (row.Type == 'expense' ? -1 : 1)" />
   </template>
   <template #Delete-data="{ row }">
-    <UButton @click="deleteTransaction(row.Key)">Remove Transaction</UButton>
+    <UButton icon="i-heroicons-trash-20-solid" @click="deleteTransaction(row.Key)" />
   </template>
 </UTable>
 </template>

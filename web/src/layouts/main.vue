@@ -1,6 +1,6 @@
 <template>
 <div>
-  <h1>Free My Financials</h1>
+  <FHeader />
   <UContainer>
     <slot></slot>
   </UContainer>

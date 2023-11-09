@@ -57,10 +57,6 @@ async function submit() {
 </style>
 
 <template>
-<h1>
-  Add Transaction
-</h1>
-<NuxtLink to="/">home</NuxtLink>
 <UFormGroup label="Type of Transaction">
   <USelect :options="transactionTypes" v-model="state.type" />
 </UFormGroup>
