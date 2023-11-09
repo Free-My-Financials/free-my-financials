@@ -5,14 +5,14 @@ type transaction = {
   Key: number,
   Store: string,
   Amount: number,
-  Transaction_Date: number | string;
+  Transaction_Date: string;
   Type: string;
 }
 
 const state = reactive({
   store: "",
   amount: 0,
-  date: Date.now(),
+  date: "",
   type: "expense"
 })
 

@@ -4,12 +4,17 @@
   <h1 class="font-bold dark:hover:text-gray-800 hover:text-white">
     <NuxtLink to="/">Free My Financials</NuxtLink>
   </h1>
-  <p class="dark:hover:text-gray-800 hover:text-white">
+  <p
+    :class="[{ 'text-white dark:text-gray-800': route.name === 'transaction-add' }, 'dark:hover:text-gray-800', 'hover:text-white']">
     <NuxtLink to="/transaction/add">Add Transaction</NuxtLink>
   </p>
-  <p class="dark:hover:text-gray-800 hover:text-white">
+  <p
+    :class="[{ 'text-white dark:text-gray-800': route.name === 'transaction-history' }, 'hover:text-white', 'dark:hover:text-gray-800']">
     <NuxtLink to="/transaction/history">View Transactions</NuxtLink>
   </p>
 </header>
 </template>
 
+<script lang="ts" setup>
+const route = useRoute()
+</script>
