@@ -1,19 +1,43 @@
+<template>
+<UFormGroup label="Type of Transaction">
+  <USelect :options="transactionTypes" v-model="state.type" />
+</UFormGroup>
+
+<UForm :state="state" @submit="submit">
+  <UFormGroup :label="state.type === 'income' ? 'Source of Income' : 'Place of Purchase'">
+    <UInput type="text" name="Store" id="store" v-model="state.store"
+      :placeholder="state.type === 'income' ? 'Source of Income' : 'Place of Purchase'" />
+  </UFormGroup>
+
+  <UFormGroup label="Amount">
+    <UInput type="number" step="0.01" min="0" name="Amount" id="amount" v-model="state.amount"
+      :placeholder="state.type === 'income' ? 'Amount Gained' : 'Amount Spent'" />
+  </UFormGroup>
+
+  <UFormGroup label="Date">
+    <UInput type="date" name="Date" id="date" v-model="state.date" />
+  </UFormGroup>
+
+  <UButton type="submit">Submit</UButton>
+</UForm>
+</template>
+
 <script lang="ts" setup>
 const toast = useToast()
 
 type transaction = {
-  Key: number,
-  Store: string,
-  Amount: number,
-  Transaction_Date: string;
-  Type: string;
+  Key: number
+  Store: string
+  Amount: number
+  Transaction_Date: string
+  Type: string
 }
 
 const state = reactive({
   store: "",
   amount: 0,
   date: "",
-  type: "expense"
+  type: "expense",
 })
 
 const transactionTypes = ['expense', 'income']
@@ -30,53 +54,22 @@ async function submit() {
     transactions.value.push({
       Key: Math.random(),
       Store: state.store,
-      Amount: state.amount,
+      Amount: Math.round(state.amount * 100),
       Transaction_Date: state.date,
       Type: state.type,
-    });
-    transactions.value = [...transactions.value];
-    state.store = '';
-    state.amount = 0;
+    })
+    transactions.value = [...transactions.value]
+    state.store = ''
+    state.amount = 0
     toast.add({
       title: 'Success',
       description: 'Transaction added successfully!',
-    });
+    })
   } else {
     toast.add({
       title: 'Invalid Input',
       description: 'Please fill in all the fields.',
-    });
+    })
   }
 }
-
-
 </script>
-
-<style lang="scss">
-//@import "add.scss";
-</style>
-
-<template>
-<UFormGroup label="Type of Transaction">
-  <USelect :options="transactionTypes" v-model="state.type" />
-</UFormGroup>
-
-<UForm :state="state" @submit="submit">
-  <UFormGroup :label="state.type === 'income' ? 'Source of Income' : 'Place of Purchase'">
-    <UInput type="text" name="Store" id="store" v-model="state.store"
-      :placeholder="state.type === 'income' ? 'Source of Income' : 'Place of Purchase'" />
-  </UFormGroup>
-
-  <UFormGroup label="Amount in cents">
-    <UInput type="number" name="Amount" id="amount" v-model="state.amount"
-      :placeholder="state.type === 'income' ? 'Amount Gained' : 'Amount Spent'" />
-  </UFormGroup>
-
-  <UFormGroup label="Date">
-    <UInput type="date" name="Date" id="date" v-model="state.date" />
-  </UFormGroup>
-
-
-  <UButton type="submit">Submit</UButton>
-</UForm>
-</template>
