@@ -5,4 +5,5 @@ export default defineNuxtConfig({
     strict: true
   },
   devtools: { enabled: true },
+  modules: ['@nuxt/ui'],
 })
