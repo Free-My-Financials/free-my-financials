@@ -16,7 +16,7 @@ export default function() {
     "transactions",
     {
       default: (): Transaction[] => [],
-      sameSite: "strict",
+      sameSite: "lax",
     },
   )
 }
