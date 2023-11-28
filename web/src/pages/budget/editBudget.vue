@@ -1,27 +1,53 @@
+<template>
+<UForm :state="state" @submit="submit">
+  <UFormGroup label="Amount">
+    <UInput type="number" step="0.01" min="0" name="Amount" id="amount" v-model="state.amount" />
+  </UFormGroup>
+
+  <UFormGroup label="Start Date">
+    <UInput type="date" name="Date" id="date" v-model="state.start_date" />
+  </UFormGroup>
+  <UFormGroup label="End Date">
+    <UInput type="date" name="Date" id="date" v-model="state.end_date" />
+  </UFormGroup>
+
+  <UButton type="submit">Submit</UButton>
+</UForm>
+</template>
+
 <script lang="ts" setup>
-import useBudget from '~/composables/useBudget';
-
-
-const start_date = ref(new Date(2023, 1, 1))
-const amount = ref(0)
-const end_date = ref(new Date(2023, 1, 1))
-
-
 const budget = useBudget()
+const toast = useToast()
+
+const state = reactive({
+  amount: 0,
+  start_date: '',
+  end_date: "",
+})
+
 async function submit() {
-  budget.value = [{ start_date: start_date.value, amount: amount.value, end_date: end_date.value }]
+  if (state.amount && state.start_date && state.end_date) {
+    budget.value = {
+      amount: state.amount,
+      start_date: new Date(state.start_date),
+      end_date: new Date(state.end_date),
+    }
+    resetState()
+    toast.add({
+      title: 'Success',
+      description: 'Budget edit successfully!',
+    })
+  } else {
+    toast.add({
+      title: 'Invalid Input',
+      description: 'Please fill in all the fields.',
+    })
+  }
+}
+
+function resetState() {
+  state.amount = 0
+  state.start_date = ''
+  state.end_date = ""
 }
 </script>
-
-
-<template>
-<h1>
-  Edit Your Budget
-</h1>
-<form @submit.prevent="submit">
-  <input type="number" name="Amount" id="amount" v-model="amount" />
-  <input type="date" name="Start Date" id="date" v-model="start_date" />
-  <input type="date" name="End Date" id="date" v-model="end_date" />
-  <input type="submit" value="submit" />
-</form>
-</template>

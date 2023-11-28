@@ -1,3 +1,6 @@
+
+
+
 <template>
 <h3>Start of budget:
   <UBadge :label="budget.start_date.toString()" />
@@ -60,7 +63,7 @@ const calculateTotalBalance = computed(() => {
       total += Number(transaction.amount)
   }
 
-  return budget.value.amount + total
+  return Number(budget.value.amount) + total
 })
 
 </script>
