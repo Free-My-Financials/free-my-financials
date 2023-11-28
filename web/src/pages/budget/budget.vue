@@ -1,6 +1,14 @@
 <template>
+<h3>Start of budget:
+  <UBadge :label="budget.start_date.toString()" />
+</h3>
+<h3>Start of budget:
+  <UBadge :label="budget.end_date.toString()" />
+</h3>
 <h3>TOTAL BALANCE:
   <DollarAmount :amount="calculateTotalBalance" />
+  <UBadge label="Out of" />
+  <DollarAmount :amount="budget.amount" />
 </h3>
 <UTable :sort="{ 'column': 'date', direction: 'desc' }" :rows="transactions_in_budget" :columns="columns">
   <template #amount-data="{ row }">
@@ -52,7 +60,7 @@ const calculateTotalBalance = computed(() => {
       total += Number(transaction.amount)
   }
 
-  return budget.value.amount - total
+  return budget.value.amount + total
 })
 
 </script>
