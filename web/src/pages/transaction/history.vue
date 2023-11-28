@@ -9,10 +9,15 @@
   <template #delete-data="{ row }">
     <UButton icon="i-heroicons-trash-20-solid" @click="deleteTransaction(row.id)" />
   </template>
+  <template #date-data="{ row }">
+    <span>{{ (new Date(row.date.toString())).toDateString() }}</span>
+  </template>
 </UTable>
 </template>
 
 <script lang="ts" setup>
+import useTransactions, { TransactionType } from '~/composables/useTransactions';
+
 const transactions = useTransactions()
 
 const columns = [{

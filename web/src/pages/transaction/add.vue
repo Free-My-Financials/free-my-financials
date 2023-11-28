@@ -29,7 +29,7 @@ const toast = useToast()
 const state = reactive({
   store: "",
   amount: 0,
-  date: "",
+  date: '',
   type: TransactionType.EXPENSE,
 })
 
@@ -40,7 +40,7 @@ async function submit() {
       type: state.type,
       store: state.store,
       amount: Math.round(state.amount * 100),
-      date: state.date,
+      date: new Date(state.date),
     })
     resetState()
     toast.add({
