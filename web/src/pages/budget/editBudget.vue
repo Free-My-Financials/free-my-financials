@@ -1,6 +1,6 @@
 <template>
 <UForm :state="state" @submit="submit">
-  <UFormGroup label="Amount">
+  <UFormGroup label="Budget Total">
     <UInput type="number" step="0.01" min="0" name="Amount" id="amount" v-model="state.amount" />
   </UFormGroup>
 
