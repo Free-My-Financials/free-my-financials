@@ -8,10 +8,10 @@ export type Transaction = {
   type: TransactionType
   store: string
   amount: number
-  date: string
+  date: Date
 }
 
-export default function() {
+export default function () {
   return useCookie(
     "transactions",
     {

@@ -2,20 +2,30 @@
 <h3>TOTAL BALANCE:
   <DollarAmount :amount="calculateTotalBalance" />
 </h3>
-<UTable :sort="{ 'column': 'date', direction: 'desc' }" :rows="transactions" :columns="columns">
+<UTable :sort="{ 'column': 'date', direction: 'desc' }" :rows="transactions_in_budget" :columns="columns">
   <template #amount-data="{ row }">
     <DollarAmount :amount="row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)" />
-  </template>
-  <template #delete-data="{ row }">
-    <UButton icon="i-heroicons-trash-20-solid" @click="deleteTransaction(row.id)" />
   </template>
 </UTable>
 </template>
 
 <script lang="ts" setup>
-import useTransactions, { TransactionType } from '~/composables/useTransactions';
+import useBudget from '~/composables/useBudget';
+import useTransactions, { TransactionType, type Transaction } from '~/composables/useTransactions';
 
 const transactions = useTransactions()
+const budget = useBudget()
+const get_transactions = ((): Transaction[] => {
+  let new_transactions = []
+  for (const transaction of transactions.value) {
+    if (transaction.date > budget.value.start_date && transaction.date < budget.value.end_date) {
+      new_transactions.push(transaction)
+    }
+
+  }
+  return new_transactions
+})
+const transactions_in_budget: Transaction[] = get_transactions()
 
 const columns = [{
   key: 'store',
@@ -30,31 +40,19 @@ const columns = [{
   key: 'date',
   label: 'Date',
   sortable: true,
-}, {
-  key: 'delete',
-  label: '',
-  sortable: false,
 }]
 
 const calculateTotalBalance = computed(() => {
   let total = 0
 
-  for (const transaction of transactions.value) {
+  for (const transaction of transactions_in_budget) {
     if (transaction.type === TransactionType.EXPENSE)
       total -= Number(transaction.amount)
     else if (transaction.type === TransactionType.INCOME)
       total += Number(transaction.amount)
   }
 
-  return total
+  return budget.value.amount - total
 })
 
-function deleteTransaction(id: number) {
-  const index = transactions.value.findIndex(transaction => transaction.id === id)
-
-  if (index == -1)
-    return
-
-  transactions.value.splice(index, 1)
-}
 </script>
