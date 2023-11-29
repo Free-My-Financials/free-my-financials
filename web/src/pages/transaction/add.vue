@@ -10,7 +10,8 @@
   </UFormGroup>
 
   <UFormGroup label="Category" v-if="state.type === TransactionType.EXPENSE">
-    <USelect :options="allCategories" v-model="state.category" v-if="!state.customCategory" />
+    <USelect :options="allCategories" v-model="state.category" v-if="!state.customCategory"
+      :placeholder="'Category of Purchase'" />
     <UInput v-if="state.customCategory" type="text" name="CustomCategory" id="customCategory"
       v-model="state.customCategoryName" :key="state.customCategory.toString()" :placeholder="'Category'" />
     <div style="display: flex; align-items: center; margin-top: 8px;">
@@ -45,7 +46,7 @@ const state = reactive({
   amount: "",
   date: '',
   type: TransactionType.EXPENSE,
-  category: preListedCategories[0],
+  category: "",
   customCategory: false,
   customCategoryName: '',
 })
@@ -79,8 +80,10 @@ onMounted(() => {
 });
 
 const canSubmit = computed(() => {
-  // Allow submission only if store, amount, date are filled, and custom category is selected with a non-empty value
-  return state.store && state.amount && state.date && (state.customCategory ? state.customCategoryName.trim() !== '' : true);
+  const requiredFieldsFilled = state.store && state.amount !== "" && state.date;
+  const validCategorySelected =
+    state.type === TransactionType.EXPENSE ? (state.category !== null && state.category !== "") || state.customCategory : true;
+  return requiredFieldsFilled && validCategorySelected && (state.customCategory ? state.customCategoryName.trim() !== "" : true);
 });
 
 async function submit() {
@@ -97,27 +100,24 @@ async function submit() {
         category: state.customCategory ? state.customCategoryName : state.category,
       });
 
-      watchEffect(() => {
-        if (state.customCategory) {
-          addCustomCategory();
-        }
-      });
+      await addCustomCategory(); // Wait for addCustomCategory to complete
+
       if (state.customCategory && !preListedCategories.includes(state.customCategoryName)) {
         preListedCategories.push(state.customCategoryName);
         allCategories.value = [...preListedCategories, ...getCustomCategories()];
         saveCustomCategories();
       }
+      resetState();
+      toast.add({
+        title: 'Success',
+        description: 'Transaction added successfully!',
+      });
     }
-    resetState()
-    toast.add({
-      title: 'Success',
-      description: 'Transaction added successfully!',
-    })
   } else {
     toast.add({
       title: 'Invalid Input',
       description: 'Please fill in all the fields.',
-    })
+    });
   }
 }
 
@@ -126,6 +126,7 @@ function resetState() {
   state.amount = ''
   state.date = ''
   state.type = TransactionType.EXPENSE
+  state.category = '';
   state.customCategory = false;
   state.customCategoryName = '';
 }
