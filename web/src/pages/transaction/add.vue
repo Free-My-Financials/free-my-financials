@@ -9,6 +9,10 @@
       :placeholder="state.type === TransactionType.INCOME ? 'Source of Income' : 'Place of Purchase'" />
   </UFormGroup>
 
+  <UFormGroup label="Category">
+    <USelect :options="categories" v-model="state.category" />
+  </UFormGroup>
+
   <UFormGroup label="Amount">
     <UInput type="number" step="0.01" min="0" name="Amount" id="amount" v-model="state.amount"
       :placeholder="state.type === TransactionType.INCOME ? 'Amount Gained' : 'Amount Spent'" />
@@ -24,6 +28,7 @@
 
 <script lang="ts" setup>
 const transactions = useTransactions()
+const categories = ['Groceries', 'Clothing', 'Entertainment', 'Other'];
 const toast = useToast()
 
 const state = reactive({
@@ -31,6 +36,7 @@ const state = reactive({
   amount: 0,
   date: '',
   type: TransactionType.EXPENSE,
+  category: categories[0]
 })
 
 async function submit() {
@@ -60,5 +66,6 @@ function resetState() {
   state.amount = 0
   state.date = ''
   state.type = TransactionType.EXPENSE
+  state.category = categories[0];
 }
 </script>
