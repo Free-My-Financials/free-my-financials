@@ -24,7 +24,8 @@
     </UTable>
   </div>
   <div class="search-container">
-    <input v-model="searchQuery" placeholder="Search transactions by store or category" style="width: 100%" />
+    <span class="search-icon">&#128269;</span>
+    <input v-model="searchQuery" placeholder="Search transactions by store or category">
   </div>
 </div>
 </template>
@@ -43,17 +44,33 @@
   border-radius: 25px;
   box-shadow: 0px 0px 0px;
   width: 100%;
+  padding-top: 10px;
+  padding-left: 20px;
   height: 2.5rem;
-  padding-top: 20px;
   box-shadow: 0px 0px 0px;
-  width: 25%;
+  width: 35%;
   font-size: 16px;
   line-height: 125%;
   display: flex;
 }
 
+.search-container input {
+  width: 100%;
+  padding-left: 40px;
+  left: -10px;
+  border-radius: 15px;
+}
+
 .search-container:hover {
   border-radius: 25px;
+}
+
+.search-container .search-icon {
+  position: relative;
+  left: 25px;
+  top: 5px;
+  font-size: 18px;
+  color: #555;
 }
 </style>
 
