@@ -13,7 +13,7 @@
         <DollarAmount :amount="row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)" />
       </template>
       <template #category-data="{ row }">
-        <span>{{ row.category }}</span>
+        <span>{{ row.type === TransactionType.INCOME ? 'Income' : row.category }}</span>
       </template>
       <template #delete-data="{ row }">
         <UButton icon="i-heroicons-trash-20-solid" @click="confirmDeleteTransaction(row.id)" />

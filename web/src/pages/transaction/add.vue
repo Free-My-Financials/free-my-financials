@@ -9,7 +9,7 @@
       :placeholder="state.type === TransactionType.INCOME ? 'Source of Income' : 'Place of Purchase'" />
   </UFormGroup>
 
-  <UFormGroup label="Category">
+  <UFormGroup label="Category" v-if="state.type === TransactionType.EXPENSE">
     <USelect :options="allCategories" v-model="state.category" v-if="!state.customCategory" />
     <UInput v-if="state.customCategory" type="text" name="CustomCategory" id="customCategory"
       v-model="state.customCategoryName" :key="state.customCategory.toString()"
@@ -79,9 +79,13 @@ onMounted(() => {
   allCategories.value = [...preListedCategories, ...getCustomCategories()];
 });
 
+const canSubmit = computed(() => {
+  // Allow submission only if store, amount, date are filled, and custom category is selected with a non-empty value
+  return state.store && state.amount && state.date && (state.customCategory ? state.customCategoryName.trim() !== '' : true);
+});
 
 async function submit() {
-  if (state.store && state.amount && state.date) {
+  if (canSubmit.value) {
     transactions.value.push({
       id: Math.random(),
       type: state.type,
@@ -101,7 +105,6 @@ async function submit() {
       allCategories.value = [...preListedCategories, ...getCustomCategories()];
       saveCustomCategories();
     }
-
     resetState()
     toast.add({
       title: 'Success',
