@@ -2,7 +2,8 @@
 <h3>TOTAL BALANCE:
   <DollarAmount :amount="calculateTotalBalance" />
 </h3>
-<UTable :sort="{ 'column': 'date', direction: 'desc' }" :rows="transactions" :columns="columns">
+<input v-model="searchQuery" placeholder="Search transactions by store or category" />
+<UTable :sort="{ 'column': 'date', direction: 'desc' }" :rows="filteredTransactions" :columns="columns">
   <template #amount-data="{ row }">
     <DollarAmount :amount="row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)" />
   </template>
@@ -18,10 +19,12 @@
 </UTable>
 </template>
 
-<script lang="ts" setup>
+<script setup>
+import { ref, computed, watch } from 'vue';
 import useTransactions, { TransactionType } from '~/composables/useTransactions';
 
-const transactions = useTransactions()
+const transactions = useTransactions();
+const searchQuery = ref('');
 
 const columns = [{
   key: 'store',
@@ -59,18 +62,28 @@ const calculateTotalBalance = computed(() => {
 
   return total
 })
+const filteredTransactions = computed(() => {
+  const query = searchQuery.value.toLowerCase();
+  return transactions.value.filter((transaction) => {
+    return (
+      transaction.store.toLowerCase().includes(query) ||
+      transaction.category.toLowerCase().includes(query) ||
+      transaction.amount.toString().includes(query) ||
+      transaction.date.toString().includes(query)
+    );
+  });
+});
 
-function deleteTransaction(id: number) {
-  const index = transactions.value.findIndex(transaction => transaction.id === id)
+function deleteTransaction(id) {
+  const index = transactions.value.findIndex((transaction) => transaction.id === id);
 
-  if (index == -1)
-    return
+  if (index === -1) return;
 
-  transactions.value.splice(index, 1)
+  transactions.value.splice(index, 1);
 }
 
-function confirmDeleteTransaction(id: number) {
-  const isConfirmed = window.confirm("Are you sure you want to delete this transaction?");
+function confirmDeleteTransaction(id) {
+  const isConfirmed = window.confirm('Are you sure you want to delete this transaction?');
 
   if (isConfirmed) {
     deleteTransaction(id);
