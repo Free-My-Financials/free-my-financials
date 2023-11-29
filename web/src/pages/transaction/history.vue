@@ -37,11 +37,19 @@
 .table-container {
   flex: 1;
   margin-right: 20px;
-  /* Adjust the margin as needed */
 }
 
 .search-container {
   width: 300px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
 }
 </style>
 

@@ -43,7 +43,7 @@ const allCategories = ref([...preListedCategories, ...getCustomCategories()]);
 
 const state = reactive({
   store: "",
-  amount: 0,
+  amount: "",
   date: '',
   type: TransactionType.EXPENSE,
   category: preListedCategories[0],
