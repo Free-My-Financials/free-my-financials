@@ -1,23 +1,50 @@
 <template>
-<h3>TOTAL BALANCE:
-  <DollarAmount :amount="calculateTotalBalance" />
-</h3>
-<input v-model="searchQuery" placeholder="Search transactions by store or category" />
-<UTable :sort="{ 'column': 'date', direction: 'desc' }" :rows="filteredTransactions" :columns="columns">
-  <template #amount-data="{ row }">
-    <DollarAmount :amount="row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)" />
-  </template>
-  <template #category-data="{ row }">
-    <span>{{ row.category }}</span>
-  </template>
-  <template #delete-data="{ row }">
-    <UButton icon="i-heroicons-trash-20-solid" @click="confirmDeleteTransaction(row.id)" />
-  </template>
-  <template #date-data="{ row }">
-    <span>{{ (new Date(row.date.toString())).toDateString() }}</span>
-  </template>
-</UTable>
+<div class="page-container">
+  <div class="table-container">
+    <h3>TOTAL BALANCE:
+      <DollarAmount :amount="calculateTotalBalance" />
+    </h3>
+    <h3 v-if="searchQuery !== ''">FILTERED TOTAL:
+      <DollarAmount :amount="calculateFilteredTotalBalance" />
+    </h3>
+    <UTable :sort="{ 'column': 'date', direction: 'desc' }" :rows="filteredTransactions" :columns="columns"
+      style="width: 100%">
+      <template #amount-data="{ row }">
+        <DollarAmount :amount="row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)" />
+      </template>
+      <template #category-data="{ row }">
+        <span>{{ row.category }}</span>
+      </template>
+      <template #delete-data="{ row }">
+        <UButton icon="i-heroicons-trash-20-solid" @click="confirmDeleteTransaction(row.id)" />
+      </template>
+      <template #date-data="{ row }">
+        <span>{{ (new Date(row.date.toString())).toDateString() }}</span>
+      </template>
+    </UTable>
+  </div>
+  <div class="search-container">
+    <input v-model="searchQuery" placeholder="Search transactions by store or category" style="width: 100%" />
+  </div>
+</div>
 </template>
+
+<style scoped>
+.page-container {
+  display: flex;
+}
+
+.table-container {
+  flex: 1;
+  margin-right: 20px;
+  /* Adjust the margin as needed */
+}
+
+.search-container {
+  width: 300px;
+}
+</style>
+
 
 <script setup>
 import { ref, computed, watch } from 'vue';
@@ -62,6 +89,18 @@ const calculateTotalBalance = computed(() => {
 
   return total
 })
+
+const calculateFilteredTotalBalance = computed(() => {
+  let total = 0;
+
+  for (const transaction of filteredTransactions.value) {
+    if (transaction.type === TransactionType.EXPENSE) total -= Number(transaction.amount);
+    else if (transaction.type === TransactionType.INCOME) total += Number(transaction.amount);
+  }
+
+  return total;
+});
+
 const filteredTransactions = computed(() => {
   const query = searchQuery.value.toLowerCase();
   return transactions.value.filter((transaction) => {
