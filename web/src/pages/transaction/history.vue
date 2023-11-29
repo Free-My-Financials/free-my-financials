@@ -19,7 +19,7 @@
         <UButton icon="i-heroicons-trash-20-solid" @click="confirmDeleteTransaction(row.id)" />
       </template>
       <template #date-data="{ row }">
-        <span>{{ (new Date(row.date.toString())).toDateString() }}</span>
+        <span>{{ formatDate(row.date) }}</span>
       </template>
     </UTable>
   </div>
@@ -82,6 +82,41 @@ import useTransactions, { TransactionType } from '~/composables/useTransactions'
 const transactions = useTransactions();
 const searchQuery = ref('');
 
+const formatDate = (dateString) => {
+  const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
+  return new Date(dateString).toLocaleDateString(undefined, options);
+};
+
+const getFormattedDateComponents = (dateString) => {
+  const date = new Date(dateString);
+  return {
+    day: date.toLocaleDateString(undefined, { day: 'numeric' }).toLowerCase(),
+    month: date.toLocaleDateString(undefined, { month: 'short' }).toLowerCase(),
+    year: date.toLocaleDateString(undefined, { year: 'numeric' }).toLowerCase(),
+    weekday: date.toLocaleDateString(undefined, { weekday: 'short' }).toLowerCase(),
+  };
+};
+
+const filteredTransactions = computed(() => {
+  const queryWords = searchQuery.value.toLowerCase().split(/\s+/);
+  return transactions.value.filter((transaction) => {
+    const formattedDateComponents = getFormattedDateComponents(transaction.date);
+
+    return queryWords.every((word) =>
+      [
+        transaction.store.toLowerCase(),
+        transaction.category.toLowerCase(),
+        transaction.amount.toString(),
+        transaction.type.toLowerCase(),
+        formattedDateComponents.day,
+        formattedDateComponents.month,
+        formattedDateComponents.year,
+        formattedDateComponents.weekday,
+      ].some((field) => field.includes(word))
+    );
+  });
+});
+
 const columns = [{
   key: 'store',
   label: 'Store',
@@ -107,17 +142,15 @@ const columns = [{
 }]
 
 const calculateTotalBalance = computed(() => {
-  let total = 0
+  let total = 0;
 
   for (const transaction of transactions.value) {
-    if (transaction.type === TransactionType.EXPENSE)
-      total -= Number(transaction.amount)
-    else if (transaction.type === TransactionType.INCOME)
-      total += Number(transaction.amount)
+    if (transaction.type === TransactionType.EXPENSE) total -= Number(transaction.amount);
+    else if (transaction.type === TransactionType.INCOME) total += Number(transaction.amount);
   }
 
-  return total
-})
+  return total;
+});
 
 const calculateFilteredTotalBalance = computed(() => {
   let total = 0;
@@ -128,21 +161,6 @@ const calculateFilteredTotalBalance = computed(() => {
   }
 
   return total;
-});
-
-const filteredTransactions = computed(() => {
-  const query = searchQuery.value.toLowerCase();
-  return transactions.value.filter((transaction) => {
-    const transactionData = [
-      transaction.store.toLowerCase(),
-      transaction.category.toLowerCase(),
-      transaction.amount.toString(),
-      transaction.date.toString(),
-
-    ];
-    return transactionData.some((field) => field.includes(query)) ||
-      transaction.type.toLowerCase().includes(query);
-  });
 });
 
 function deleteTransaction(id) {
