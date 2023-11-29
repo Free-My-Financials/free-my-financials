@@ -32,7 +32,7 @@ const budget = useBudget()
 const get_transactions = ((): Transaction[] => {
   let new_transactions = []
   for (const transaction of transactions.value) {
-    if (transaction.date > budget.value.start_date && transaction.date < budget.value.end_date) {
+    if (transaction.date >= budget.value.start_date && transaction.date <= budget.value.end_date) {
       new_transactions.push(transaction)
     }
 

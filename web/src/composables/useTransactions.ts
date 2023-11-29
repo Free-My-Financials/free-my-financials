@@ -1,6 +1,6 @@
 export enum TransactionType {
-  INCOME = "income",
-  EXPENSE = "expense",
+  INCOME = "Income",
+  EXPENSE = "Expense",
 }
 
 export type Transaction = {
@@ -9,6 +9,7 @@ export type Transaction = {
   store: string
   amount: number
   date: Date
+  category: string;
 }
 
 export default function () {
