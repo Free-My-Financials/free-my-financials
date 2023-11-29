@@ -40,16 +40,20 @@
 }
 
 .search-container {
-  width: 300px;
+  border-radius: 25px;
+  box-shadow: 0px 0px 0px;
+  width: 100%;
+  height: 2.5rem;
+  padding-top: 20px;
+  box-shadow: 0px 0px 0px;
+  width: 25%;
+  font-size: 16px;
+  line-height: 125%;
+  display: flex;
 }
 
-.search-input {
-  width: 100%;
-  padding: 8px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
+.search-container:hover {
+  border-radius: 25px;
 }
 </style>
 
