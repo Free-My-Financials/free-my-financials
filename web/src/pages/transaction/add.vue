@@ -10,11 +10,14 @@
   </UFormGroup>
 
   <UFormGroup label="Category">
-    <USelect :options="allCategories" v-model="state.category" />
+    <USelect :options="allCategories" v-model="state.category" v-if="!state.customCategory" />
     <UInput v-if="state.customCategory" type="text" name="CustomCategory" id="customCategory"
-      v-model="state.customCategoryName" :key="state.customCategory.toString()" @keydown.enter.prevent
+      v-model="state.customCategoryName" :key="state.customCategory.toString()"
       :placeholder="state.type === TransactionType.INCOME ? 'Source of Income' : 'Category'" />
-    <UCheckbox v-model="state.customCategory">Add custom category</UCheckbox>
+    <div style="display: flex; align-items: center; margin-top: 8px;">
+      <UCheckbox v-model="state.customCategory" />
+      <label style="margin-left: 8px;">Click to enter a custom category</label>
+    </div>
   </UFormGroup>
 
   <UFormGroup label="Amount">
