@@ -6,6 +6,9 @@
   <template #amount-data="{ row }">
     <DollarAmount :amount="row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)" />
   </template>
+  <template #category-data="{ row }">
+    <span>{{ row.category }}</span>
+  </template>
   <template #delete-data="{ row }">
     <UButton icon="i-heroicons-trash-20-solid" @click="deleteTransaction(row.id)" />
   </template>
@@ -24,6 +27,11 @@ const columns = [{
   key: 'store',
   label: 'Store',
   class: 'italic',
+  sortable: true,
+},
+{
+  key: 'category',
+  label: 'Category',
   sortable: true,
 }, {
   key: 'amount',
