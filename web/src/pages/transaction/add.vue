@@ -12,8 +12,7 @@
   <UFormGroup label="Category" v-if="state.type === TransactionType.EXPENSE">
     <USelect :options="allCategories" v-model="state.category" v-if="!state.customCategory" />
     <UInput v-if="state.customCategory" type="text" name="CustomCategory" id="customCategory"
-      v-model="state.customCategoryName" :key="state.customCategory.toString()"
-      :placeholder="state.type === TransactionType.INCOME ? 'Source of Income' : 'Category'" />
+      v-model="state.customCategoryName" :key="state.customCategory.toString()" :placeholder="'Category'" />
     <div style="display: flex; align-items: center; margin-top: 8px;">
       <UCheckbox v-model="state.customCategory" />
       <label style="margin-left: 8px;">Click to enter a custom category</label>
@@ -36,7 +35,7 @@
 <script lang="ts" setup>
 const transactions = useTransactions()
 const toast = useToast()
-const preListedCategories = ['Groceries', 'Clothing', 'Entertainment', 'Other'];
+const preListedCategories = ['Groceries', 'Clothing', 'Entertainment'];
 const customCategoryKey = 'customCategories';
 const allCategories = ref([...preListedCategories, ...getCustomCategories()]);
 
@@ -86,24 +85,28 @@ const canSubmit = computed(() => {
 
 async function submit() {
   if (canSubmit.value) {
-    transactions.value.push({
-      id: Math.random(),
-      type: state.type,
-      store: state.store,
-      amount: Math.round(state.amount * 100),
-      date: new Date(state.date),
-      category: state.customCategory ? state.customCategoryName : state.category,
-    })
+    const parsedAmount = parseFloat(state.amount);
 
-    watchEffect(() => {
-      if (state.customCategory) {
-        addCustomCategory();
+    if (!isNaN(parsedAmount)) {
+      transactions.value.push({
+        id: Math.random(),
+        type: state.type,
+        store: state.store,
+        amount: Math.round(parsedAmount * 100),
+        date: new Date(state.date),
+        category: state.customCategory ? state.customCategoryName : state.category,
+      });
+
+      watchEffect(() => {
+        if (state.customCategory) {
+          addCustomCategory();
+        }
+      });
+      if (state.customCategory && !preListedCategories.includes(state.customCategoryName)) {
+        preListedCategories.push(state.customCategoryName);
+        allCategories.value = [...preListedCategories, ...getCustomCategories()];
+        saveCustomCategories();
       }
-    });
-    if (state.customCategory && !preListedCategories.includes(state.customCategoryName)) {
-      preListedCategories.push(state.customCategoryName);
-      allCategories.value = [...preListedCategories, ...getCustomCategories()];
-      saveCustomCategories();
     }
     resetState()
     toast.add({
@@ -120,7 +123,7 @@ async function submit() {
 
 function resetState() {
   state.store = ''
-  state.amount = 0
+  state.amount = ''
   state.date = ''
   state.type = TransactionType.EXPENSE
   state.customCategory = false;
