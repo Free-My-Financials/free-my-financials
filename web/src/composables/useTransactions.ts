@@ -9,6 +9,7 @@ export type Transaction = {
   store: string
   amount: number
   date: Date
+  category: string;
 }
 
 export default function () {

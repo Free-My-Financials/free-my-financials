@@ -47,6 +47,7 @@ async function submit() {
       store: state.store,
       amount: Math.round(state.amount * 100),
       date: new Date(state.date),
+      category: state.category
     })
     resetState()
     toast.add({
