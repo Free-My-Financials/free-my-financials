@@ -133,12 +133,15 @@ const calculateFilteredTotalBalance = computed(() => {
 const filteredTransactions = computed(() => {
   const query = searchQuery.value.toLowerCase();
   return transactions.value.filter((transaction) => {
-    return (
-      transaction.store.toLowerCase().includes(query) ||
-      transaction.category.toLowerCase().includes(query) ||
-      transaction.amount.toString().includes(query) ||
-      transaction.date.toString().includes(query)
-    );
+    const transactionData = [
+      transaction.store.toLowerCase(),
+      transaction.category.toLowerCase(),
+      transaction.amount.toString(),
+      transaction.date.toString(),
+
+    ];
+    return transactionData.some((field) => field.includes(query)) ||
+      transaction.type.toLowerCase().includes(query);
   });
 });
 
