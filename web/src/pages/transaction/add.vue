@@ -59,6 +59,7 @@ function getCustomCategories() {
     return [];
   }
 }
+
 function addCustomCategory() {
   const newCategory = state.customCategoryName.trim();
   if (newCategory && !allCategories.value.includes(newCategory)) {
@@ -89,6 +90,7 @@ async function submit() {
       date: new Date(state.date),
       category: state.customCategory ? state.customCategoryName : state.category,
     })
+
     watchEffect(() => {
       if (state.customCategory) {
         addCustomCategory();

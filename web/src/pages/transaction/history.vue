@@ -10,7 +10,7 @@
     <span>{{ row.category }}</span>
   </template>
   <template #delete-data="{ row }">
-    <UButton icon="i-heroicons-trash-20-solid" @click="deleteTransaction(row.id)" />
+    <UButton icon="i-heroicons-trash-20-solid" @click="confirmDeleteTransaction(row.id)" />
   </template>
   <template #date-data="{ row }">
     <span>{{ (new Date(row.date.toString())).toDateString() }}</span>
@@ -67,5 +67,13 @@ function deleteTransaction(id: number) {
     return
 
   transactions.value.splice(index, 1)
+}
+
+function confirmDeleteTransaction(id: number) {
+  const isConfirmed = window.confirm("Are you sure you want to delete this transaction?");
+
+  if (isConfirmed) {
+    deleteTransaction(id);
+  }
 }
 </script>
