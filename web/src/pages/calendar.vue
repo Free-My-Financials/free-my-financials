@@ -17,7 +17,15 @@
       <div v-for="blankDay in firstDayOfMonth" :key="`blank-${blankDay}`" class="blank"></div>
       <div v-for="day in Array.from({ length: daysInMonth }, (_, index) => index + 1)" :key="day" class="day">
         {{ day }}
+        <br />
+        <span v-if="dailyBalances[day] !== undefined && dailyBalances[day] !== 0">
+          <DollarAmount :amount="dailyBalances[day]" />
+        </span>
+        <span v-else>
+          <!-- You can add a message or leave it empty for days with no transactions -->
+        </span>
       </div>
+
     </div>
   </div>
 </div>
@@ -108,17 +116,48 @@ const currentMonth = ref(currentDate.getMonth());
 const currentMonthName = ref(new Intl.DateTimeFormat('en-US', { month: 'long' }).format(currentDate));
 const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
+let dailyBalances = ref({});
 let daysInMonth = ref(new Date(currentYear.value, currentMonth.value + 1, 0).getDate());
 let firstDayOfMonth = ref(new Date(currentYear.value, currentMonth.value, 1).getDay());
 
 function updateCalendar() {
+  if (!transactions.value) {
+    // If transactions are not available, handle it accordingly
+    console.error('Transactions are not available');
+    return;
+  }
+
   daysInMonth.value = new Date(currentYear.value, currentMonth.value + 1, 0).getDate();
   firstDayOfMonth.value = new Date(currentYear.value, currentMonth.value, 1).getDay();
   currentMonthName.value = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
     new Date(currentYear.value, currentMonth.value, 1)
   );
-}
+  const startDate = new Date(currentYear.value, currentMonth.value, 1);
+  const endDate = new Date(currentYear.value, currentMonth.value + 1, 0);
+  const dayBalances = {};
 
+  transactions.value.forEach((transaction) => {
+    const transactionDate = new Date(transaction.date);
+    if (transactionDate >= startDate && transactionDate <= endDate) {
+      const day = transactionDate.getDate();
+      dayBalances[day] = dayBalances[day] || 0;
+
+      if (transaction.type === TransactionType.EXPENSE) {
+        dayBalances[day] -= Number(transaction.amount);
+      } else if (transaction.type === TransactionType.INCOME) {
+        dayBalances[day] += Number(transaction.amount);
+      }
+    }
+  });
+
+  dailyBalances.value = dayBalances;
+
+  // Log statements for debugging
+  console.log('daysInMonth:', daysInMonth.value);
+  console.log('firstDayOfMonth:', firstDayOfMonth.value);
+  console.log('currentMonthName:', currentMonthName.value);
+  console.log('dailyBalances:', dailyBalances.value);
+}
 const monthlyBalances = computed(() => {
   const balances = {};
 
