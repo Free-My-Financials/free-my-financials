@@ -3,12 +3,15 @@
   <div class="calendar-nav">
     <UButton @click="prevMonth" type="button">&lt;</UButton>
     <h2>{{ currentMonthName }} {{ currentYear }}</h2>
-    <span class="total-balance">
-      Total Balance:
+    <span class="total-balance" v-if="showMonthlyBalance">
+      Monthly Balance:
       <div class="balance-container">
+        <span class="balance-label">Balance:</span>
         <DollarAmount :amount="monthlyBalance" />
         <i v-show="showArrow" class="arrow" :class="{ 'arrow-up': isPositiveChange, 'arrow-down': !isPositiveChange }"
-          :title="arrowTooltipText">{{ isPositiveChange ? '↑' : '↓' }}</i>
+          :title="arrowTooltipText">
+          {{ isPositiveChange ? '↑' : '↓' }}
+        </i>
       </div>
     </span>
     <UButton @click="nextMonth" type="button">&gt;</UButton>
@@ -28,7 +31,6 @@
         <span v-else>
         </span>
       </div>
-
     </div>
   </div>
 </div>
@@ -43,6 +45,7 @@
 .balance-container {
   display: flex;
   align-items: center;
+  margin-left: 5px
 }
 
 .arrow {
@@ -241,6 +244,14 @@ function updateCalendar() {
     console.log('isPositiveChange:', isPositiveChange.value);
   }
 }
+
+const showMonthlyBalance = computed(() => {
+  const currentMonthKey = `${currentYear.value}-${currentMonth.value}`;
+  return (
+    monthlyBalances.value.hasOwnProperty(currentMonthKey) &&
+    monthlyBalances.value[currentMonthKey] !== 0
+  );
+});
 
 
 watch([currentMonth, currentYear], () => {
