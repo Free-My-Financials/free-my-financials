@@ -7,7 +7,10 @@
     <h3 v-if="searchQuery !== ''">FILTERED TOTAL:
       <DollarAmount :amount="calculateFilteredTotalBalance" />
     </h3>
-    <UTable :sort="{ 'column': 'date', direction: 'desc' }" :rows="filteredTransactions" :columns="columns"
+    <div v-if="filteredTransactions.length === 0">
+      <p>No matching results for the search: "{{ searchQuery }}"</p>
+    </div>
+    <UTable v-else :sort="{ 'column': 'date', direction: 'desc' }" :rows="filteredTransactions" :columns="columns"
       style="width: 100%">
       <template #amount-data="{ row }">
         <DollarAmount :amount="row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)" />
@@ -179,3 +182,4 @@ function confirmDeleteTransaction(id) {
   }
 }
 </script>
+
