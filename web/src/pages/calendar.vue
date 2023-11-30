@@ -3,6 +3,9 @@
   <div class="calendar-nav">
     <UButton @click="prevMonth" type="button">&lt;</UButton>
     <h2>{{ currentMonthName }} {{ currentYear }}</h2>
+    <span>Total Balance:
+      <DollarAmount :amount="calculateTotalBalance" />
+    </span>
     <UButton @click="nextMonth" type="button">&gt;</UButton>
   </div>
   <div class="calendar">
@@ -94,8 +97,10 @@ h2 {
 </style>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
+import useTransactions, { TransactionType } from '~/composables/useTransactions';
 
+const transactions = useTransactions();
 const currentDate = new Date();
 const currentYear = ref(currentDate.getFullYear());
 const currentMonth = ref(currentDate.getMonth());
@@ -134,6 +139,15 @@ function nextMonth() {
     currentMonth.value += 1;
   }
 }
+
+const calculateTotalBalance = computed(() => {
+  let total = 0;
+
+  for (const transaction of transactions.value) {
+    if (transaction.type === TransactionType.EXPENSE) total -= Number(transaction.amount);
+    else if (transaction.type === TransactionType.INCOME) total += Number(transaction.amount);
+  }
+
+  return total;
+});
 </script>
-
-
