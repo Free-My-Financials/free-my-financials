@@ -3,10 +3,15 @@
   <div class="calendar-nav">
     <UButton @click="prevMonth" type="button">&lt;</UButton>
     <h2>{{ currentMonthName }} {{ currentYear }}</h2>
-    <span>Total Balance:
-      <DollarAmount :amount="monthlyBalance" />
+    <span class="total-balance">
+      Total Balance:
+      <div class="balance-container">
+        <DollarAmount :amount="monthlyBalance" />
+        <i v-show="showArrow" class="arrow"
+          :class="{ 'arrow-up': isPositiveChange, 'arrow-down': !isPositiveChange }">{{ isPositiveChange ? '↑' : '↓'
+          }}</i>
+      </div>
     </span>
-
     <UButton @click="nextMonth" type="button">&gt;</UButton>
   </div>
   <div class="calendar">
@@ -32,6 +37,33 @@
 </template>
 
 <style scoped>
+.total-balance {
+  display: flex;
+  align-items: center;
+}
+
+.balance-container {
+  display: flex;
+  align-items: center;
+}
+
+.arrow {
+  margin-left: 5px;
+  /* Adjust the margin to move the arrow further right */
+  font-size: 1.5em;
+  /* Adjust the font-size for a larger arrow */
+}
+
+.arrow-up {
+  color: green;
+  /* Set the color for the upward arrow */
+}
+
+.arrow-down {
+  color: red;
+  /* Set the color for the downward arrow */
+}
+
 .calendar-container {
   text-align: center;
   display: flex;
@@ -120,45 +152,10 @@ const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 let dailyBalances = ref({});
 let daysInMonth = ref(new Date(currentYear.value, currentMonth.value + 1, 0).getDate());
 let firstDayOfMonth = ref(new Date(currentYear.value, currentMonth.value, 1).getDay());
-onMounted(() => {
-  updateCalendar();
-});
-function updateCalendar() {
-  dailyBalances.value = {};
 
-  if (!transactions.value) {
-    console.error('Transactions are not available');
-    return;
-  }
+const showArrow = ref(false); // Use ref to make it reactive
+const isPositiveChange = ref(false);
 
-  daysInMonth.value = new Date(currentYear.value, currentMonth.value + 1, 0).getDate();
-  firstDayOfMonth.value = new Date(currentYear.value, currentMonth.value, 1).getDay();
-  currentMonthName.value = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
-    new Date(currentYear.value, currentMonth.value, 1)
-  );
-
-  const startDate = new Date(currentYear.value, currentMonth.value, 1);
-  const endDate = new Date(currentYear.value, currentMonth.value + 1, 0);
-  const dayBalances = {};
-
-  transactions.value.forEach((transaction) => {
-    const transactionDate = new Date(transaction.date);
-    if (transactionDate >= startDate && transactionDate <= endDate) {
-      const day = transactionDate.getDate();
-      // If dayBalances[day] is not defined, initialize it to 0
-      dayBalances[day] = dayBalances[day] || 0;
-
-      if (transaction.type === TransactionType.EXPENSE) {
-        dayBalances[day] -= Number(transaction.amount);
-      } else if (transaction.type === TransactionType.INCOME) {
-        dayBalances[day] += Number(transaction.amount);
-      }
-    }
-  });
-
-  dailyBalances.value = dayBalances;
-
-}
 const monthlyBalances = computed(() => {
   const balances = {};
 
@@ -188,10 +185,59 @@ const monthlyBalance = computed(() => {
   return monthlyBalances.value[key] || 0;
 });
 
-watch([currentMonth, currentYear], () => {
+onMounted(() => {
   updateCalendar();
 });
 
+function updateCalendar() {
+  dailyBalances.value = {};
+
+  if (!transactions.value) {
+    console.error('Transactions are not available');
+    return;
+  }
+
+  daysInMonth.value = new Date(currentYear.value, currentMonth.value + 1, 0).getDate();
+  firstDayOfMonth.value = new Date(currentYear.value, currentMonth.value, 1).getDay();
+  currentMonthName.value = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
+    new Date(currentYear.value, currentMonth.value, 1)
+  );
+
+  const startDate = new Date(currentYear.value, currentMonth.value, 1);
+  const endDate = new Date(currentYear.value, currentMonth.value + 1, 0);
+  const dayBalances = {};
+
+  transactions.value.forEach((transaction) => {
+    const transactionDate = new Date(transaction.date);
+    if (transactionDate >= startDate && transactionDate <= endDate) {
+      const day = transactionDate.getDate();
+      dayBalances[day] = (dayBalances[day] || 0) + (transaction.type === TransactionType.EXPENSE ? -1 : 1) * Number(transaction.amount);
+    }
+  });
+
+  dailyBalances.value = dayBalances;
+
+  const previousMonthYear = currentMonth.value === 0 ? currentYear.value - 1 : currentYear.value;
+  const previousMonthKey = `${previousMonthYear}-${currentMonth.value === 0 ? 11 : currentMonth.value - 1}`;
+  showArrow.value = monthlyBalances.value.hasOwnProperty(previousMonthKey);
+
+  console.log('showArrow:', showArrow.value);
+
+  if (showArrow.value) {
+    const currentMonthKey = `${currentYear.value}-${currentMonth.value}`;
+    console.log('Monthly Balances:', monthlyBalances.value);
+    console.log('Current Month Balance:', monthlyBalances.value[currentMonthKey]);
+    console.log('Previous Month Balance:', monthlyBalances.value[previousMonthKey]);
+
+    isPositiveChange.value = monthlyBalances.value[currentMonthKey] > monthlyBalances.value[previousMonthKey];
+    console.log('isPositiveChange:', isPositiveChange.value);
+  }
+}
+
+
+watch([currentMonth, currentYear], () => {
+  updateCalendar();
+});
 
 watch(currentMonth, () => {
   updateCalendar();
@@ -215,3 +261,4 @@ function nextMonth() {
   }
 }
 </script>
+
