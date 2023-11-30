@@ -7,9 +7,8 @@
       Total Balance:
       <div class="balance-container">
         <DollarAmount :amount="monthlyBalance" />
-        <i v-show="showArrow" class="arrow"
-          :class="{ 'arrow-up': isPositiveChange, 'arrow-down': !isPositiveChange }">{{ isPositiveChange ? '↑' : '↓'
-          }}</i>
+        <i v-show="showArrow" class="arrow" :class="{ 'arrow-up': isPositiveChange, 'arrow-down': !isPositiveChange }"
+          :title="arrowTooltipText">{{ isPositiveChange ? '↑' : '↓' }}</i>
       </div>
     </span>
     <UButton @click="nextMonth" type="button">&gt;</UButton>
@@ -27,7 +26,6 @@
           <DollarAmount :amount="dailyBalances[day]" />
         </span>
         <span v-else>
-          <!-- You can add a message or leave it empty for days with no transactions -->
         </span>
       </div>
 
@@ -49,19 +47,15 @@
 
 .arrow {
   margin-left: 5px;
-  /* Adjust the margin to move the arrow further right */
   font-size: 1.5em;
-  /* Adjust the font-size for a larger arrow */
 }
 
 .arrow-up {
   color: green;
-  /* Set the color for the upward arrow */
 }
 
 .arrow-down {
   color: red;
-  /* Set the color for the downward arrow */
 }
 
 .calendar-container {
@@ -85,7 +79,7 @@ h2 {
   align-items: center;
   justify-content: space-between;
   width: 90%;
-  background-color: #006400;
+  background-color: #053505;
   margin-top: 10px;
   color: #f0f8ff;
   padding: 10px;
@@ -153,8 +147,22 @@ let dailyBalances = ref({});
 let daysInMonth = ref(new Date(currentYear.value, currentMonth.value + 1, 0).getDate());
 let firstDayOfMonth = ref(new Date(currentYear.value, currentMonth.value, 1).getDay());
 
-const showArrow = ref(false); // Use ref to make it reactive
+const showArrow = ref(false);
 const isPositiveChange = ref(false);
+
+const arrowTooltipText = computed(() => {
+  const currentMonthKey = `${currentYear.value}-${currentMonth.value}`;
+  const previousMonthYear = currentMonth.value === 0 ? currentYear.value - 1 : currentYear.value;
+  const previousMonthKey = `${previousMonthYear}-${currentMonth.value === 0 ? 11 : currentMonth.value - 1}`;
+
+  const currentBalance = monthlyBalances.value[currentMonthKey] || 0;
+  const previousBalance = monthlyBalances.value[previousMonthKey] || 0;
+  const percentDifference = ((currentBalance - previousBalance) / Math.abs(previousBalance)) * 100;
+
+  const changeDirection = percentDifference > 0 ? 'increased' : 'decreased';
+
+  return `Your monthly balance ${changeDirection} by ${Math.abs(percentDifference).toFixed(2)}% this month compared to the last month.`;
+});
 
 const monthlyBalances = computed(() => {
   const balances = {};
