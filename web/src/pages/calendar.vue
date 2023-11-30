@@ -37,7 +37,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 84.5vh;
+  height: 96vh;
   justify-content: center;
 }
 
@@ -61,7 +61,6 @@ h2 {
   margin-bottom: 10px;
 }
 
-
 .calendar {
   border: 1px solid #ddd;
   border-radius: 5px;
@@ -72,7 +71,6 @@ h2 {
   margin-bottom: 10px;
   box-sizing: border-box;
 }
-
 
 .weekdays {
   display: flex;
@@ -94,10 +92,11 @@ h2 {
 }
 
 .day {
-  padding: 30px 15px;
+  padding: 15px 15px;
   text-align: center;
   border-bottom: 1px solid #ddd;
   color: #006400;
+  height: 100px;
 }
 
 .blank {
@@ -105,8 +104,10 @@ h2 {
 }
 </style>
 
+
 <script setup>
-import { ref, watch, computed } from 'vue';
+
+import { ref, watch, computed, onMounted } from 'vue';
 import useTransactions, { TransactionType } from '~/composables/useTransactions';
 
 const transactions = useTransactions();
@@ -119,10 +120,13 @@ const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 let dailyBalances = ref({});
 let daysInMonth = ref(new Date(currentYear.value, currentMonth.value + 1, 0).getDate());
 let firstDayOfMonth = ref(new Date(currentYear.value, currentMonth.value, 1).getDay());
-
+onMounted(() => {
+  updateCalendar();
+});
 function updateCalendar() {
+  dailyBalances.value = {};
+
   if (!transactions.value) {
-    // If transactions are not available, handle it accordingly
     console.error('Transactions are not available');
     return;
   }
@@ -152,14 +156,8 @@ function updateCalendar() {
     }
   });
 
-  // Accumulate daily balances instead of overwriting
-  dailyBalances.value = { ...dailyBalances.value, ...dayBalances };
+  dailyBalances.value = dayBalances;
 
-  // Log statements for debugging
-  console.log('daysInMonth:', daysInMonth.value);
-  console.log('firstDayOfMonth:', firstDayOfMonth.value);
-  console.log('currentMonthName:', currentMonthName.value);
-  console.log('dailyBalances:', dailyBalances.value);
 }
 const monthlyBalances = computed(() => {
   const balances = {};
@@ -216,15 +214,4 @@ function nextMonth() {
     currentMonth.value += 1;
   }
 }
-
-const calculateTotalBalance = computed(() => {
-  let total = 0;
-
-  for (const transaction of transactions.value) {
-    if (transaction.type === TransactionType.EXPENSE) total -= Number(transaction.amount);
-    else if (transaction.type === TransactionType.INCOME) total += Number(transaction.amount);
-  }
-
-  return total;
-});
 </script>
