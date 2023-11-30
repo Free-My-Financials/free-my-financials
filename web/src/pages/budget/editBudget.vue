@@ -28,7 +28,7 @@ const state = reactive({
 async function submit() {
   if (state.amount && state.start_date && state.end_date) {
     budget.value = {
-      amount: state.amount,
+      amount: Math.round(state.amount * 100),
       start_date: new Date(state.start_date),
       end_date: new Date(state.end_date),
     }
