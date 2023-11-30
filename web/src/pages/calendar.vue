@@ -1,9 +1,9 @@
 <template>
 <div class="calendar-container">
   <div class="calendar-nav">
-    <button @click="prevMonth">&lt;</button>
+    <UButton @click="prevMonth" type="button">&lt;</UButton>
     <h2>{{ currentMonthName }} {{ currentYear }}</h2>
-    <button @click="nextMonth">&gt;</button>
+    <UButton @click="nextMonth" type="button">&gt;</UButton>
   </div>
   <div class="calendar">
     <div class="weekdays">
@@ -11,9 +11,8 @@
     </div>
     <div class="days">
       <div v-for="blankDay in firstDayOfMonth" :key="`blank-${blankDay}`" class="blank"></div>
-      <div v-for="day in daysInMonth" :key="day" class="day">
+      <div v-for="day in Array.from({ length: daysInMonth }, (_, index) => index + 1)" :key="day" class="day">
         {{ day }}
-        <!-- Add your date-related information here -->
       </div>
     </div>
   </div>
@@ -23,19 +22,45 @@
 <style scoped>
 .calendar-container {
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 84.5vh;
+  justify-content: center;
 }
 
 h2 {
   margin-bottom: 10px;
+  margin-top: 10px;
   font-size: 1.5em;
+  color: #ffffff;
 }
 
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 90%;
+  background-color: #006400;
+  margin-top: 10px;
+  color: #f0f8ff;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+
 .calendar {
-  display: inline-block;
   border: 1px solid #ddd;
   border-radius: 5px;
   overflow: hidden;
+  flex-grow: 1;
+  width: 90%;
+  background-color: #f0f8ff;
+  margin-bottom: 10px;
+  box-sizing: border-box;
 }
+
 
 .weekdays {
   display: flex;
@@ -45,26 +70,29 @@ h2 {
 
 .weekdays span {
   flex: 1;
-  padding: 10px;
+  padding: 15px;
   text-align: center;
   font-weight: bold;
+  color: #006400;
 }
 
 .days {
   display: grid;
-  grid-template-columns: repeat(7, 1fr);
+  grid-template-columns: repeat(7, 2fr);
 }
 
 .day {
-  padding: 10px;
+  padding: 30px 15px;
   text-align: center;
   border-bottom: 1px solid #ddd;
+  color: #006400;
 }
 
 .blank {
   flex: 1;
 }
 </style>
+
 <script setup>
 import { ref, watch } from 'vue';
 
@@ -107,4 +135,5 @@ function nextMonth() {
   }
 }
 </script>
+
 
