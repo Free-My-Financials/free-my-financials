@@ -1,6 +1,4 @@
 
-
-
 <template>
 <h3>Start of budget:
   <UBadge :label="(new Date(budget.start_date.toString())).toDateString()" />

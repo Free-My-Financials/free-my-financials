@@ -20,6 +20,10 @@
     :class="[{ 'text-white dark:text-gray-800': route.name === 'budget-budget' }, 'hover:text-white', 'dark:hover:text-gray-800']">
     <NuxtLink to="/budget/budget">View Budget</NuxtLink>
   </p>
+  <p
+    :class="[{ 'text-white dark:text-gray-800': route.name === 'calendar' }, 'hover:text-white', 'dark:hover:text-gray-800']">
+    <NuxtLink to="/calendar">Calendar</NuxtLink>
+  </p>
 </header>
 </template>
 
