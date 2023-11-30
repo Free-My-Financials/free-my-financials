@@ -4,8 +4,9 @@
     <UButton @click="prevMonth" type="button">&lt;</UButton>
     <h2>{{ currentMonthName }} {{ currentYear }}</h2>
     <span>Total Balance:
-      <DollarAmount :amount="calculateTotalBalance" />
+      <DollarAmount :amount="monthlyBalance" />
     </span>
+
     <UButton @click="nextMonth" type="button">&gt;</UButton>
   </div>
   <div class="calendar">
@@ -117,6 +118,40 @@ function updateCalendar() {
     new Date(currentYear.value, currentMonth.value, 1)
   );
 }
+
+const monthlyBalances = computed(() => {
+  const balances = {};
+
+  for (const transaction of transactions.value) {
+    const transactionDate = new Date(transaction.date);
+    const transactionMonth = transactionDate.getMonth();
+    const transactionYear = transactionDate.getFullYear();
+
+    const key = `${transactionYear}-${transactionMonth}`;
+
+    if (!balances[key]) {
+      balances[key] = 0;
+    }
+
+    if (transaction.type === TransactionType.EXPENSE) {
+      balances[key] -= Number(transaction.amount);
+    } else if (transaction.type === TransactionType.INCOME) {
+      balances[key] += Number(transaction.amount);
+    }
+  }
+
+  return balances;
+});
+
+const monthlyBalance = computed(() => {
+  const key = `${currentYear.value}-${currentMonth.value}`;
+  return monthlyBalances.value[key] || 0;
+});
+
+watch([currentMonth, currentYear], () => {
+  updateCalendar();
+});
+
 
 watch(currentMonth, () => {
   updateCalendar();
