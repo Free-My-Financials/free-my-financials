@@ -6,7 +6,7 @@
     <span class="total-balance" v-if="showMonthlyBalance">
       Monthly Balance:
       <div class="balance-container">
-        <span class="balance-label">Balance:</span>
+        <span class="balance-label"></span>
         <DollarAmount :amount="monthlyBalance" />
         <i v-show="showArrow" class="arrow" :class="{ 'arrow-up': isPositiveChange, 'arrow-down': !isPositiveChange }"
           :title="arrowTooltipText">
@@ -164,7 +164,11 @@ const arrowTooltipText = computed(() => {
 
   const changeDirection = percentDifference > 0 ? 'increased' : 'decreased';
 
-  return `Your monthly balance ${changeDirection} by ${Math.abs(percentDifference).toFixed(2)}% this month compared to the last month.`;
+  const previousMonthName = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
+    new Date(previousMonthYear, currentMonth.value === 0 ? 11 : currentMonth.value - 1, 1)
+  );
+
+  return `Your monthly balance ${changeDirection} by ${Math.abs(percentDifference).toFixed(2)}% this month compared to ${previousMonthName}.`;
 });
 
 const monthlyBalances = computed(() => {
