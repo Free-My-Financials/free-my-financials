@@ -132,6 +132,7 @@ function updateCalendar() {
   currentMonthName.value = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
     new Date(currentYear.value, currentMonth.value, 1)
   );
+
   const startDate = new Date(currentYear.value, currentMonth.value, 1);
   const endDate = new Date(currentYear.value, currentMonth.value + 1, 0);
   const dayBalances = {};
@@ -140,6 +141,7 @@ function updateCalendar() {
     const transactionDate = new Date(transaction.date);
     if (transactionDate >= startDate && transactionDate <= endDate) {
       const day = transactionDate.getDate();
+      // If dayBalances[day] is not defined, initialize it to 0
       dayBalances[day] = dayBalances[day] || 0;
 
       if (transaction.type === TransactionType.EXPENSE) {
@@ -150,7 +152,8 @@ function updateCalendar() {
     }
   });
 
-  dailyBalances.value = dayBalances;
+  // Accumulate daily balances instead of overwriting
+  dailyBalances.value = { ...dailyBalances.value, ...dayBalances };
 
   // Log statements for debugging
   console.log('daysInMonth:', daysInMonth.value);

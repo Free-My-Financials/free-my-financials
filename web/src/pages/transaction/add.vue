@@ -96,7 +96,7 @@ async function submit() {
         type: state.type,
         store: state.store,
         amount: Math.round(parsedAmount * 100),
-        date: new Date(state.date),
+        date: new Date(state.date + 'T00:00:00'),
         category: state.customCategory ? state.customCategoryName : state.category,
       });
 
