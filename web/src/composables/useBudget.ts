@@ -1,15 +1,16 @@
-export type Budget = {
-  start_date: Date
-  amount: number
-  end_date: Date
+import { ref } from 'vue';
+interface Budget {
+  amount: number;
+  start_date: Date;
+  end_date: Date;
 }
 
-export default function () {
-  return useCookie(
-    "budget",
-    {
-      default: (): Budget => { return { start_date: new Date(2023, 1, 1), amount: 1, end_date: new Date(2023, 1, 30) } },
-      sameSite: "lax",
-    },
-  )
+export default function useBudget() {
+  const budget = ref<Budget>({
+    amount: 0,
+    start_date: new Date(),
+    end_date: new Date(),
+  });
+
+  return budget;
 }
