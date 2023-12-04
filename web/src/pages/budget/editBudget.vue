@@ -16,17 +16,14 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue';
-import useBudget from '~/composables/useBudget';
-
-const budget = useBudget();
-const toast = useToast();
+const budget = useBudget()
+const toast = useToast()
 
 const state = reactive({
   amount: 0,
   start_date: '',
-  end_date: '',
-});
+  end_date: "",
+})
 
 async function submit() {
   if (state.amount && state.start_date && state.end_date) {
