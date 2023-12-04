@@ -22,19 +22,26 @@
     </div>
     <div class="days">
       <div v-for="blankDay in firstDayOfMonth" :key="`blank-${blankDay}`" class="blank"></div>
-      <div v-for="day in Array.from({ length: daysInMonth }, (_, index) => index + 1)" :key="day" class="day">
+      <div v-for="day in Array.from({ length: daysInMonth }, (_, index) => index + 1)" :key="day" class="day"
+        :class="{ 'budget-day': isBudgetDay(day) }">
         {{ day }}
         <br />
         <span v-if="dailyBalances[day] !== undefined && dailyBalances[day] !== 0">
           <DollarAmount :amount="dailyBalances[day]" />
         </span>
-        <span v-else>
-        </span>
+        <span v-else></span>
+        <div v-if="isBudgetStart(day) || isBudgetEnd(day)" class="budget-dates">
+          <div v-if="isBudgetStart(day)">Start of Budget</div>
+          <div v-if="isBudgetEnd(day)">End of Budget</div>
+        </div>
       </div>
     </div>
   </div>
 </div>
 </template>
+
+
+
 
 <style scoped>
 .total-balance {
@@ -128,6 +135,11 @@ h2 {
   height: 100px;
 }
 
+.budget-day,
+.budget-period {
+  background-color: rgba(144, 238, 144, 0.2);
+}
+
 .blank {
   flex: 1;
 }
@@ -138,6 +150,12 @@ h2 {
 
 import { ref, watch, computed, onMounted } from 'vue';
 import useTransactions, { TransactionType } from '~/composables/useTransactions';
+import useBudget from '~/composables/useBudget';
+
+const budget = useBudget();
+const budgetStart = ref(new Date(budget.value.start_date));
+const budgetEnd = ref(new Date(budget.value.end_date));
+
 
 const transactions = useTransactions();
 const currentDate = new Date();
@@ -152,6 +170,23 @@ let firstDayOfMonth = ref(new Date(currentYear.value, currentMonth.value, 1).get
 
 const showArrow = ref(false);
 const isPositiveChange = ref(false);
+function isBudgetDay(day) {
+  const startDate = budgetStart.value.getDate();
+  const endDate = budgetEnd.value.getDate();
+  return day >= startDate && day <= endDate && currentMonth.value === budgetStart.value.getMonth();
+}
+
+function isBudgetStart(day) {
+  const startDate = budgetStart.value.getDate();
+  const startMonth = budgetStart.value.getMonth();
+  return day === startDate && currentMonth.value === startMonth;
+}
+
+function isBudgetEnd(day) {
+  const endDate = budgetEnd.value.getDate();
+  const endMonth = budgetEnd.value.getMonth();
+  return day === endDate && currentMonth.value === endMonth;
+}
 
 const arrowTooltipText = computed(() => {
   const currentMonthKey = `${currentYear.value}-${currentMonth.value}`;
