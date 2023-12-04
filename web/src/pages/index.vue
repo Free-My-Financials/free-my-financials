@@ -126,7 +126,7 @@ p {
 .use-container {
   margin-bottom: 20px;
   border-radius: 10px;
-  background: linear-gradient(-180deg, rgba(28, 28, 28, 0.2), rgba(39, 174, 96, 0.5));
+  background: radial-gradient(circle at center bottom, rgba(39, 174, 96, 0.5), rgba(28, 28, 28, 0.1) 80%);
   color: white;
 }
 
