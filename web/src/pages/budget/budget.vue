@@ -3,7 +3,7 @@
 <h3>Start of budget:
   <UBadge :label="(new Date(budget.start_date.toString())).toDateString()" />
 </h3>
-<h3>Start of budget:
+<h3>End of budget:
   <UBadge :label="(new Date(budget.end_date.toString())).toDateString()" />
 </h3>
 <h3>TOTAL BALANCE:
