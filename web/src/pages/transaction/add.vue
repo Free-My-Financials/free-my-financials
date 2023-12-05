@@ -10,7 +10,7 @@
   </UFormGroup>
 
   <UFormGroup label="Category" v-if="state.type === TransactionType.EXPENSE">
-    <USelect :options="allCategories" v-model="state.category" v-if="!state.customCategory"
+    <USelect :options="catagories.categories.value" v-model="state.category" v-if="!state.customCategory"
       :placeholder="'Category of Purchase'" />
     <UInput v-if="state.customCategory" type="text" name="CustomCategory" id="customCategory"
       v-model="state.customCategoryName" :key="state.customCategory.toString()" :placeholder="'Category'" />
@@ -35,10 +35,8 @@
 
 <script lang="ts" setup>
 const transactions = useTransactions()
+const catagories = useCategories()
 const toast = useToast()
-const preListedCategories = ['Groceries', 'Clothing', 'Entertainment'];
-const customCategoryKey = 'customCategories';
-const allCategories = ref([...preListedCategories, ...getCustomCategories()]);
 
 
 const state = reactive({
@@ -51,34 +49,6 @@ const state = reactive({
   customCategoryName: '',
 })
 
-function getCustomCategories() {
-  if (typeof localStorage !== 'undefined') {
-    const customCategories = localStorage.getItem(customCategoryKey);
-    return customCategories ? JSON.parse(customCategories) : [];
-  } else {
-    return [];
-  }
-}
-
-function addCustomCategory() {
-  const newCategory = state.customCategoryName.trim();
-  if (newCategory && !allCategories.value.includes(newCategory)) {
-    allCategories.value.push(newCategory);
-    saveCustomCategories();
-    state.category = newCategory;
-    state.customCategoryName = '';
-  }
-}
-
-function saveCustomCategories() {
-  const uniqueCustomCategories = [...new Set(allCategories.value.slice(preListedCategories.length))];
-  localStorage.setItem(customCategoryKey, JSON.stringify(uniqueCustomCategories));
-}
-
-onMounted(() => {
-  allCategories.value = [...preListedCategories, ...getCustomCategories()];
-});
-
 const canSubmit = computed(() => {
   const requiredFieldsFilled = state.store && state.amount !== "" && state.date;
   const validCategorySelected =
@@ -87,38 +57,37 @@ const canSubmit = computed(() => {
 });
 
 async function submit() {
-  if (canSubmit.value) {
-    const parsedAmount = parseFloat(state.amount);
-
-    if (!isNaN(parsedAmount)) {
-      transactions.value.push({
-        id: Math.random(),
-        type: state.type,
-        store: state.store,
-        amount: Math.round(parsedAmount * 100),
-        date: new Date(state.date + 'T00:00:00'),
-        category: state.customCategory ? state.customCategoryName : state.category,
-      });
-
-      await addCustomCategory(); // Wait for addCustomCategory to complete
-
-      if (state.customCategory && !preListedCategories.includes(state.customCategoryName)) {
-        preListedCategories.push(state.customCategoryName);
-        allCategories.value = [...preListedCategories, ...getCustomCategories()];
-        saveCustomCategories();
-      }
-      resetState();
-      toast.add({
-        title: 'Success',
-        description: 'Transaction added successfully!',
-      });
-    }
-  } else {
+  if (!canSubmit.value) {
     toast.add({
       title: 'Invalid Input',
       description: 'Please fill in all the fields.',
-    });
+    })
+
+    return
   }
+
+  const parsedAmount = parseFloat(state.amount);
+
+  if (isNaN(parsedAmount))
+    return
+
+  transactions.value.push({
+    id: Math.random(),
+    type: state.type,
+    store: state.store,
+    amount: Math.round(parsedAmount * 100),
+    date: new Date(state.date + 'T00:00:00'),
+    category: state.customCategory ? state.customCategoryName : state.category,
+  });
+
+  if (state.customCategory)
+    catagories.addCategory(state.customCategoryName)
+
+  resetState();
+  toast.add({
+    title: 'Success',
+    description: 'Transaction added successfully!',
+  });
 }
 
 function resetState() {
@@ -130,5 +99,4 @@ function resetState() {
   state.customCategory = false;
   state.customCategoryName = '';
 }
-
 </script>
