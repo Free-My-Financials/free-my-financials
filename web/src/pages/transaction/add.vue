@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-const transactions = useTransactions()
+const transactions = useTransactionStore()
 const catagories = useCategories()
 const toast = useToast()
 
@@ -71,7 +71,7 @@ async function submit() {
   if (isNaN(parsedAmount))
     return
 
-  transactions.value.push({
+  transactions.addTransaction({
     id: Math.random(),
     type: state.type,
     store: state.store,

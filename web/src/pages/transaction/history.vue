@@ -2,7 +2,7 @@
 <div class="page-container">
   <div class="table-container">
     <h3>TOTAL BALANCE:
-      <DollarAmount :amount="calculateTotalBalance" />
+      <DollarAmount :amount="transactions.totalBalance" />
     </h3>
     <h3 v-if="searchQuery !== ''">FILTERED TOTAL:
       <DollarAmount :amount="calculateFilteredTotalBalance" />
@@ -79,31 +79,28 @@
 
 
 <script setup>
-import { ref, computed, watch } from 'vue';
-import useTransactions, { TransactionType } from '~/composables/useTransactions';
-
-const transactions = useTransactions();
-const searchQuery = ref('');
+const transactions = useTransactionStore()
+const searchQuery = ref('')
 
 const formatDate = (dateString) => {
-  const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' };
-  return new Date(dateString).toLocaleDateString(undefined, options);
-};
+  const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }
+  return new Date(dateString).toLocaleDateString(undefined, options)
+}
 
 const getFormattedDateComponents = (dateString) => {
-  const date = new Date(dateString);
+  const date = new Date(dateString)
   return {
     day: date.toLocaleDateString(undefined, { day: 'numeric' }).toLowerCase(),
     month: date.toLocaleDateString(undefined, { month: 'short' }).toLowerCase(),
     year: date.toLocaleDateString(undefined, { year: 'numeric' }).toLowerCase(),
     weekday: date.toLocaleDateString(undefined, { weekday: 'short' }).toLowerCase(),
-  };
-};
+  }
+}
 
 const filteredTransactions = computed(() => {
-  const queryWords = searchQuery.value.toLowerCase().split(/\s+/);
-  return transactions.value.filter((transaction) => {
-    const formattedDateComponents = getFormattedDateComponents(transaction.date);
+  const queryWords = searchQuery.value.toLowerCase().split(/\s+/)
+  return transactions.transactions.filter((transaction) => {
+    const formattedDateComponents = getFormattedDateComponents(transaction.date)
 
     return queryWords.every((word) =>
       [
@@ -116,9 +113,9 @@ const filteredTransactions = computed(() => {
         formattedDateComponents.year,
         formattedDateComponents.weekday,
       ].some((field) => field.includes(word))
-    );
-  });
-});
+    )
+  })
+})
 
 const columns = [{
   key: 'store',
@@ -144,42 +141,21 @@ const columns = [{
   sortable: false,
 }]
 
-const calculateTotalBalance = computed(() => {
-  let total = 0;
-
-  for (const transaction of transactions.value) {
-    if (transaction.type === TransactionType.EXPENSE) total -= Number(transaction.amount);
-    else if (transaction.type === TransactionType.INCOME) total += Number(transaction.amount);
-  }
-
-  return total;
-});
-
 const calculateFilteredTotalBalance = computed(() => {
-  let total = 0;
+  let total = 0
 
   for (const transaction of filteredTransactions.value) {
-    if (transaction.type === TransactionType.EXPENSE) total -= Number(transaction.amount);
-    else if (transaction.type === TransactionType.INCOME) total += Number(transaction.amount);
+    if (transaction.type === TransactionType.EXPENSE) total -= Number(transaction.amount)
+    else if (transaction.type === TransactionType.INCOME) total += Number(transaction.amount)
   }
 
-  return total;
-});
-
-function deleteTransaction(id) {
-  const index = transactions.value.findIndex((transaction) => transaction.id === id);
-
-  if (index === -1) return;
-
-  transactions.value.splice(index, 1);
-}
+  return total
+})
 
 function confirmDeleteTransaction(id) {
-  const isConfirmed = window.confirm('Are you sure you want to delete this transaction?');
+  const isConfirmed = window.confirm('Are you sure you want to delete this transaction?')
 
-  if (isConfirmed) {
-    deleteTransaction(id);
-  }
+  if (isConfirmed)
+    transactions.removeTransaction(id)
 }
 </script>
-

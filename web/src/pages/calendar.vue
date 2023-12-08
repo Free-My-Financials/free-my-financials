@@ -147,17 +147,12 @@ h2 {
 
 
 <script setup>
-
-import { ref, watch, computed, onMounted } from 'vue';
-import useTransactions, { TransactionType } from '~/composables/useTransactions';
-import useBudget from '~/composables/useBudget';
-
 const budget = useBudget();
 const budgetStart = ref(new Date(budget.value.start_date));
 const budgetEnd = ref(new Date(budget.value.end_date));
 
 
-const transactions = useTransactions();
+const transactions = useTransactionStore();
 const currentDate = new Date();
 const currentYear = ref(currentDate.getFullYear());
 const currentMonth = ref(currentDate.getMonth());
@@ -209,7 +204,7 @@ const arrowTooltipText = computed(() => {
 const monthlyBalances = computed(() => {
   const balances = {};
 
-  for (const transaction of transactions.value) {
+  for (const transaction of transactions.transactions) {
     const transactionDate = new Date(transaction.date);
     const transactionMonth = transactionDate.getMonth();
     const transactionYear = transactionDate.getFullYear();
@@ -242,11 +237,6 @@ onMounted(() => {
 function updateCalendar() {
   dailyBalances.value = {};
 
-  if (!transactions.value) {
-    console.error('Transactions are not available');
-    return;
-  }
-
   daysInMonth.value = new Date(currentYear.value, currentMonth.value + 1, 0).getDate();
   firstDayOfMonth.value = new Date(currentYear.value, currentMonth.value, 1).getDay();
   currentMonthName.value = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
@@ -257,7 +247,7 @@ function updateCalendar() {
   const endDate = new Date(currentYear.value, currentMonth.value + 1, 0);
   const dayBalances = {};
 
-  transactions.value.forEach((transaction) => {
+  transactions.transactions.forEach((transaction) => {
     const transactionDate = new Date(transaction.date);
     if (transactionDate >= startDate && transactionDate <= endDate) {
       const day = transactionDate.getDate();

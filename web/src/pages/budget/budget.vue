@@ -22,14 +22,12 @@
 </template>
 
 <script lang="ts" setup>
-import useBudget from '~/composables/useBudget';
-import useTransactions, { TransactionType, type Transaction } from '~/composables/useTransactions';
-const transactions = useTransactions()
+const transactions = useTransactionStore()
 const budget = useBudget()
 
 const get_transactions = ((): Transaction[] => {
   let new_transactions = []
-  for (const transaction of transactions.value) {
+  for (const transaction of transactions.transactions) {
     if (transaction.date >= budget.value.start_date && transaction.date <= budget.value.end_date) {
       new_transactions.push(transaction)
     }
