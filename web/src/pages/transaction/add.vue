@@ -10,7 +10,7 @@
   </UFormGroup>
 
   <UFormGroup label="Category" v-if="state.type === TransactionType.EXPENSE">
-    <USelect :options="catagories.categories.value" v-model="state.category" v-if="!state.customCategory"
+    <USelect :options="catagories.categories" v-model="state.category" v-if="!state.customCategory"
       :placeholder="'Category of Purchase'" />
     <UInput v-if="state.customCategory" type="text" name="CustomCategory" id="customCategory"
       v-model="state.customCategoryName" :key="state.customCategory.toString()" :placeholder="'Category'" />
@@ -35,7 +35,7 @@
 
 <script lang="ts" setup>
 const transactions = useTransactionStore()
-const catagories = useCategories()
+const catagories = useCategoryStore()
 const toast = useToast()
 
 
