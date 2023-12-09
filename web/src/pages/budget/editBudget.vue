@@ -5,10 +5,10 @@
   </UFormGroup>
 
   <UFormGroup label="Start Date">
-    <UInput type="date" name="Date" id="date" v-model="state.start_date" />
+    <UInput type="date" name="Date" id="date" v-model="state.startDate" />
   </UFormGroup>
   <UFormGroup label="End Date">
-    <UInput type="date" name="Date" id="date" v-model="state.end_date" />
+    <UInput type="date" name="Date" id="date" v-model="state.endDate" />
   </UFormGroup>
 
   <UButton type="submit">Submit</UButton>
@@ -16,22 +16,22 @@
 </template>
 
 <script lang="ts" setup>
-const budget = useBudget()
+const budget = useBudgetStore()
 const toast = useToast()
 
 const state = reactive({
   amount: 0,
-  start_date: '',
-  end_date: "",
+  startDate: '',
+  endDate: '',
 })
 
 async function submit() {
-  if (state.amount && state.start_date && state.end_date) {
-    budget.value = {
+  if (state.amount && state.startDate && state.endDate) {
+    budget.setBudget({
       amount: Math.round(state.amount * 100),
-      start_date: new Date(state.start_date),
-      end_date: new Date(state.end_date),
-    }
+      startDate: new Date(state.startDate + 'T00:00:00'),
+      endDate: new Date(state.endDate + 'T00:00:00'),
+    })
     resetState()
     toast.add({
       title: 'Success',
@@ -47,7 +47,7 @@ async function submit() {
 
 function resetState() {
   state.amount = 0
-  state.start_date = ''
-  state.end_date = ""
+  state.startDate = ''
+  state.endDate = ""
 }
 </script>

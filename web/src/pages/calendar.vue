@@ -23,7 +23,7 @@
     <div class="days">
       <div v-for="blankDay in firstDayOfMonth" :key="`blank-${blankDay}`" class="blank"></div>
       <div v-for="day in Array.from({ length: daysInMonth }, (_, index) => index + 1)" :key="day" class="day"
-        :class="{ 'budget-day': isBudgetDay(day) }">
+        :class="{ 'budget-day': budget.dateIsInBudget(day) }">
         {{ day }}
         <br />
         <span v-if="dailyBalances[day] !== undefined && dailyBalances[day] !== 0">
@@ -147,12 +147,9 @@ h2 {
 
 
 <script setup>
-const budget = useBudget();
-const budgetStart = ref(new Date(budget.value.start_date));
-const budgetEnd = ref(new Date(budget.value.end_date));
-
-
+const budget = useBudgetStore();
 const transactions = useTransactionStore();
+
 const currentDate = new Date();
 const currentYear = ref(currentDate.getFullYear());
 const currentMonth = ref(currentDate.getMonth());
@@ -165,21 +162,16 @@ let firstDayOfMonth = ref(new Date(currentYear.value, currentMonth.value, 1).get
 
 const showArrow = ref(false);
 const isPositiveChange = ref(false);
-function isBudgetDay(day) {
-  const startDate = budgetStart.value.getDate();
-  const endDate = budgetEnd.value.getDate();
-  return day >= startDate && day <= endDate && currentMonth.value === budgetStart.value.getMonth();
-}
 
 function isBudgetStart(day) {
-  const startDate = budgetStart.value.getDate();
-  const startMonth = budgetStart.value.getMonth();
+  const startDate = budget.startDate.getDate();
+  const startMonth = budget.startDate.getMonth();
   return day === startDate && currentMonth.value === startMonth;
 }
 
 function isBudgetEnd(day) {
-  const endDate = budgetEnd.value.getDate();
-  const endMonth = budgetEnd.value.getMonth();
+  const endDate = budget.endDate.getDate();
+  const endMonth = budget.endDate.getMonth();
   return day === endDate && currentMonth.value === endMonth;
 }
 
@@ -261,16 +253,9 @@ function updateCalendar() {
   const previousMonthKey = `${previousMonthYear}-${currentMonth.value === 0 ? 11 : currentMonth.value - 1}`;
   showArrow.value = monthlyBalances.value.hasOwnProperty(previousMonthKey);
 
-  console.log('showArrow:', showArrow.value);
-
   if (showArrow.value) {
     const currentMonthKey = `${currentYear.value}-${currentMonth.value}`;
-    console.log('Monthly Balances:', monthlyBalances.value);
-    console.log('Current Month Balance:', monthlyBalances.value[currentMonthKey]);
-    console.log('Previous Month Balance:', monthlyBalances.value[previousMonthKey]);
-
     isPositiveChange.value = monthlyBalances.value[currentMonthKey] > monthlyBalances.value[previousMonthKey];
-    console.log('isPositiveChange:', isPositiveChange.value);
   }
 }
 
