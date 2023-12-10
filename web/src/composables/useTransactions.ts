@@ -1,6 +1,6 @@
 export enum TransactionType {
-  INCOME = "income",
-  EXPENSE = "expense",
+  INCOME = "Income",
+  EXPENSE = "Expense",
 }
 
 export type Transaction = {
@@ -8,10 +8,11 @@ export type Transaction = {
   type: TransactionType
   store: string
   amount: number
-  date: string
+  date: Date
+  category: string;
 }
 
-export default function() {
+export default function () {
   return useCookie(
     "transactions",
     {
