@@ -21,6 +21,10 @@
   "dependencies": {
     "@nuxt/ui": "^2.10.0",
     "@pinia/nuxt": "^0.5.1",
-    "pinia": "^2.1.7"
+    "@trpc/client": "^10.45.0",
+    "@trpc/server": "^10.45.0",
+    "pinia": "^2.1.7",
+    "trpc-nuxt": "^0.10.15",
+    "zod": "^3.22.4"
   }
 }

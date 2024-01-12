@@ -9,4 +9,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@pinia/nuxt',
   ],
+  build: {
+    transpile: ['trpc-nuxt']
+  }
 })

@@ -56,5 +56,7 @@ export const useTransactionStore = defineStore('transactions', () => {
     getTransactionsByCategory,
     getTransactionsByStore,
     addTransaction,
+    removeTransaction,
+    updateTransaction,
   }
 })
