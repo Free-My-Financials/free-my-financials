@@ -1,6 +1,6 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-23.05";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     systems.url = "github:nix-systems/default";
     devenv.url = "github:cachix/devenv";
   };
@@ -25,11 +25,21 @@
               inherit inputs pkgs;
               modules = [
                 {
+                  packages = [
+                    pkgs.nodePackages.prisma
+                    pkgs.openssl
+                  ];
+
+                  env = {
+                    PRISMA_SCHEMA_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/schema-engine";
+                    PRISMA_QUERY_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/query-engine";
+                    PRISMA_QUERY_ENGINE_LIBRARY = "${pkgs.prisma-engines}/lib/libquery_engine.node";
+                    PRISMA_FMT_BINARY = "${pkgs.prisma-engines}/bin/prisma-fmt";
+                  };
+
                   languages.javascript = {
                     enable = true;
                     package = pkgs.nodejs_20;
-
-                    npm.install.enable = true;
                   };
                 }
               ];
