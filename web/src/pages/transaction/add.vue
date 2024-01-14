@@ -81,8 +81,7 @@ async function submit() {
   }))
     return
 
-  if (state.customCategory)
-    catagories.addCategory(state.customCategoryName)
+  catagories.fetchCategories()
 
   resetState();
   toast.add({

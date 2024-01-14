@@ -4,6 +4,7 @@ import { z } from 'zod'
 import { router, publicProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 import { isAuthed } from '../middleware/isAuthed'
+import { defaultCategories } from './category'
 
 export default router({
   create: publicProcedure
@@ -30,6 +31,19 @@ export default router({
           username: input.username,
         }
       })
+
+      for (const category of defaultCategories) {
+        await ctx.prisma.category.create({
+          data: {
+            name: category,
+            user: {
+              connect: {
+                id: newUser.id,
+              }
+            }
+          }
+        })
+      }
 
       const token = createAccessToken(newUser.id)
 
