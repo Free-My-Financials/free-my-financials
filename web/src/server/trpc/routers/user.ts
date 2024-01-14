@@ -5,6 +5,7 @@ import { router, publicProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 import { isAuthed } from '../middleware/isAuthed'
 import { defaultCategories } from './category'
+import { defaultBudget } from './budget'
 
 export default router({
   create: publicProcedure
@@ -29,6 +30,17 @@ export default router({
       const newUser = await ctx.prisma.user.create({
         data: {
           username: input.username,
+        }
+      })
+
+      await ctx.prisma.budget.create({
+        data: {
+          ...defaultBudget(),
+          user: {
+            connect: {
+              id: newUser.id,
+            }
+          }
         }
       })
 

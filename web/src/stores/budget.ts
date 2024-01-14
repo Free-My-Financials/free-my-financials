@@ -1,5 +1,3 @@
-import { skipHydrate } from 'pinia'
-
 export interface Budget {
   startDate: Date
   amount: number
@@ -7,13 +5,14 @@ export interface Budget {
 }
 
 export const useBudgetStore = defineStore('budget', () => {
-  const budget =  useCookie("budget", {
-    default: (): Budget => ({
-      amount: 1,
-      startDate: new Date(2023, 0, 1),
-      endDate: new Date(2023, 0, 30),
-    }),
-    sameSite: "lax",
+  const auth = useAuthStore()
+  const { $client } = useNuxtApp()
+  const toast = useToast()
+
+  const budget =  ref<Budget>({
+    startDate: new Date(),
+    amount: 0,
+    endDate: new Date(),
   })
 
   const amount = computed(() => budget.value.amount)
@@ -47,20 +46,97 @@ export const useBudgetStore = defineStore('budget', () => {
     setEndDate(budget.endDate)
   }
 
-  const setStartDate = (date: Date) => {
+  const setStartDate = async (date: Date) => {
+    if (budget.value.startDate.getTime() === date.getTime())
+      return
+
+    const oldDate = budget.value.startDate
     budget.value.startDate = date
+
+    try {
+      await $client.budget.update.mutate({
+        start: date,
+      })
+    } catch (error) {
+      budget.value.startDate = oldDate
+
+      toast.add({
+        title: 'Error',
+        description: 'Something went wrong',
+      })
+    }
   }
 
-  const setEndDate = (date: Date) => {
+  const setEndDate = async (date: Date) => {
+    if (budget.value.endDate.getTime() === date.getTime())
+      return
+
+    const oldDate = budget.value.endDate
     budget.value.endDate = date
+
+    try {
+      await $client.budget.update.mutate({
+        end: date,
+      })
+    } catch (error) {
+      budget.value.endDate = oldDate
+
+      toast.add({
+        title: 'Error',
+        description: 'Something went wrong',
+      })
+    }
   }
 
-  const setAmount = (amount: number) => {
+  const setAmount = async (amount: number) => {
+    if (budget.value.amount === amount)
+      return
+
+    const oldAmount = budget.value.amount
     budget.value.amount = amount
+
+    try {
+      await $client.budget.update.mutate({
+        amount,
+      })
+    } catch (error) {
+      budget.value.amount = oldAmount
+
+      toast.add({
+        title: 'Error',
+        description: 'Something went wrong',
+      })
+    }
   }
+
+  const fetchBudget = async () => {
+    if (!auth.isLoggedIn)
+      return
+
+    try {
+      const { data } = await $client.budget.get.useQuery()
+
+      if (!data.value)
+        return toast.add({
+          title: 'Error',
+          description: 'Something went wrong',
+        })
+
+      budget.value.amount = data.value.amount
+      budget.value.startDate = new Date(data.value.start)
+      budget.value.endDate = new Date(data.value.end)
+    } catch (error) {
+      toast.add({
+        title: 'Error',
+        description: 'Something went wrong',
+      })
+    }
+  }
+
+  fetchBudget()
 
   return {
-    budget: skipHydrate(budget),
+    budget,
     amount,
     startDate,
     endDate,
@@ -69,7 +145,7 @@ export const useBudgetStore = defineStore('budget', () => {
     isRunning,
     dateIsInBudget,
     transactionIsInBudget,
-    transactions: skipHydrate(transactions),
+    transactions,
     totalIncome,
     totalExpense,
     totalBalance,
@@ -77,5 +153,6 @@ export const useBudgetStore = defineStore('budget', () => {
     setStartDate,
     setEndDate,
     setAmount,
+    fetchBudget,
   }
 })
