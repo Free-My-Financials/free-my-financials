@@ -6,7 +6,7 @@ export enum TransactionType {
 }
 
 export interface Transaction {
-  id: number
+  id: string
   type: TransactionType
   store: string
   amount: number
@@ -15,37 +15,111 @@ export interface Transaction {
 }
 
 export const useTransactionStore = defineStore('transactions', () => {
-  const transactions =  useCookie("transactions", {
-    default: (): Transaction[] => [],
-    sameSite: "lax",
-  })
+  const auth = useAuthStore()
+  const { $client } = useNuxtApp()
+  const toast = useToast()
+
+  const transactions = ref<Transaction[]>([])
 
   const isEmpty = computed(() => transactions.value.length === 0)
   const totalIncome = computed(() => transactions.value.filter((transaction) => transaction.type === TransactionType.INCOME).reduce((total, transaction) => total + transaction.amount, 0))
   const totalExpense = computed(() => transactions.value.filter((transaction) => transaction.type === TransactionType.EXPENSE).reduce((total, transaction) => total + transaction.amount, 0))
   const totalBalance = computed(() => transactions.value.reduce((total, transaction) => total + (transaction.type === TransactionType.INCOME ? transaction.amount : -transaction.amount), 0))
-  const hasTransaction = (id: number) => transactions.value.some((transaction) => transaction.id === id)
-  const getTransactionById = (id: number) => transactions.value.find((transaction) => transaction.id === id)
+  const hasTransaction = (id: string) => transactions.value.some((transaction) => transaction.id === id)
+  const getTransactionById = (id: string) => transactions.value.find((transaction) => transaction.id === id)
   const getTransactionsByType = (type: TransactionType) => transactions.value.filter((transaction) => transaction.type === type)
   const getTransactionsByCategory = (category: string) => transactions.value.filter((transaction) => transaction.category === category)
   const getTransactionsByStore = (store: string) => transactions.value.filter((transaction) => transaction.store === store)
 
-  const addTransaction = (transaction: Transaction) => {
+  const addTransaction = async (transaction: Transaction) => {
     transactions.value.push(transaction)
-  }
 
-  const removeTransaction = (id: number) => {
-    const index = transactions.value.findIndex((transaction) => transaction.id === id)
-    transactions.value.splice(index, 1)
-  }
-
-  const updateTransaction = (transaction: Transaction) => {
+    const { type, store, amount, date, category } = transaction
     const index = transactions.value.findIndex((t) => t.id === transaction.id)
-    transactions.value.splice(index, 1, transaction)
+
+    try {
+      const result = await $client.transaction.create.mutate({
+        type: type === TransactionType.INCOME ? "INCOME" : "EXPENSE", // TODO: Fix this
+        store,
+        amount,
+        date,
+        category,
+      })
+
+      const newTransaction = {
+        id: result.id,
+        type: TransactionType[result.type],
+        store: result.store.name,
+        amount: result.amount,
+        date: new Date(result.date),
+        category: result.category.name,
+      }
+
+      transactions.value.splice(index, 1, newTransaction)
+
+      return newTransaction
+    } catch (error) {
+      transactions.value.splice(index, 1)
+
+      toast.add({
+        title: 'Error',
+        description: 'Something went wrong',
+      })
+
+      return null
+    }
   }
+
+  const removeTransaction = async (id: string) => {
+    const index = transactions.value.findIndex((transaction) => transaction.id === id)
+    const transaction = transactions.value[index]
+    transactions.value.splice(index, 1)
+
+    try {
+      await $client.transaction.delete.mutate({ id })
+    } catch (error) {
+      transactions.value.splice(index, 0, transaction)
+
+      return toast.add({
+        title: 'Error',
+        description: 'Something went wrong',
+      })
+    }
+  }
+
+  const fetchTransactions = async () => {
+    if (!auth.isLoggedIn)
+      return
+
+    try {
+      const { data } = await $client.transaction.list.useQuery()
+
+      if (!data.value)
+        return
+
+      transactions.value = []
+      for (const transaction of data.value) {
+        transactions.value.push({
+          id: transaction.id,
+          type: TransactionType[transaction.type],
+          store: transaction.store.name,
+          amount: transaction.amount,
+          date: new Date(transaction.date),
+          category: transaction.category.name,
+        })
+      }
+    } catch (error) {
+      return toast.add({
+        title: 'Error',
+        description: 'Something went wrong',
+      })
+    }
+  }
+
+  fetchTransactions()
 
   return {
-    transactions: skipHydrate(transactions),
+    transactions,
     isEmpty,
     totalIncome,
     totalExpense,
@@ -57,6 +131,6 @@ export const useTransactionStore = defineStore('transactions', () => {
     getTransactionsByStore,
     addTransaction,
     removeTransaction,
-    updateTransaction,
+    fetchTransactions,
   }
 })

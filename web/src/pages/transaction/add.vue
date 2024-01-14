@@ -71,14 +71,15 @@ async function submit() {
   if (isNaN(parsedAmount))
     return
 
-  transactions.addTransaction({
-    id: Math.random(),
+  if (!await transactions.addTransaction({
+    id: Math.random().toString(36).substring(7),
     type: state.type,
     store: state.store,
     amount: Math.round(parsedAmount * 100),
     date: new Date(state.date + 'T00:00:00'),
     category: state.customCategory ? state.customCategoryName : state.category,
-  });
+  }))
+    return
 
   if (state.customCategory)
     catagories.addCategory(state.customCategoryName)
