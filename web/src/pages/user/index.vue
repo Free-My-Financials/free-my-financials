@@ -1,11 +1,16 @@
 <template>
 <div>
-  <h1>Test Register/Login User</h1>
-  <p>{{ auth.isLoggedIn ? auth.user?.username : "UNDEFINED" }}</p>
-  <input v-model="username" />
-  <button @click="auth.register(username)">Register</button>
-  <button @click="auth.login(username)">Login</button>
-  <button @click="auth.logout()">Logout</button>
+  <UContainer :ui="{ constrained: 'max-w-4xl' }">
+    <h1>Test Register/Login User</h1>
+    <p>{{ auth.isLoggedIn ? auth.user?.username : "UNDEFINED" }}</p>
+    <UInput v - model=" username" />
+    <UContainer :ui="{ constrained: 'max-w-xl' }">
+      <UButton @click="auth.register(username)" block label="Register" />
+      <UButton @click="auth.login(username)" block label="Login" />
+      <UButton @click="auth.logout()" block label="Logout" />
+    </UContainer>
+  </UContainer>
+
 </div>
 </template>
 
