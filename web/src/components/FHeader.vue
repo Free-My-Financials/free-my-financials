@@ -4,29 +4,44 @@
   <h1 class="font-bold dark:hover:text-gray-800 hover:text-white">
     <NuxtLink to="/">Free My Financials</NuxtLink>
   </h1>
-  <p
+  <p v-if="auth.isLoggedIn"
     :class="[{ 'text-white dark:text-gray-800': route.name === 'transaction-add' }, 'dark:hover:text-gray-800', 'hover:text-white']">
     <NuxtLink to="/transaction/add">Add Transaction</NuxtLink>
   </p>
-  <p
+  <p v-if="auth.isLoggedIn"
     :class="[{ 'text-white dark:text-gray-800': route.name === 'transaction-history' }, 'hover:text-white', 'dark:hover:text-gray-800']">
     <NuxtLink to="/transaction/history">View Transactions</NuxtLink>
   </p>
-  <p
+  <p v-if="auth.isLoggedIn"
     :class="[{ 'text-white dark:text-gray-800': route.name === 'budget-editBudget' }, 'hover:text-white', 'dark:hover:text-gray-800']">
     <NuxtLink to="/budget/editBudget">Edit Budget</NuxtLink>
   </p>
-  <p
+  <p v-if="auth.isLoggedIn"
     :class="[{ 'text-white dark:text-gray-800': route.name === 'budget-budget' }, 'hover:text-white', 'dark:hover:text-gray-800']">
     <NuxtLink to="/budget/budget">View Budget</NuxtLink>
   </p>
-  <p
+  <p v-if="auth.isLoggedIn"
     :class="[{ 'text-white dark:text-gray-800': route.name === 'calendar' }, 'hover:text-white', 'dark:hover:text-gray-800']">
     <NuxtLink to="/calendar">Calendar</NuxtLink>
+  </p>
+
+  <div class="flex-grow"></div>
+
+  <!-- Logout -->
+  <p v-if="auth.isLoggedIn"
+    :class="[{ 'text-white dark:text-gray-800': route.name === 'logout' }, 'hover:text-white', 'dark:hover:text-gray-800']">
+    <NuxtLink @click="auth.logout()" to="/">Logout</NuxtLink>
+  </p>
+
+  <!-- Login -->
+  <p v-if="!auth.isLoggedIn"
+    :class="[{ 'text-white dark:text-gray-800': route.name === 'login' }, 'hover:text-white', 'dark:hover:text-gray-800']">
+    <NuxtLink to="/user">Login</NuxtLink>
   </p>
 </header>
 </template>
 
 <script lang="ts" setup>
 const route = useRoute()
+const auth = useAuthStore()
 </script>

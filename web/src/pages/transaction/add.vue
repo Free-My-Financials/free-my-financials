@@ -10,7 +10,7 @@
   </UFormGroup>
 
   <UFormGroup label="Category" v-if="state.type === TransactionType.EXPENSE">
-    <USelect :options="catagories.categories.value" v-model="state.category" v-if="!state.customCategory"
+    <USelect :options="catagories.categories" v-model="state.category" v-if="!state.customCategory"
       :placeholder="'Category of Purchase'" />
     <UInput v-if="state.customCategory" type="text" name="CustomCategory" id="customCategory"
       v-model="state.customCategoryName" :key="state.customCategory.toString()" :placeholder="'Category'" />
@@ -34,8 +34,8 @@
 </template>
 
 <script lang="ts" setup>
-const transactions = useTransactions()
-const catagories = useCategories()
+const transactions = useTransactionStore()
+const catagories = useCategoryStore()
 const toast = useToast()
 
 
@@ -71,17 +71,17 @@ async function submit() {
   if (isNaN(parsedAmount))
     return
 
-  transactions.value.push({
-    id: Math.random(),
+  if (!await transactions.addTransaction({
+    id: Math.random().toString(36).substring(7),
     type: state.type,
     store: state.store,
     amount: Math.round(parsedAmount * 100),
     date: new Date(state.date + 'T00:00:00'),
     category: state.customCategory ? state.customCategoryName : state.category,
-  });
+  }))
+    return
 
-  if (state.customCategory)
-    catagories.addCategory(state.customCategoryName)
+  catagories.fetchCategories()
 
   resetState();
   toast.add({
