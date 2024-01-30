@@ -19,6 +19,17 @@ model User {
   budget       Budget?
   categories   Category[]
   stores       Store[]
+
+  // Auth
+  githubId Int?      @unique
+  sessions Session[]
+}
+
+model Session {
+  id        String   @id // Not using UUID here because lucia-auth doesn't support it
+  userId    String   @db.Uuid
+  expiresAt DateTime
+  user      User     @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model Budget {
