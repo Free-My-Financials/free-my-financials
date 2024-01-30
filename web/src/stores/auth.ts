@@ -16,46 +16,48 @@ export const useAuthStore = defineStore('auth', () => {
 
   const user = ref<User | null>(null)
 
-  const register = async (username: string) => {
+  const fetchRegister = async (username: string) => {
     try {
       const result = await $client.user.create.mutate({ username })
 
-      if (!result) {
-        return toast.add({
-          title: 'Error',
-          description: 'Something went wrong',
-        })
-      }
-
-      token.value = result.token
-      setUser(result.user)
+      return result
     } catch (error) {
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
+      sendError()
+    }
+  }
+
+  const register = async (username: string) => {
+    const result = await fetchRegister(username)
+
+    if (!result) {
+      sendError()
+      return
+    }
+
+    token.value = result.token
+    setUser(result.user)
+  }
+
+  const fetchLogin = async (username: string) => {
+    try {
+      const { data } = await $client.user.login.useQuery({ username })
+
+      return data
+    } catch (error) {
+      sendError()
     }
   }
 
   const login = async (username: string) => {
-    try {
-      const { data } = await $client.user.login.useQuery({ username })
+    const result = await fetchLogin(username)
 
-      if (!data.value) {
-        return toast.add({
-          title: 'Error',
-          description: 'Something went wrong',
-        })
-      }
-
-      token.value = data.value.token
-      setUser(data.value.user)
-    } catch (error) {
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
+    if (!result?.value) {
+      sendError()
+      return
     }
+
+    token.value = result.value.token
+    setUser(result.value.user)
   }
 
   const logout = () => {
@@ -81,9 +83,17 @@ export const useAuthStore = defineStore('auth', () => {
 
   getUser()
 
+  const sendError = () => {
+    toast.add({
+      title: 'Error',
+      description: 'Something went wrong',
+    })
+  }
+
   return {
     user,
     register,
+    fetchLogin,
     login,
     logout,
     isLoggedIn,
