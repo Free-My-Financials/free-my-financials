@@ -22,7 +22,12 @@
               package = nodejs;
             };
 
+            scripts.prisma-init.exec = ''
+              npm run --prefix $DEVENV_ROOT/web prisma-init
+            '';
+
             processes.nuxt.exec = ''
+              prisma-init
               npm run --prefix $DEVENV_ROOT/web dev
             '';
 
@@ -33,10 +38,6 @@
               initialScript = "CREATE USER postgres SUPERUSER;";
               listen_addresses = "127.0.0.1";
             };
-
-            scripts.prisma-init.exec = ''
-              npm run --prefix $DEVENV_ROOT/web prisma-init
-            '';
 
             env = {
               PRISMA_SCHEMA_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/schema-engine";
