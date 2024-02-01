@@ -1,5 +1,5 @@
 import { generateState } from "arctic"
-import { github } from "~/server/utils/lucia"
+import { github } from "~/server/utils/auth"
 
 export default defineEventHandler(async (event) => {
   const state = generateState()

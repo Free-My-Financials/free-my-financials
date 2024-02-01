@@ -1,36 +1,35 @@
-import { PrismaClient } from '@prisma/client'
-import jwt from 'jsonwebtoken'
+import { Lucia } from "lucia";
+import { GitHub } from "arctic";
+import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
+import prisma from "./prisma";
 
-export const getUserFromHeader = async (authorization: string | undefined, prisma: PrismaClient) => {
-  if (!authorization)
-    return
+const adapter = new PrismaAdapter(prisma.session, prisma.user);
 
-  const token = authorization.split(' ')[1]
+export const github = new GitHub(process.env.GITHUB_CLIENT_ID!, process.env.GITHUB_CLIENT_SECRET!);
 
-  const decoded = decodeAndVerifyJwtToken(token)
-
-  if (!decoded)
-    return
-
-  const user = await prisma.user.findUnique({
-    where: {
-      id: decoded.userId,
-    },
-  })
-
-  return user
-}
-
-export const createAccessToken = (userId: string) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET!, {
-    expiresIn: '2d'
-  })
-}
-
-export const decodeAndVerifyJwtToken = (token: string) => {
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET!) as { userId: string }
-  } catch (error) {
-    return null
+export const lucia = new Lucia(adapter, {
+  sessionCookie: {
+    attributes: {
+      secure: !import.meta.dev
+    }
+  },
+  getUserAttributes: (attributes) => {
+    return {
+      // attributes has the type of DatabaseUserAttributes
+      githubId: attributes.githubId,
+      username: attributes.username
+    };
   }
+});
+
+declare module "lucia" {
+  interface Register {
+    Lucia: typeof lucia;
+    DatabaseUserAttributes: DatabaseUserAttributes;
+  }
+}
+
+interface DatabaseUserAttributes {
+  githubId: number;
+  username: string;
 }

@@ -35,13 +35,20 @@ export const useCategoryStore = defineStore('categories', () => {
     try {
       const { data } = await $client.category.list.useQuery()
 
-      if (!data.value)
+      console.log('data', data)
+      console.log('data.value', data?.value)
+
+      if (!data?.value) {
+        console.log('no data')
         return toast.add({
           title: 'Error',
           description: 'Something went wrong',
         })
+      }
 
       categories.value = data.value.map((category) => category.name)
+
+      console.log('categories', categories.value)
     } catch (error) {
       return toast.add({
         title: 'Error',

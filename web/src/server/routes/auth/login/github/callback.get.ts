@@ -1,9 +1,6 @@
 import { OAuth2RequestError } from "arctic"
-import { generateId } from "lucia"
-import { github, lucia } from "~/server/utils/lucia"
-import { PrismaClient } from "@prisma/client"
-
-let prisma: PrismaClient
+import { github, lucia } from "~/server/utils/auth"
+import { getUserByGithubId } from "~/server/utils/prisma/user"
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
@@ -25,14 +22,7 @@ export default defineEventHandler(async (event) => {
     })
     const githubUser: GitHubUser = await githubUserResponse.json()
 
-    if (!prisma)
-      prisma = new PrismaClient()
-
-    const existingUser = await prisma.user.findFirst({
-      where: {
-        githubId: githubUser.id
-      }
-    })
+    const existingUser = await getUserByGithubId(githubUser.id)
 
     if (existingUser) {
       const session = await lucia.createSession(existingUser.id, {})
@@ -40,19 +30,15 @@ export default defineEventHandler(async (event) => {
       return sendRedirect(event, "/")
     }
 
-    const user = await prisma.user.create({
-      data: {
-        githubId: githubUser.id,
-        username: githubUser.login
-      }
+    const user = await createUser({
+      username: githubUser.login,
+      githubId: githubUser.id
     })
 
     const session = await lucia.createSession(user.id, {})
     appendHeader(event, "Set-Cookie", lucia.createSessionCookie(session.id).serialize())
     return sendRedirect(event, "/")
   } catch (e) {
-    console.log(e)
-
     // the specific error message depends on the provider
     if (e instanceof OAuth2RequestError) {
       // invalid code

@@ -1,18 +1,9 @@
 import { inferAsyncReturnType } from '@trpc/server'
-import { PrismaClient } from '@prisma/client'
-import { getUserFromHeader } from '../utils/auth'
-
-let prisma: PrismaClient
+import prisma from '../utils/prisma'
 
 export const createContext = async (event: any) => {
-  if (!prisma)
-    prisma = new PrismaClient()
-
-  const authorization = getRequestHeader(event, 'authorization')
-  const user = await getUserFromHeader(authorization, prisma)
-
   return {
-    user,
+    user: event.context.user,
     prisma,
   }
 }
