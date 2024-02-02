@@ -19,7 +19,6 @@ export default router({
       })
     ).mutation(async ({ input, ctx }) => {
       const newTransaction = await createTransaction(ctx.user.id, input)
-      console.log('newTransaction', newTransaction)
 
       return newTransaction
     }),
@@ -50,7 +49,7 @@ export default router({
     .use(isAuthed)
     .query(async ({ ctx }) => {
       const transactions = await getTransactionsByUserId(ctx.user.id)
-      console.log('transactions', transactions)
+
       return transactions
     }),
   delete: publicProcedure

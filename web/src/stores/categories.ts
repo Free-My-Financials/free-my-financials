@@ -35,11 +35,11 @@ export const useCategoryStore = defineStore('categories', () => {
     try {
       const { data } = await $client.category.list.useQuery()
 
-      console.log('data', data)
-      console.log('data.value', data?.value)
+      // FIXME: This is a workaround for and issue where the data is not available immediately
+      //        after the query is called
+      await new Promise((resolve) => setTimeout(resolve, 50))
 
       if (!data?.value) {
-        console.log('no data')
         return toast.add({
           title: 'Error',
           description: 'Something went wrong',
@@ -47,8 +47,6 @@ export const useCategoryStore = defineStore('categories', () => {
       }
 
       categories.value = data.value.map((category) => category.name)
-
-      console.log('categories', categories.value)
     } catch (error) {
       return toast.add({
         title: 'Error',

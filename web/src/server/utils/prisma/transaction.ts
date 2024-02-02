@@ -33,6 +33,10 @@ export async function createTransaction(userId: string, data: {
         },
       },
     },
+    include: {
+      category: true,
+      store: true,
+    },
   })
 }
 
@@ -41,6 +45,10 @@ export async function getTransactionById(id: string) {
     where: {
       id,
     },
+    include: {
+      category: true,
+      store: true,
+    },
   })
 }
 
@@ -48,6 +56,10 @@ export async function getTransactionsByUserId(userId: string) {
   return await prisma.transaction.findMany({
     where: {
       userId,
+    },
+    include: {
+      category: true,
+      store: true,
     },
   })
 }

@@ -1,10 +1,7 @@
-// FIXME: Currently no auth is implemented, only a username is required
-
-import { z } from 'zod'
 import { router, publicProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 import { isAuthed } from '../middleware/isAuthed'
-import { createUser, getUserByUsername } from '~/server/utils/prisma/user'
+import { getUserById } from '~/server/utils/prisma/user'
 
 export default router({
   get: publicProcedure

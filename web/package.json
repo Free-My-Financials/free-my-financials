@@ -16,7 +16,7 @@
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "@types/jsonwebtoken": "^9.0.5",
-    "nuxt": "^3.9.1",
+    "nuxt": "^3.10.0",
     "prisma": "^5.8.0",
     "sass": "^1.69.5",
     "ts-standard": "^12.0.2",
