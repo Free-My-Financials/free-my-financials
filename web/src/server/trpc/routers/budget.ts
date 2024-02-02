@@ -8,12 +8,6 @@ export default router({
   get: publicProcedure
     .use(isAuthed)
     .query(async ({ ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
       const budget = await getBudgetByUserId(ctx.user.id)
 
       if (!budget)
@@ -39,12 +33,6 @@ export default router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
       const budget = await getBudgetByUserId(ctx.user.id)
 
       if (!budget)

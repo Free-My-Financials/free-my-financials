@@ -18,12 +18,6 @@ export default router({
         store: z.string(),
       })
     ).mutation(async ({ input, ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
       const newTransaction = await createTransaction(ctx.user.id, input)
       console.log('newTransaction', newTransaction)
 
@@ -36,12 +30,6 @@ export default router({
         id: z.string(),
       })
     ).query(async ({ input, ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
       const transaction = await getTransactionById(input.id)
 
       if (!transaction)
@@ -61,13 +49,6 @@ export default router({
   list: publicProcedure
     .use(isAuthed)
     .query(async ({ ctx }) => {
-      console.log('WHAT?')
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
       const transactions = await getTransactionsByUserId(ctx.user.id)
       console.log('transactions', transactions)
       return transactions
@@ -79,12 +60,6 @@ export default router({
         id: z.string(),
       })
     ).mutation(async ({ input, ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
       const transaction = await getTransactionById(input.id)
 
       if (!transaction)

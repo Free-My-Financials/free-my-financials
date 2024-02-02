@@ -14,13 +14,7 @@ export default router({
         name: z.string(),
       })
     ).mutation(async ({ input, ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
-      const existingCategory = await getCategoriesByUserId(ctx.user.id)
+      const existingCategory = await getCategoryByUserIdAndName(ctx.user.id, input.name)
 
       if (existingCategory)
         throw new TRPCError({
@@ -39,12 +33,6 @@ export default router({
         id: z.string(),
       })
     ).query(async ({ input, ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
       const category = await getCategoryById(input.id)
 
       if (!category)
@@ -64,12 +52,6 @@ export default router({
   list: publicProcedure
     .use(isAuthed)
     .query(async ({ ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
       const categories = await getCategoriesByUserId(ctx.user.id)
 
       return categories

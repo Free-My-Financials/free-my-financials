@@ -13,13 +13,7 @@ export const lucia = new Lucia(adapter, {
       secure: !import.meta.dev
     }
   },
-  getUserAttributes: (attributes) => {
-    return {
-      // attributes has the type of DatabaseUserAttributes
-      githubId: attributes.githubId,
-      username: attributes.username
-    };
-  }
+  getUserAttributes: (attributes) => attributes,
 });
 
 declare module "lucia" {
