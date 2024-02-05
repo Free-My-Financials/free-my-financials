@@ -1,10 +1,30 @@
 <template>
-<h1>Sign in</h1>
-<a href="/auth/login/github">Sign in with GitHub</a>
+<div>
+  <br>
+  <br>
+  <br>
+  <br>
 
-<button @click.prevent="auth.login">Sign in with GitHub</button>
+  <a href="auth/login/github">Sign in with GitHub </a>
+
+</div>
 </template>
 
 <script lang="ts" setup>
 const auth = useAuthStore()
 </script>
+<style scoped>
+a:link {
+  background-color: green;
+  font-size: larger;
+  padding: 14px 25px;
+  text-align: center;
+}
+
+a:hover {
+  background-color: lightgreen;
+  font-size: larger;
+  padding: 14px 25px;
+  text-align: center;
+}
+</style>
