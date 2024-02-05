@@ -12,6 +12,7 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
     "test": "nuxt test",
+    "test-dev": "nuxt test --watch",
     "prisma-init": "prisma migrate dev"
   },
   "devDependencies": {
