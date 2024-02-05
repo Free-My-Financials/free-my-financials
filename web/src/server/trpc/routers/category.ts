@@ -2,8 +2,9 @@ import { z } from 'zod'
 import { router, publicProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 import { isAuthed } from '../middleware/isAuthed'
+import { createCategory, getCategoriesByUserId, getCategoryById } from '~/server/utils/prisma/category'
 
-export const defaultCategories = [ 'Food', 'Clothing', 'Entertainment' ]
+export const defaultCategories = ['Food', 'Clothing', 'Entertainment']
 
 export default router({
   create: publicProcedure
@@ -13,20 +14,7 @@ export default router({
         name: z.string(),
       })
     ).mutation(async ({ input, ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
-      const existingCategory = await ctx.prisma.category.findUnique({
-        where: {
-          name_userId: {
-            name: input.name,
-            userId: ctx.user.id,
-          }
-        }
-      })
+      const existingCategory = await getCategoryByUserIdAndName(ctx.user.id, input.name)
 
       if (existingCategory)
         throw new TRPCError({
@@ -34,16 +22,7 @@ export default router({
           message: 'Category already exists',
         })
 
-      const newCategory = await ctx.prisma.category.create({
-        data: {
-          name: input.name,
-          user: {
-            connect: {
-              id: ctx.user.id,
-            }
-          }
-        }
-      })
+      const newCategory = await createCategory(ctx.user.id, input.name)
 
       return newCategory
     }),
@@ -54,17 +33,7 @@ export default router({
         id: z.string(),
       })
     ).query(async ({ input, ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
-      const category = await ctx.prisma.category.findUnique({
-        where: {
-          id: input.id,
-        }
-      })
+      const category = await getCategoryById(input.id)
 
       if (!category)
         throw new TRPCError({
@@ -83,17 +52,7 @@ export default router({
   list: publicProcedure
     .use(isAuthed)
     .query(async ({ ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
-      const categories = await ctx.prisma.category.findMany({
-        where: {
-          userId: ctx.user.id,
-        }
-      })
+      const categories = await getCategoriesByUserId(ctx.user.id)
 
       return categories
     }),

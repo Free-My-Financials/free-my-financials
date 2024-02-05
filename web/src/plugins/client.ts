@@ -2,10 +2,7 @@ import { createTRPCNuxtClient, httpBatchLink } from 'trpc-nuxt/client'
 import type { AppRouter } from '~/server/trpc/routers'
 
 export default defineNuxtPlugin(() => {
-  const authorization = useCookie('authorization')
-  const headers = {
-    authorization: 'Bearer ' + authorization.value,
-  }
+  const headers = useRequestHeaders()
 
   const client = createTRPCNuxtClient<AppRouter>({
     links: [

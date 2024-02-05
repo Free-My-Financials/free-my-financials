@@ -94,7 +94,11 @@ export const useTransactionStore = defineStore('transactions', () => {
     try {
       const { data } = await $client.transaction.list.useQuery()
 
-      if (!data.value)
+      // FIXME: This is a workaround for and issue where the data is not available immediately
+      //        after the query is called
+      await new Promise((resolve) => setTimeout(resolve, 50))
+
+      if (!data?.value)
         return
 
       transactions.value = []
