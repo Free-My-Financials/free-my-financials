@@ -5,5 +5,10 @@ export const isAuthed = middleware(({ next, ctx }) => {
   if (!ctx.user)
     throw new TRPCError({ code: 'UNAUTHORIZED' })
 
-  return next()
+  return next({
+    ctx: {
+      ...ctx,
+      user: ctx.user,
+    }
+  })
 })

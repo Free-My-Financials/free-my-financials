@@ -2,34 +2,13 @@ import { z } from 'zod'
 import { router, publicProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 import { isAuthed } from '../middleware/isAuthed'
-
-export const defaultBudget = () => {
-  const today = new Date()
-  const start = new Date(today.getFullYear(), today.getMonth(), 1)
-  const end = new Date(today.getFullYear(), today.getMonth() + 1, 0)
-
-  return {
-    amount: 0,
-    start,
-    end,
-  }
-}
+import { getBudgetByUserId, updateBudgetByUserId } from '~/server/utils/prisma/budget'
 
 export default router({
   get: publicProcedure
     .use(isAuthed)
     .query(async ({ ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
-      const budget = await ctx.prisma.budget.findUnique({
-        where: {
-          userId: ctx.user.id,
-        }
-      })
+      const budget = await getBudgetByUserId(ctx.user.id)
 
       if (!budget)
         throw new TRPCError({
@@ -54,17 +33,7 @@ export default router({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      if (!ctx.user)
-        throw new TRPCError({
-          code: 'UNAUTHORIZED',
-          message: 'User not found',
-        })
-
-      const budget = await ctx.prisma.budget.findUnique({
-        where: {
-          userId: ctx.user.id,
-        }
-      })
+      const budget = await getBudgetByUserId(ctx.user.id)
 
       if (!budget)
         throw new TRPCError({
@@ -72,16 +41,7 @@ export default router({
           message: 'Budget not found',
         })
 
-      const newBudget = await ctx.prisma.budget.update({
-        where: {
-          id: budget.id,
-        },
-        data: {
-          amount: input.amount ?? budget.amount,
-          start: input.start ?? budget.start,
-          end: input.end ?? budget.end,
-        }
-      })
+      const newBudget = await updateBudgetByUserId(ctx.user.id, input)
 
       return newBudget
     }),
