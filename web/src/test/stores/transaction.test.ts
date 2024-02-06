@@ -30,7 +30,12 @@ describe('Transactions Store', () => {
     date: new Date("2023-03-01"),
     category: "Food",
   }
+  test('Test is isEmpty', async () => {
+    const transactions = useTransactionStore()
 
+
+    expect(transactions.isEmpty).toBe(true);
+  })
 
   test('Transaction can be added', async () => {
     const transactions = useTransactionStore()
@@ -72,6 +77,18 @@ describe('Transactions Store', () => {
 
 
     expect(transactions.getTransactionsByCategory("Food")).toEqual([sampleTransaction, sampleSecondaryTransaction]);
+  })
+  test('Total Expense ', async () => {
+    const transactions = useTransactionStore()
+
+
+    expect(transactions.totalExpense).toBe(124);
+  })
+  test('Total Income ', async () => {
+    const transactions = useTransactionStore()
+
+
+    expect(transactions.totalIncome).toBe(199);
   })
 
 
