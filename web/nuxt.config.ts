@@ -5,5 +5,12 @@ export default defineNuxtConfig({
     strict: true
   },
   devtools: { enabled: true },
-  modules: ['@nuxt/ui'],
+  modules: [
+    '@nuxt/ui',
+    '@pinia/nuxt',
+    '@nuxt/test-utils/module',
+  ],
+  build: {
+    transpile: ['trpc-nuxt']
+  }
 })

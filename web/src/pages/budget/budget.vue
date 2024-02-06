@@ -1,17 +1,17 @@
 
 <template>
 <h3>Start of budget:
-  <UBadge :label="(new Date(budget.start_date.toString())).toDateString()" />
+  <UBadge :label="budget.startDate.toDateString()" />
 </h3>
 <h3>End of budget:
-  <UBadge :label="(new Date(budget.end_date.toString())).toDateString()" />
+  <UBadge :label="budget.endDate.toDateString()" />
 </h3>
 <h3>TOTAL BALANCE:
-  <DollarAmount :amount="budget_balance" />
+  <DollarAmount :amount="budget.totalBalance" />
   <UBadge label="Out of" />
   <DollarAmount :amount="budget.amount" />
 </h3>
-<UTable :sort="{ 'column': 'date', direction: 'desc' }" :rows="transactions_in_budget" :columns="columns">
+<UTable :sort="{ 'column': 'date', direction: 'desc' }" :rows="budget.transactions" :columns="columns">
   <template #amount-data="{ row }">
     <DollarAmount :amount="row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)" />
   </template>
@@ -22,14 +22,7 @@
 </template>
 
 <script lang="ts" setup>
-import useBudget, { get_budget_transactions, calculateTotalBalance } from '~/composables/useBudget';
-import useTransactions, { TransactionType, type Transaction } from '~/composables/useTransactions';
-
-
-const transactions = useTransactions()
-const budget = useBudget()
-const transactions_in_budget: Transaction[] = get_budget_transactions(transactions.value, budget.value)
-const budget_balance = calculateTotalBalance(transactions_in_budget, Number(budget.value.amount))
+const budget = useBudgetStore()
 
 const columns = [{
   key: 'store',
@@ -45,6 +38,4 @@ const columns = [{
   label: 'Date',
   sortable: true,
 }]
-
-
 </script>
