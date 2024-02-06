@@ -8,6 +8,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/ui',
     '@pinia/nuxt',
+    '@nuxt/test-utils/module',
   ],
   build: {
     transpile: ['trpc-nuxt']
