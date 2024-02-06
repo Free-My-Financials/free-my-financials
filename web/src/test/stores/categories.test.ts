@@ -6,4 +6,12 @@ describe('Categories Store', () => {
     categories.fetchCategories()
     expect(categories.categories).toEqual([]);
   })
+
+  test('addCategory works', async () => {
+    const categories = useCategoryStore()
+    categories.addCategory("orange");
+
+    expect(categories.categories).toEqual(["orange"]);
+  })
+
 })
