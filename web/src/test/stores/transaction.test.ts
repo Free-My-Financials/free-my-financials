@@ -78,18 +78,22 @@ describe('Transactions Store', () => {
 
     expect(transactions.getTransactionsByCategory("Food")).toEqual([sampleTransaction, sampleSecondaryTransaction]);
   })
-  test('Total Expense ', async () => {
+  test('Total Expense should be added', async () => {
     const transactions = useTransactionStore()
 
 
     expect(transactions.totalExpense).toBe(124);
   })
-  test('Total Income ', async () => {
+  test('Total Income should be added', async () => {
     const transactions = useTransactionStore()
 
 
     expect(transactions.totalIncome).toBe(199);
   })
+  test('Transactions should be removed', async () => {
+    const transactions = useTransactionStore()
+    transactions.removeTransaction(sampleSecondaryTransaction.id)
 
-
+    expect(transactions.hasTransaction(sampleSecondaryTransaction.id)).toBe(false);
+  })
 })
