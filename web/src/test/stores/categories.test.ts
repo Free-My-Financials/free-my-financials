@@ -14,4 +14,11 @@ describe('Categories Store', () => {
     expect(categories.categories).toEqual(["orange"]);
   })
 
+  test('addCategory wont store duplicates', async () => {
+    const categories = useCategoryStore()
+    categories.addCategory("orange");
+    categories.addCategory("orange");
+
+    expect(categories.categories).toEqual(["orange"]);
+  })
 })
