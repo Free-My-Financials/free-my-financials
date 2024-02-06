@@ -45,34 +45,34 @@ describe('Transactions Store', () => {
     expect(transactions.transactions.length).toBeGreaterThan(0);
   })
 
-  test('Total Balance ', async () => {
+  test('Transactions have a Total Balance ', async () => {
     const transactions = useTransactionStore()
 
 
     expect(transactions.totalBalance).toBe(-99);
   })
 
-  test('Add Income ', async () => {
+  test('Transactions can add Income ', async () => {
     const transactions = useTransactionStore()
     transactions.addTransaction(sampleIncome)
 
 
     expect(transactions.totalBalance).toBe(100);
   })
-  test('Get Transactions by Store ', async () => {
+  test('Transactions can be got by Store ', async () => {
     const transactions = useTransactionStore()
     transactions.addTransaction(sampleSecondaryTransaction)
 
 
     expect(transactions.getTransactionsByStore("Fortnite")).toEqual([sampleTransaction, sampleSecondaryTransaction]);
   })
-  test('Get Transactions by type ', async () => {
+  test('Transactions can be got by type ', async () => {
     const transactions = useTransactionStore()
 
 
     expect(transactions.getTransactionsByType(TransactionType.INCOME)).toEqual([sampleIncome]);
   })
-  test('Get Transactions by category ', async () => {
+  test('Transactions can be got by category ', async () => {
     const transactions = useTransactionStore()
 
 
@@ -90,10 +90,26 @@ describe('Transactions Store', () => {
 
     expect(transactions.totalIncome).toBe(199);
   })
+  test('Transactions can not get a non existant transaction', async () => {
+    const transactions = useTransactionStore()
+
+
+    expect(transactions.hasTransaction("HELLO CODE READER")).toBe(false);
+  })
   test('Transactions should be removed', async () => {
     const transactions = useTransactionStore()
     transactions.removeTransaction(sampleSecondaryTransaction.id)
 
     expect(transactions.hasTransaction(sampleSecondaryTransaction.id)).toBe(false);
+  })
+  test('Transactions should be have transaction added', async () => {
+    const transactions = useTransactionStore()
+
+    expect(transactions.hasTransaction(sampleIncome.id)).toBe(true);
+  })
+  test('Transaction should be able to be got by id', async () => {
+    const transactions = useTransactionStore()
+
+    expect(transactions.getTransactionById(sampleTransaction.id)).toEqual(sampleTransaction);
   })
 })
