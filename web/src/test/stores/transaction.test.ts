@@ -61,6 +61,18 @@ describe('Transactions Store', () => {
 
     expect(transactions.getTransactionsByStore("Fortnite")).toEqual([sampleTransaction, sampleSecondaryTransaction]);
   })
+  test('Get Transactions by type ', async () => {
+    const transactions = useTransactionStore()
+
+
+    expect(transactions.getTransactionsByType(TransactionType.INCOME)).toEqual([sampleIncome]);
+  })
+  test('Get Transactions by category ', async () => {
+    const transactions = useTransactionStore()
+
+
+    expect(transactions.getTransactionsByCategory("Food")).toEqual([sampleTransaction, sampleSecondaryTransaction]);
+  })
 
 
 })
