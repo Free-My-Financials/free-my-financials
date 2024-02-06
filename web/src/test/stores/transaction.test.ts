@@ -25,7 +25,7 @@ describe('Transactions Store', () => {
   const sampleSecondaryTransaction = {
     id: "LowHi",
     type: TransactionType.EXPENSE,
-    store: "Meat",
+    store: "Fortnite",
     amount: 25,
     date: new Date("2023-03-01"),
     category: "Food",
@@ -53,6 +53,13 @@ describe('Transactions Store', () => {
 
 
     expect(transactions.totalBalance).toBe(100);
+  })
+  test('Get Transactions by Store ', async () => {
+    const transactions = useTransactionStore()
+    transactions.addTransaction(sampleSecondaryTransaction)
+
+
+    expect(transactions.getTransactionsByStore("Fortnite")).toEqual([sampleTransaction, sampleSecondaryTransaction]);
   })
 
 
