@@ -47,7 +47,13 @@ describe('Transactions Store', () => {
     expect(transactions.totalBalance).toBe(-99);
   })
 
+  test('Add Income ', async () => {
+    const transactions = useTransactionStore()
+    transactions.addTransaction(sampleIncome)
 
+
+    expect(transactions.totalBalance).toBe(100);
+  })
 
 
 })
