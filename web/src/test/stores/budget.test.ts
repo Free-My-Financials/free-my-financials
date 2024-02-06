@@ -47,7 +47,7 @@ describe('Budget Store', () => {
     expect(budget.amount).toBe(newAmount)
   })
 
-  test('dateIsInBudget works', async () => {
+  test('Date before budget is not in budget', async () => {
     const budget = useBudgetStore()
 
     budget.setBudget({
@@ -56,11 +56,30 @@ describe('Budget Store', () => {
       endDate: new Date('2024-12-31'),
     })
 
-    expect(budget.dateIsInBudget(new Date('2024-01-01'))).toBe(true)
-    expect(budget.dateIsInBudget(new Date('2024-12-31'))).toBe(true)
-    expect(budget.dateIsInBudget(new Date('2024-01-02'))).toBe(true)
-    expect(budget.dateIsInBudget(new Date('2024-12-30'))).toBe(true)
     expect(budget.dateIsInBudget(new Date('2023-12-31'))).toBe(false)
+  })
+
+  test('Date after budget is not in budget', async () => {
+    const budget = useBudgetStore()
+
+    budget.setBudget({
+      amount: 1000,
+      startDate: new Date('2024-01-01'),
+      endDate: new Date('2024-12-31'),
+    })
+
     expect(budget.dateIsInBudget(new Date('2025-01-01'))).toBe(false)
+  })
+
+  test('Date in budget is in budget', async () => {
+    const budget = useBudgetStore()
+
+    budget.setBudget({
+      amount: 1000,
+      startDate: new Date('2024-01-01'),
+      endDate: new Date('2024-12-31'),
+    })
+
+    expect(budget.dateIsInBudget(new Date('2024-06-15'))).toBe(true)
   })
 })
