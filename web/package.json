@@ -15,7 +15,8 @@
     "coverage": "vitest run --coverage",
     "test-dev": "nuxt test --watch",
     "prisma-init": "prisma migrate dev",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "format": "eslint --fix ."
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
