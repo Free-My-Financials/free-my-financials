@@ -1,57 +1,97 @@
 <template>
-<div class="centered-container">
-  <div class="home-container">
-    <h1>Welcome to <span class="brand-text">Free My Financials</span></h1>
-    <p>
-      Free My Financials is a sophisticated web-based budgeting tool designed to shift your mindset from living
-      paycheck-to-paycheck to a cashflow approach.
-    </p>
-    <NuxtLink to="/login" class="get-started-button">Get Started</NuxtLink>
+  <div class="centered-container">
+    <div class="home-container">
+      <h1>Welcome to <span class="brand-text">Free My Financials</span></h1>
+      <p>
+        Free My Financials is a sophisticated web-based budgeting tool designed to shift your mindset from living
+        paycheck-to-paycheck to a cashflow approach.
+      </p>
+      <NuxtLink
+        to="/login"
+        class="get-started-button"
+      >
+        Get Started
+      </NuxtLink>
+    </div>
+    <div class="use-container">
+      <h1>Current Contents</h1>
+      <p>Explore the features of Free My Financials to manage your finances effectively:</p>
+      <ul class="feature-list">
+        <li class="feature-item">
+          <h2 class="feature-title">
+            Add transactions
+          </h2>
+          <p class="feature-text">
+            Visit the <NuxtLink
+              to="/transaction/add"
+              class="green-text-link"
+            >
+              Add Transaction
+            </NuxtLink> page. Input
+            accurate information to enhance transaction tracking.
+          </p>
+        </li>
+        <li class="feature-item">
+          <h2 class="feature-title">
+            Analyze transactions and balance
+          </h2>
+          <p class="feature-text">
+            Visit the <NuxtLink
+              to="/transaction/history"
+              class="green-text-link"
+            >
+              View Transactions
+            </NuxtLink> page. Use
+            the search bar for specific insights.
+          </p>
+        </li>
+        <li class="feature-item">
+          <h2 class="feature-title">
+            Create a personalized budget
+          </h2>
+          <p class="feature-text">
+            Visit the <NuxtLink
+              to="/budget/editBudget"
+              class="green-text-link"
+            >
+              Edit Budget
+            </NuxtLink> page. Take control
+            of your financial future with a budget that reflects your unique lifestyle and financial goals.
+          </p>
+        </li>
+        <li class="feature-item">
+          <h2 class="feature-title">
+            Review budgeting information
+          </h2>
+          <p class="feature-text">
+            Visit the <NuxtLink
+              to="/budget/budget"
+              class="green-text-link"
+            >
+              View Budget
+            </NuxtLink> page, covering dates
+            and remaining balances. Hover over the monthly balance in the top right to view the exact percent change in
+            your monthly spending.
+          </p>
+        </li>
+        <li class="feature-item">
+          <h2 class="feature-title">
+            Visualize financial data
+          </h2>
+          <p class="feature-text">
+            Visit the <NuxtLink
+              to="/calendar"
+              class="green-text-link"
+            >
+              Calendar
+            </NuxtLink> page. Track spending habits
+            and changes in monthly balances. Hover over the monthly balance in the top right to view the exact percent
+            change in your monthly spending.
+          </p>
+        </li>
+      </ul>
+    </div>
   </div>
-  <div class="use-container">
-    <h1>Current Contents</h1>
-    <p>Explore the features of Free My Financials to manage your finances effectively:</p>
-    <ul class="feature-list">
-      <li class="feature-item">
-        <h2 class="feature-title">Add transactions</h2>
-        <p class="feature-text">
-          Visit the <NuxtLink to="/transaction/add" class="green-text-link">Add Transaction</NuxtLink> page. Input
-          accurate information to enhance transaction tracking.
-        </p>
-      </li>
-      <li class="feature-item">
-        <h2 class="feature-title">Analyze transactions and balance</h2>
-        <p class="feature-text">
-          Visit the <NuxtLink to="/transaction/history" class="green-text-link">View Transactions</NuxtLink> page. Use
-          the search bar for specific insights.
-        </p>
-      </li>
-      <li class="feature-item">
-        <h2 class="feature-title">Create a personalized budget</h2>
-        <p class="feature-text">
-          Visit the <NuxtLink to="/budget/editBudget" class="green-text-link">Edit Budget</NuxtLink> page. Take control
-          of your financial future with a budget that reflects your unique lifestyle and financial goals.
-        </p>
-      </li>
-      <li class="feature-item">
-        <h2 class="feature-title">Review budgeting information</h2>
-        <p class="feature-text">
-          Visit the <NuxtLink to="/budget/budget" class="green-text-link">View Budget</NuxtLink> page, covering dates
-          and remaining balances. Hover over the monthly balance in the top right to view the exact percent change in
-          your monthly spending.
-        </p>
-      </li>
-      <li class="feature-item">
-        <h2 class="feature-title">Visualize financial data</h2>
-        <p class="feature-text">
-          Visit the <NuxtLink to="/calendar" class="green-text-link">Calendar</NuxtLink> page. Track spending habits
-          and changes in monthly balances. Hover over the monthly balance in the top right to view the exact percent
-          change in your monthly spending.
-        </p>
-      </li>
-    </ul>
-  </div>
-</div>
 </template>
 
 <style scoped>

@@ -1,18 +1,40 @@
 <template>
-<UForm :state="state" @submit="submit">
-  <UFormGroup label="Budget Total">
-    <UInput type="number" step="0.01" min="0" name="Amount" id="amount" v-model="state.amount" />
-  </UFormGroup>
+  <UForm
+    :state="state"
+    @submit="submit"
+  >
+    <UFormGroup label="Budget Total">
+      <UInput
+        id="amount"
+        v-model="state.amount"
+        type="number"
+        step="0.01"
+        min="0"
+        name="Amount"
+      />
+    </UFormGroup>
 
-  <UFormGroup label="Start Date">
-    <UInput type="date" name="Date" id="date" v-model="state.startDate" />
-  </UFormGroup>
-  <UFormGroup label="End Date">
-    <UInput type="date" name="Date" id="date" v-model="state.endDate" />
-  </UFormGroup>
+    <UFormGroup label="Start Date">
+      <UInput
+        id="date"
+        v-model="state.startDate"
+        type="date"
+        name="Date"
+      />
+    </UFormGroup>
+    <UFormGroup label="End Date">
+      <UInput
+        id="date"
+        v-model="state.endDate"
+        type="date"
+        name="Date"
+      />
+    </UFormGroup>
 
-  <UButton type="submit">Submit</UButton>
-</UForm>
+    <UButton type="submit">
+      Submit
+    </UButton>
+  </UForm>
 </template>
 
 <script lang="ts" setup>
@@ -48,6 +70,6 @@ async function submit() {
 function resetState() {
   state.amount = 0
   state.startDate = ''
-  state.endDate = ""
+  state.endDate = ''
 }
 </script>

@@ -1,5 +1,5 @@
-import { TRPCError } from "@trpc/server"
-import { middleware } from "~/server/trpc/trpc"
+import { TRPCError } from '@trpc/server'
+import { middleware } from '~/server/trpc/trpc'
 
 export const isAuthed = middleware(({ next, ctx }) => {
   if (!ctx.user)

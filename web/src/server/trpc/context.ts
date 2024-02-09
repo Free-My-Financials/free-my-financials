@@ -1,6 +1,6 @@
 import { inferAsyncReturnType } from '@trpc/server'
 import prisma from '../utils/prisma'
-import { User } from 'lucia';
+import { User } from 'lucia'
 
 export const createContext = async (event: any) => {
   return {

@@ -1,8 +1,8 @@
-import { skipHydrate } from "pinia"
+import { skipHydrate } from 'pinia'
 
 export enum TransactionType {
-  INCOME = "Income",
-  EXPENSE = "Expense",
+  INCOME = 'Income',
+  EXPENSE = 'Expense',
 }
 
 export interface Transaction {
@@ -39,7 +39,7 @@ export const useTransactionStore = defineStore('transactions', () => {
 
     try {
       const result = await $client.transaction.create.mutate({
-        type: type === TransactionType.INCOME ? "INCOME" : "EXPENSE", // TODO: Fix this
+        type: type === TransactionType.INCOME ? 'INCOME' : 'EXPENSE', // TODO: Fix this
         store,
         amount,
         date,

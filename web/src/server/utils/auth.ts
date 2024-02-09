@@ -1,11 +1,11 @@
-import { Lucia } from "lucia";
-import { GitHub } from "arctic";
-import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
-import prisma from "./prisma";
+import { Lucia } from 'lucia'
+import { GitHub } from 'arctic'
+import { PrismaAdapter } from '@lucia-auth/adapter-prisma'
+import prisma from './prisma'
 
-const adapter = new PrismaAdapter(prisma.session, prisma.user);
+const adapter = new PrismaAdapter(prisma.session, prisma.user)
 
-export const github = new GitHub(process.env.GITHUB_CLIENT_ID!, process.env.GITHUB_CLIENT_SECRET!);
+export const github = new GitHub(process.env.GITHUB_CLIENT_ID!, process.env.GITHUB_CLIENT_SECRET!)
 
 export const lucia = new Lucia(adapter, {
   sessionCookie: {
@@ -14,9 +14,9 @@ export const lucia = new Lucia(adapter, {
     }
   },
   getUserAttributes: (attributes) => attributes,
-});
+})
 
-declare module "lucia" {
+declare module 'lucia' {
   interface Register {
     Lucia: typeof lucia;
     DatabaseUserAttributes: DatabaseUserAttributes;
