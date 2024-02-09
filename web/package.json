@@ -14,14 +14,20 @@
     "test": "nuxt test",
     "coverage": "vitest run --coverage",
     "test-dev": "nuxt test --watch",
-    "prisma-init": "prisma migrate dev"
+    "prisma-init": "prisma migrate dev",
+    "lint": "eslint ."
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@nuxt/eslint-config": "^0.2.0",
     "@nuxt/test-utils": "^3.11.0",
+    "@nuxtjs/eslint-module": "^4.1.0",
     "@types/jsonwebtoken": "^9.0.5",
     "@vitest/coverage-v8": "^1.2.2",
     "@vue/test-utils": "^2.4.4",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
     "happy-dom": "^13.3.4",
     "nuxt": "^3.10.0",
     "playwright-core": "^1.41.1",

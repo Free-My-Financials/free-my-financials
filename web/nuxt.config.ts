@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '@nuxt/ui',
     '@pinia/nuxt',
     '@nuxt/test-utils/module',
+    '@nuxtjs/eslint-module',
   ],
   build: {
     transpile: ['trpc-nuxt']
