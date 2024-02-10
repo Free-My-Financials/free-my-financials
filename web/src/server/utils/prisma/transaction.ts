@@ -2,13 +2,16 @@ import prisma from '.'
 import { createOrGetCategory } from './category'
 import { createOrGetStore } from './store'
 
-export async function createTransaction(userId: string, data: {
-  type: 'INCOME' | 'EXPENSE',
-  amount: number,
-  date: Date,
-  category: string,
-  store: string,
-}) {
+export async function createTransaction(
+  userId: string,
+  data: {
+    type: 'INCOME' | 'EXPENSE'
+    amount: number
+    date: Date
+    category: string
+    store: string
+  }
+) {
   const { id: categoryId } = await createOrGetCategory(userId, data.category)
   const { id: storeId } = await createOrGetStore(userId, data.store)
 

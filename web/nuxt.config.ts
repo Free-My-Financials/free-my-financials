@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   srcDir: 'src',
   typescript: {
-    strict: true
+    strict: true,
   },
   devtools: { enabled: true },
   modules: [
@@ -12,6 +12,6 @@ export default defineNuxtConfig({
     '@nuxtjs/eslint-module',
   ],
   build: {
-    transpile: ['trpc-nuxt']
-  }
+    transpile: ['trpc-nuxt'],
+  },
 })

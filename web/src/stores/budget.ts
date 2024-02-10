@@ -9,7 +9,7 @@ export const useBudgetStore = defineStore('budget', () => {
   const { $client } = useNuxtApp()
   const toast = useToast()
 
-  const budget =  ref<Budget>({
+  const budget = ref<Budget>({
     startDate: new Date(),
     amount: 0,
     endDate: new Date(),
@@ -19,7 +19,9 @@ export const useBudgetStore = defineStore('budget', () => {
   const startDate = computed(() => new Date(budget.value.startDate))
   const endDate = computed(() => new Date(budget.value.endDate))
 
-  const hasStarted = computed(() => budget.value.startDate.getTime() <= Date.now())
+  const hasStarted = computed(
+    () => budget.value.startDate.getTime() <= Date.now()
+  )
   const hasEnded = computed(() => budget.value.endDate.getTime() <= Date.now())
   const isRunning = computed(() => hasStarted.value && !hasEnded.value)
 
@@ -33,12 +35,31 @@ export const useBudgetStore = defineStore('budget', () => {
 
   const transactions = computed(() => {
     const transactions = useTransactionStore()
-    return transactions.transactions.filter((transaction) => transactionIsInBudget(transaction))
+    return transactions.transactions.filter((transaction) =>
+      transactionIsInBudget(transaction)
+    )
   })
 
-  const totalIncome = computed(() => transactions.value.filter((transaction) => transaction.type === TransactionType.INCOME).reduce((total, transaction) => total + transaction.amount, 0))
-  const totalExpense = computed(() => transactions.value.filter((transaction) => transaction.type === TransactionType.EXPENSE).reduce((total, transaction) => total + transaction.amount, 0))
-  const totalBalance = computed(() => transactions.value.reduce((total, transaction) => total + (transaction.type === TransactionType.INCOME ? transaction.amount : -transaction.amount), budget.value.amount))
+  const totalIncome = computed(() =>
+    transactions.value
+      .filter((transaction) => transaction.type === TransactionType.INCOME)
+      .reduce((total, transaction) => total + transaction.amount, 0)
+  )
+  const totalExpense = computed(() =>
+    transactions.value
+      .filter((transaction) => transaction.type === TransactionType.EXPENSE)
+      .reduce((total, transaction) => total + transaction.amount, 0)
+  )
+  const totalBalance = computed(() =>
+    transactions.value.reduce(
+      (total, transaction) =>
+        total +
+        (transaction.type === TransactionType.INCOME
+          ? transaction.amount
+          : -transaction.amount),
+      budget.value.amount
+    )
+  )
 
   const setBudget = (budget: Budget) => {
     setAmount(budget.amount)
@@ -47,8 +68,7 @@ export const useBudgetStore = defineStore('budget', () => {
   }
 
   const setStartDate = async (date: Date) => {
-    if (budget.value.startDate.getTime() === date.getTime())
-      return
+    if (budget.value.startDate.getTime() === date.getTime()) return
 
     const oldDate = budget.value.startDate
     budget.value.startDate = date
@@ -68,8 +88,7 @@ export const useBudgetStore = defineStore('budget', () => {
   }
 
   const setEndDate = async (date: Date) => {
-    if (budget.value.endDate.getTime() === date.getTime())
-      return
+    if (budget.value.endDate.getTime() === date.getTime()) return
 
     const oldDate = budget.value.endDate
     budget.value.endDate = date
@@ -89,8 +108,7 @@ export const useBudgetStore = defineStore('budget', () => {
   }
 
   const setAmount = async (amount: number) => {
-    if (budget.value.amount === amount)
-      return
+    if (budget.value.amount === amount) return
 
     const oldAmount = budget.value.amount
     budget.value.amount = amount
@@ -110,8 +128,7 @@ export const useBudgetStore = defineStore('budget', () => {
   }
 
   const fetchBudget = async () => {
-    if (!auth.isLoggedIn)
-      return
+    if (!auth.isLoggedIn) return
 
     try {
       const { data } = await $client.budget.get.useQuery()

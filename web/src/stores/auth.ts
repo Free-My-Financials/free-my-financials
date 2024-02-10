@@ -18,7 +18,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const logout = async () => {
     await useFetch('/api/auth/logout', {
-      method: 'POST'
+      method: 'POST',
     })
 
     user.value = null
@@ -28,13 +28,12 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isLoggedIn = computed(() => user.value !== null)
 
-  const setUser = (newUser: User) => user.value = newUser
+  const setUser = (newUser: User) => (user.value = newUser)
 
   const fetchUser = async () => {
     const { data } = await $client.user.get.useQuery()
 
-    if (!data.value?.user)
-      return
+    if (!data.value?.user) return
 
     setUser(data.value.user)
   }

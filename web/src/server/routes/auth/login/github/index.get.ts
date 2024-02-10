@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
     maxAge: 60 * 10,
-    sameSite: 'lax'
+    sameSite: 'lax',
   })
 
   return sendRedirect(event, url.toString())

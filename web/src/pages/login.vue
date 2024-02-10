@@ -1,17 +1,14 @@
 <template>
   <div>
-    <br>
-    <br>
-    <br>
-    <br>
+    <br />
+    <br />
+    <br />
+    <br />
 
     <a href="auth/login/github">Sign in with GitHub </a>
   </div>
 </template>
 
-<script lang="ts" setup>
-const auth = useAuthStore()
-</script>
 <style scoped>
 a:link {
   background-color: green;

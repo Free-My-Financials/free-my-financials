@@ -5,7 +5,7 @@ export default publicProcedure
   .input(
     z.object({
       text: z.string().nullish(),
-    }),
+    })
   )
   .query(({ input }) => {
     return {

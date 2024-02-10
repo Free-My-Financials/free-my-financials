@@ -5,11 +5,27 @@ mockNuxtImport('useTransactionStore', () => {
   return () => {
     return {
       transactions: [
-        { date: new Date('2024-06-15'), type: TransactionType.INCOME, amount: 100 },
-        { date: new Date('2024-06-15'), type: TransactionType.EXPENSE, amount: 50 },
-        { date: new Date('2023-12-31'), type: TransactionType.INCOME, amount: 100 },
-        { date: new Date('2025-01-01'), type: TransactionType.EXPENSE, amount: 50 },
-      ]
+        {
+          date: new Date('2024-06-15'),
+          type: TransactionType.INCOME,
+          amount: 100,
+        },
+        {
+          date: new Date('2024-06-15'),
+          type: TransactionType.EXPENSE,
+          amount: 50,
+        },
+        {
+          date: new Date('2023-12-31'),
+          type: TransactionType.INCOME,
+          amount: 100,
+        },
+        {
+          date: new Date('2025-01-01'),
+          type: TransactionType.EXPENSE,
+          amount: 50,
+        },
+      ],
     }
   }
 })
@@ -96,19 +112,25 @@ describe('Budget Store', () => {
   test('Transaction before budget is not in budget', async () => {
     const budget = useBudgetStore()
 
-    expect(budget.transactionIsInBudget({ date: new Date('2023-12-31') })).toBe(false)
+    expect(budget.transactionIsInBudget({ date: new Date('2023-12-31') })).toBe(
+      false
+    )
   })
 
   test('Transaction after budget is not in budget', async () => {
     const budget = useBudgetStore()
 
-    expect(budget.transactionIsInBudget({ date: new Date('2025-01-01') })).toBe(false)
+    expect(budget.transactionIsInBudget({ date: new Date('2025-01-01') })).toBe(
+      false
+    )
   })
 
   test('Transaction in budget is in budget', async () => {
     const budget = useBudgetStore()
 
-    expect(budget.transactionIsInBudget({ date: new Date('2024-06-15') })).toBe(true)
+    expect(budget.transactionIsInBudget({ date: new Date('2024-06-15') })).toBe(
+      true
+    )
   })
 
   test('Transactions in budget are returned', async () => {

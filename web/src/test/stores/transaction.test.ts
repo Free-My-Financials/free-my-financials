@@ -33,7 +33,6 @@ describe('Transactions Store', () => {
   test('Test is isEmpty', async () => {
     const transactions = useTransactionStore()
 
-
     expect(transactions.isEmpty).toBe(true)
   })
 
@@ -48,7 +47,6 @@ describe('Transactions Store', () => {
   test('Transactions have a Total Balance ', async () => {
     const transactions = useTransactionStore()
 
-
     expect(transactions.totalBalance).toBe(-99)
   })
 
@@ -56,43 +54,44 @@ describe('Transactions Store', () => {
     const transactions = useTransactionStore()
     transactions.addTransaction(sampleIncome)
 
-
     expect(transactions.totalBalance).toBe(100)
   })
   test('Transactions can be got by Store ', async () => {
     const transactions = useTransactionStore()
     transactions.addTransaction(sampleSecondaryTransaction)
 
-
-    expect(transactions.getTransactionsByStore('Fortnite')).toEqual([sampleTransaction, sampleSecondaryTransaction])
+    expect(transactions.getTransactionsByStore('Fortnite')).toEqual([
+      sampleTransaction,
+      sampleSecondaryTransaction,
+    ])
   })
   test('Transactions can be got by type ', async () => {
     const transactions = useTransactionStore()
 
-
-    expect(transactions.getTransactionsByType(TransactionType.INCOME)).toEqual([sampleIncome])
+    expect(transactions.getTransactionsByType(TransactionType.INCOME)).toEqual([
+      sampleIncome,
+    ])
   })
   test('Transactions can be got by category ', async () => {
     const transactions = useTransactionStore()
 
-
-    expect(transactions.getTransactionsByCategory('Food')).toEqual([sampleTransaction, sampleSecondaryTransaction])
+    expect(transactions.getTransactionsByCategory('Food')).toEqual([
+      sampleTransaction,
+      sampleSecondaryTransaction,
+    ])
   })
   test('Total Expense should be added', async () => {
     const transactions = useTransactionStore()
-
 
     expect(transactions.totalExpense).toBe(124)
   })
   test('Total Income should be added', async () => {
     const transactions = useTransactionStore()
 
-
     expect(transactions.totalIncome).toBe(199)
   })
   test('Transactions can not get a non existant transaction', async () => {
     const transactions = useTransactionStore()
-
 
     expect(transactions.hasTransaction('HELLO CODE READER')).toBe(false)
   })
@@ -100,7 +99,9 @@ describe('Transactions Store', () => {
     const transactions = useTransactionStore()
     transactions.removeTransaction(sampleSecondaryTransaction.id)
 
-    expect(transactions.hasTransaction(sampleSecondaryTransaction.id)).toBe(false)
+    expect(transactions.hasTransaction(sampleSecondaryTransaction.id)).toBe(
+      false
+    )
   })
   test('Transactions should be have transaction added', async () => {
     const transactions = useTransactionStore()
@@ -110,6 +111,8 @@ describe('Transactions Store', () => {
   test('Transaction should be able to be got by id', async () => {
     const transactions = useTransactionStore()
 
-    expect(transactions.getTransactionById(sampleTransaction.id)).toEqual(sampleTransaction)
+    expect(transactions.getTransactionById(sampleTransaction.id)).toEqual(
+      sampleTransaction
+    )
   })
 })

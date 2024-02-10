@@ -1,29 +1,30 @@
 <template>
-  <UFormGroup label="Type of Transaction">
-    <USelect
-      v-model="state.type"
-      :options="Object.values(TransactionType)"
-    />
-  </UFormGroup>
+  <UForm :state="state" @submit="submit">
+    <UFormGroup label="Type of Transaction">
+      <USelect v-model="state.type" :options="Object.values(TransactionType)" />
+    </UFormGroup>
 
-  <UForm
-    :state="state"
-    @submit="submit"
-  >
-    <UFormGroup :label="state.type === TransactionType.INCOME ? 'Source of Income' : 'Place of Purchase'">
+    <UFormGroup
+      :label="
+        state.type === TransactionType.INCOME
+          ? 'Source of Income'
+          : 'Place of Purchase'
+      "
+    >
       <UInput
         id="store"
         v-model="state.store"
         type="text"
         name="Store"
-        :placeholder="state.type === TransactionType.INCOME ? 'Source of Income' : 'Place of Purchase'"
+        :placeholder="
+          state.type === TransactionType.INCOME
+            ? 'Source of Income'
+            : 'Place of Purchase'
+        "
       />
     </UFormGroup>
 
-    <UFormGroup
-      v-if="state.type === TransactionType.EXPENSE"
-      label="Category"
-    >
+    <UFormGroup v-if="state.type === TransactionType.EXPENSE" label="Category">
       <USelect
         v-if="!state.customCategory"
         v-model="state.category"
@@ -39,9 +40,9 @@
         name="CustomCategory"
         :placeholder="'Category'"
       />
-      <div style="display: flex; align-items: center; margin-top: 8px;">
+      <div style="display: flex; align-items: center; margin-top: 8px">
         <UCheckbox v-model="state.customCategory" />
-        <label style="margin-left: 8px;">Click to enter a custom category</label>
+        <label style="margin-left: 8px">Click to enter a custom category</label>
       </div>
     </UFormGroup>
 
@@ -53,22 +54,19 @@
         step="0.01"
         min="0"
         name="Amount"
-        :placeholder="state.type === TransactionType.INCOME ? 'Amount Gained' : 'Amount Spent'"
+        :placeholder="
+          state.type === TransactionType.INCOME
+            ? 'Amount Gained'
+            : 'Amount Spent'
+        "
       />
     </UFormGroup>
 
     <UFormGroup label="Date">
-      <UInput
-        id="date"
-        v-model="state.date"
-        type="date"
-        name="Date"
-      />
+      <UInput id="date" v-model="state.date" type="date" name="Date" />
     </UFormGroup>
 
-    <UButton type="submit">
-      Submit
-    </UButton>
+    <UButton type="submit"> Submit </UButton>
   </UForm>
 </template>
 
@@ -76,7 +74,6 @@
 const transactions = useTransactionStore()
 const catagories = useCategoryStore()
 const toast = useToast()
-
 
 const state = reactive({
   store: '',
@@ -91,8 +88,15 @@ const state = reactive({
 const canSubmit = computed(() => {
   const requiredFieldsFilled = state.store && state.amount !== '' && state.date
   const validCategorySelected =
-    state.type === TransactionType.EXPENSE ? (state.category !== null && state.category !== '') || state.customCategory : true
-  return requiredFieldsFilled && validCategorySelected && (state.customCategory ? state.customCategoryName.trim() !== '' : true)
+    state.type === TransactionType.EXPENSE
+      ? (state.category !== null && state.category !== '') ||
+        state.customCategory
+      : true
+  return (
+    requiredFieldsFilled &&
+    validCategorySelected &&
+    (state.customCategory ? state.customCategoryName.trim() !== '' : true)
+  )
 })
 
 async function submit() {
@@ -107,17 +111,20 @@ async function submit() {
 
   const parsedAmount = parseFloat(state.amount)
 
-  if (isNaN(parsedAmount))
-    return
+  if (isNaN(parsedAmount)) return
 
-  if (!await transactions.addTransaction({
-    id: Math.random().toString(36).substring(7),
-    type: state.type,
-    store: state.store,
-    amount: Math.round(parsedAmount * 100),
-    date: new Date(state.date + 'T00:00:00'),
-    category: state.customCategory ? state.customCategoryName : state.category,
-  }))
+  if (
+    !(await transactions.addTransaction({
+      id: Math.random().toString(36).substring(7),
+      type: state.type,
+      store: state.store,
+      amount: Math.round(parsedAmount * 100),
+      date: new Date(state.date + 'T00:00:00'),
+      category: state.customCategory
+        ? state.customCategoryName
+        : state.category,
+    }))
+  )
     return
 
   catagories.fetchCategories()

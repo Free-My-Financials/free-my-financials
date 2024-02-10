@@ -2,7 +2,12 @@ import { z } from 'zod'
 import { router, publicProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 import { isAuthed } from '../middleware/isAuthed'
-import { createTransaction, deleteTransactionById, getTransactionById, getTransactionsByUserId } from '~/server/utils/prisma/transaction'
+import {
+  createTransaction,
+  deleteTransactionById,
+  getTransactionById,
+  getTransactionsByUserId,
+} from '~/server/utils/prisma/transaction'
 
 export default router({
   create: publicProcedure
@@ -17,7 +22,8 @@ export default router({
         category: z.string(),
         store: z.string(),
       })
-    ).mutation(async ({ input, ctx }) => {
+    )
+    .mutation(async ({ input, ctx }) => {
       const newTransaction = await createTransaction(ctx.user.id, input)
 
       return newTransaction
@@ -28,7 +34,8 @@ export default router({
       z.object({
         id: z.string(),
       })
-    ).query(async ({ input, ctx }) => {
+    )
+    .query(async ({ input, ctx }) => {
       const transaction = await getTransactionById(input.id)
 
       if (!transaction)
@@ -45,20 +52,19 @@ export default router({
 
       return transaction
     }),
-  list: publicProcedure
-    .use(isAuthed)
-    .query(async ({ ctx }) => {
-      const transactions = await getTransactionsByUserId(ctx.user.id)
+  list: publicProcedure.use(isAuthed).query(async ({ ctx }) => {
+    const transactions = await getTransactionsByUserId(ctx.user.id)
 
-      return transactions
-    }),
+    return transactions
+  }),
   delete: publicProcedure
     .use(isAuthed)
     .input(
       z.object({
         id: z.string(),
       })
-    ).mutation(async ({ input, ctx }) => {
+    )
+    .mutation(async ({ input, ctx }) => {
       const transaction = await getTransactionById(input.id)
 
       if (!transaction)

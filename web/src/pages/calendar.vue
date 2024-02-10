@@ -1,17 +1,9 @@
 <template>
   <div class="calendar-container">
     <div class="calendar-nav">
-      <UButton
-        type="button"
-        @click="prevMonth"
-      >
-        &lt;
-      </UButton>
+      <UButton type="button" @click="prevMonth"> &lt; </UButton>
       <h2>{{ currentMonthName }} {{ currentYear }}</h2>
-      <span
-        v-if="showMonthlyBalance"
-        class="total-balance"
-      >
+      <span v-if="showMonthlyBalance" class="total-balance">
         Monthly Balance:
         <div class="balance-container">
           <span class="balance-label" />
@@ -19,26 +11,21 @@
           <i
             v-show="showArrow"
             class="arrow"
-            :class="{ 'arrow-up': isPositiveChange, 'arrow-down': !isPositiveChange }"
+            :class="{
+              'arrow-up': isPositiveChange,
+              'arrow-down': !isPositiveChange,
+            }"
             :title="arrowTooltipText"
           >
             {{ isPositiveChange ? '↑' : '↓' }}
           </i>
         </div>
       </span>
-      <UButton
-        type="button"
-        @click="nextMonth"
-      >
-        &gt;
-      </UButton>
+      <UButton type="button" @click="nextMonth"> &gt; </UButton>
     </div>
     <div class="calendar">
       <div class="weekdays">
-        <span
-          v-for="day in weekdays"
-          :key="day"
-        >{{ day }}</span>
+        <span v-for="day in weekdays" :key="day">{{ day }}</span>
       </div>
       <div class="days">
         <div
@@ -47,14 +34,19 @@
           class="blank"
         />
         <div
-          v-for="day in Array.from({ length: daysInMonth }, (_, index) => index + 1)"
+          v-for="day in Array.from(
+            { length: daysInMonth },
+            (_, index) => index + 1
+          )"
           :key="day"
           class="day"
           :class="{ 'budget-day': budget.dateIsInBudget(day) }"
         >
           {{ day }}
-          <br>
-          <span v-if="dailyBalances[day] !== undefined && dailyBalances[day] !== 0">
+          <br />
+          <span
+            v-if="dailyBalances[day] !== undefined && dailyBalances[day] !== 0"
+          >
             <DollarAmount :amount="dailyBalances[day]" />
           </span>
           <span v-else />
@@ -62,21 +54,14 @@
             v-if="isBudgetStart(day) || isBudgetEnd(day)"
             class="budget-dates"
           >
-            <div v-if="isBudgetStart(day)">
-              Start of Budget
-            </div>
-            <div v-if="isBudgetEnd(day)">
-              End of Budget
-            </div>
+            <div v-if="isBudgetStart(day)">Start of Budget</div>
+            <div v-if="isBudgetEnd(day)">End of Budget</div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
-
-
-
 
 <script setup>
 const budget = useBudgetStore()
@@ -85,12 +70,18 @@ const transactions = useTransactionStore()
 const currentDate = new Date()
 const currentYear = ref(currentDate.getFullYear())
 const currentMonth = ref(currentDate.getMonth())
-const currentMonthName = ref(new Intl.DateTimeFormat('en-US', { month: 'long' }).format(currentDate))
+const currentMonthName = ref(
+  new Intl.DateTimeFormat('en-US', { month: 'long' }).format(currentDate)
+)
 const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
 const dailyBalances = ref({})
-const daysInMonth = ref(new Date(currentYear.value, currentMonth.value + 1, 0).getDate())
-const firstDayOfMonth = ref(new Date(currentYear.value, currentMonth.value, 1).getDay())
+const daysInMonth = ref(
+  new Date(currentYear.value, currentMonth.value + 1, 0).getDate()
+)
+const firstDayOfMonth = ref(
+  new Date(currentYear.value, currentMonth.value, 1).getDay()
+)
 
 const showArrow = ref(false)
 const isPositiveChange = ref(false)
@@ -109,17 +100,25 @@ function isBudgetEnd(day) {
 
 const arrowTooltipText = computed(() => {
   const currentMonthKey = `${currentYear.value}-${currentMonth.value}`
-  const previousMonthYear = currentMonth.value === 0 ? currentYear.value - 1 : currentYear.value
+  const previousMonthYear =
+    currentMonth.value === 0 ? currentYear.value - 1 : currentYear.value
   const previousMonthKey = `${previousMonthYear}-${currentMonth.value === 0 ? 11 : currentMonth.value - 1}`
 
   const currentBalance = monthlyBalances.value[currentMonthKey] || 0
   const previousBalance = monthlyBalances.value[previousMonthKey] || 0
-  const percentDifference = ((currentBalance - previousBalance) / Math.abs(previousBalance)) * 100
+  const percentDifference =
+    ((currentBalance - previousBalance) / Math.abs(previousBalance)) * 100
 
   const changeDirection = percentDifference > 0 ? 'increased' : 'decreased'
 
-  const previousMonthName = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
-    new Date(previousMonthYear, currentMonth.value === 0 ? 11 : currentMonth.value - 1, 1)
+  const previousMonthName = new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+  }).format(
+    new Date(
+      previousMonthYear,
+      currentMonth.value === 0 ? 11 : currentMonth.value - 1,
+      1
+    )
   )
 
   return `Your monthly balance ${changeDirection} by ${Math.abs(percentDifference).toFixed(2)}% this month compared to ${previousMonthName}.`
@@ -161,11 +160,19 @@ onMounted(() => {
 function updateCalendar() {
   dailyBalances.value = {}
 
-  daysInMonth.value = new Date(currentYear.value, currentMonth.value + 1, 0).getDate()
-  firstDayOfMonth.value = new Date(currentYear.value, currentMonth.value, 1).getDay()
-  currentMonthName.value = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(
-    new Date(currentYear.value, currentMonth.value, 1)
-  )
+  daysInMonth.value = new Date(
+    currentYear.value,
+    currentMonth.value + 1,
+    0
+  ).getDate()
+  firstDayOfMonth.value = new Date(
+    currentYear.value,
+    currentMonth.value,
+    1
+  ).getDay()
+  currentMonthName.value = new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+  }).format(new Date(currentYear.value, currentMonth.value, 1))
 
   const startDate = new Date(currentYear.value, currentMonth.value, 1)
   const endDate = new Date(currentYear.value, currentMonth.value + 1, 0)
@@ -175,30 +182,40 @@ function updateCalendar() {
     const transactionDate = new Date(transaction.date)
     if (transactionDate >= startDate && transactionDate <= endDate) {
       const day = transactionDate.getDate()
-      dayBalances[day] = (dayBalances[day] || 0) + (transaction.type === TransactionType.EXPENSE ? -1 : 1) * Number(transaction.amount)
+      dayBalances[day] =
+        (dayBalances[day] || 0) +
+        (transaction.type === TransactionType.EXPENSE ? -1 : 1) *
+          Number(transaction.amount)
     }
   })
 
   dailyBalances.value = dayBalances
 
-  const previousMonthYear = currentMonth.value === 0 ? currentYear.value - 1 : currentYear.value
+  const previousMonthYear =
+    currentMonth.value === 0 ? currentYear.value - 1 : currentYear.value
   const previousMonthKey = `${previousMonthYear}-${currentMonth.value === 0 ? 11 : currentMonth.value - 1}`
-  showArrow.value = monthlyBalances.value.hasOwnProperty(previousMonthKey)
+  showArrow.value = Object.prototype.hasOwnProperty.call(
+    monthlyBalances.value,
+    previousMonthKey
+  )
 
   if (showArrow.value) {
     const currentMonthKey = `${currentYear.value}-${currentMonth.value}`
-    isPositiveChange.value = monthlyBalances.value[currentMonthKey] > monthlyBalances.value[previousMonthKey]
+    isPositiveChange.value =
+      monthlyBalances.value[currentMonthKey] >
+      monthlyBalances.value[previousMonthKey]
   }
 }
 
 const showMonthlyBalance = computed(() => {
   const currentMonthKey = `${currentYear.value}-${currentMonth.value}`
   return (
-    monthlyBalances.value.hasOwnProperty(currentMonthKey) &&
-    monthlyBalances.value[currentMonthKey] !== 0
+    Object.prototype.hasOwnProperty.call(
+      monthlyBalances.value,
+      currentMonthKey
+    ) && monthlyBalances.value[currentMonthKey] !== 0
   )
 })
-
 
 watch([currentMonth, currentYear], () => {
   updateCalendar()
@@ -227,7 +244,6 @@ function nextMonth() {
 }
 </script>
 
-
 <style scoped>
 .total-balance {
   display: flex;
@@ -237,7 +253,7 @@ function nextMonth() {
 .balance-container {
   display: flex;
   align-items: center;
-  margin-left: 5px
+  margin-left: 5px;
 }
 
 .arrow {
@@ -329,4 +345,3 @@ h2 {
   flex: 1;
 }
 </style>
-

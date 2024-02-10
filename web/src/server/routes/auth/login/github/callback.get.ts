@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
   const storedState = getCookie(event, 'github_oauth_state') ?? null
   if (!code || !state || !storedState || state !== storedState) {
     throw createError({
-      status: 400
+      status: 400,
     })
   }
 
@@ -17,8 +17,8 @@ export default defineEventHandler(async (event) => {
     const tokens = await github.validateAuthorizationCode(code)
     const githubUserResponse = await fetch('https://api.github.com/user', {
       headers: {
-        Authorization: `Bearer ${tokens.accessToken}`
-      }
+        Authorization: `Bearer ${tokens.accessToken}`,
+      },
     })
     const githubUser: GitHubUser = await githubUserResponse.json()
 
@@ -26,28 +26,36 @@ export default defineEventHandler(async (event) => {
 
     if (existingUser) {
       const session = await lucia.createSession(existingUser.id, {})
-      appendHeader(event, 'Set-Cookie', lucia.createSessionCookie(session.id).serialize())
+      appendHeader(
+        event,
+        'Set-Cookie',
+        lucia.createSessionCookie(session.id).serialize()
+      )
       return sendRedirect(event, '/')
     }
 
     const user = await createUser({
       username: githubUser.login,
-      githubId: githubUser.id
+      githubId: githubUser.id,
     })
 
     const session = await lucia.createSession(user.id, {})
-    appendHeader(event, 'Set-Cookie', lucia.createSessionCookie(session.id).serialize())
+    appendHeader(
+      event,
+      'Set-Cookie',
+      lucia.createSessionCookie(session.id).serialize()
+    )
     return sendRedirect(event, '/')
   } catch (e) {
     // the specific error message depends on the provider
     if (e instanceof OAuth2RequestError) {
       // invalid code
       throw createError({
-        status: 400
+        status: 400,
       })
     }
     throw createError({
-      status: 500
+      status: 500,
     })
   }
 })

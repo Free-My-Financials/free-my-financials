@@ -1,8 +1,5 @@
 <template>
-  <UForm
-    :state="state"
-    @submit="submit"
-  >
+  <UForm :state="state" @submit="submit">
     <UFormGroup label="Budget Total">
       <UInput
         id="amount"
@@ -15,25 +12,13 @@
     </UFormGroup>
 
     <UFormGroup label="Start Date">
-      <UInput
-        id="date"
-        v-model="state.startDate"
-        type="date"
-        name="Date"
-      />
+      <UInput id="date" v-model="state.startDate" type="date" name="Date" />
     </UFormGroup>
     <UFormGroup label="End Date">
-      <UInput
-        id="date"
-        v-model="state.endDate"
-        type="date"
-        name="Date"
-      />
+      <UInput id="date" v-model="state.endDate" type="date" name="Date" />
     </UFormGroup>
 
-    <UButton type="submit">
-      Submit
-    </UButton>
+    <UButton type="submit"> Submit </UButton>
   </UForm>
 </template>
 

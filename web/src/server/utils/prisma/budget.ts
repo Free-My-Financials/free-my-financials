@@ -16,11 +16,14 @@ export async function createDefaultBudget(userId: string) {
   return await createBudget(userId, defaultBudget())
 }
 
-export async function createBudget(userId: string, data: {
-  amount: number,
-  start: Date,
-  end: Date,
-}) {
+export async function createBudget(
+  userId: string,
+  data: {
+    amount: number
+    start: Date
+    end: Date
+  }
+) {
   return await prisma.budget.create({
     data: {
       amount: data.amount,
@@ -29,9 +32,9 @@ export async function createBudget(userId: string, data: {
       user: {
         connect: {
           id: userId,
-        }
-      }
-    }
+        },
+      },
+    },
   })
 }
 
@@ -39,15 +42,18 @@ export async function getBudgetByUserId(userId: string) {
   return await prisma.budget.findUnique({
     where: {
       userId,
-    }
+    },
   })
 }
 
-export async function updateBudgetByUserId(userId: string, data: {
-  amount?: number,
-  start?: Date,
-  end?: Date,
-}) {
+export async function updateBudgetByUserId(
+  userId: string,
+  data: {
+    amount?: number
+    start?: Date
+    end?: Date
+  }
+) {
   return await prisma.budget.update({
     where: {
       userId,

@@ -14,16 +14,22 @@
       </div>
       <UTable
         v-else
-        :sort="{ 'column': 'date', direction: 'desc' }"
+        :sort="{ column: 'date', direction: 'desc' }"
         :rows="filteredTransactions"
         :columns="columns"
         style="width: 100%"
       >
         <template #amount-data="{ row }">
-          <DollarAmount :amount="row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)" />
+          <DollarAmount
+            :amount="
+              row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)
+            "
+          />
         </template>
         <template #category-data="{ row }">
-          <span>{{ row.type === TransactionType.INCOME ? 'Income' : row.category }}</span>
+          <span>{{
+            row.type === TransactionType.INCOME ? 'Income' : row.category
+          }}</span>
         </template>
         <template #delete-data="{ row }">
           <UButton
@@ -41,7 +47,7 @@
       <input
         v-model="searchQuery"
         placeholder="Search transactions by store or category"
-      >
+      />
     </div>
   </div>
 </template>
@@ -51,7 +57,12 @@ const transactions = useTransactionStore()
 const searchQuery = ref('')
 
 const formatDate = (dateString) => {
-  const options = { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }
+  const options = {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  }
   return new Date(dateString).toLocaleDateString(undefined, options)
 }
 
@@ -61,7 +72,9 @@ const getFormattedDateComponents = (dateString) => {
     day: date.toLocaleDateString(undefined, { day: 'numeric' }).toLowerCase(),
     month: date.toLocaleDateString(undefined, { month: 'short' }).toLowerCase(),
     year: date.toLocaleDateString(undefined, { year: 'numeric' }).toLowerCase(),
-    weekday: date.toLocaleDateString(undefined, { weekday: 'short' }).toLowerCase(),
+    weekday: date
+      .toLocaleDateString(undefined, { weekday: 'short' })
+      .toLowerCase(),
   }
 }
 
@@ -85,49 +98,56 @@ const filteredTransactions = computed(() => {
   })
 })
 
-const columns = [{
-  key: 'store',
-  label: 'Store',
-  class: 'italic',
-  sortable: true,
-},
-{
-  key: 'category',
-  label: 'Category',
-  sortable: true,
-}, {
-  key: 'amount',
-  label: 'Amount',
-  sortable: true,
-}, {
-  key: 'date',
-  label: 'Date',
-  sortable: true,
-}, {
-  key: 'delete',
-  label: '',
-  sortable: false,
-}]
+const columns = [
+  {
+    key: 'store',
+    label: 'Store',
+    class: 'italic',
+    sortable: true,
+  },
+  {
+    key: 'category',
+    label: 'Category',
+    sortable: true,
+  },
+  {
+    key: 'amount',
+    label: 'Amount',
+    sortable: true,
+  },
+  {
+    key: 'date',
+    label: 'Date',
+    sortable: true,
+  },
+  {
+    key: 'delete',
+    label: '',
+    sortable: false,
+  },
+]
 
 const calculateFilteredTotalBalance = computed(() => {
   let total = 0
 
   for (const transaction of filteredTransactions.value) {
-    if (transaction.type === TransactionType.EXPENSE) total -= Number(transaction.amount)
-    else if (transaction.type === TransactionType.INCOME) total += Number(transaction.amount)
+    if (transaction.type === TransactionType.EXPENSE)
+      total -= Number(transaction.amount)
+    else if (transaction.type === TransactionType.INCOME)
+      total += Number(transaction.amount)
   }
 
   return total
 })
 
 function confirmDeleteTransaction(id) {
-  const isConfirmed = window.confirm('Are you sure you want to delete this transaction?')
+  const isConfirmed = window.confirm(
+    'Are you sure you want to delete this transaction?'
+  )
 
-  if (isConfirmed)
-    transactions.removeTransaction(id)
+  if (isConfirmed) transactions.removeTransaction(id)
 }
 </script>
-
 
 <style scoped>
 .page-container {

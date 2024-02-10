@@ -1,16 +1,10 @@
 import prisma from '.'
 
-const defaultCategories = () => [
-  'Food',
-  'Clothing',
-  'Entertainment',
-]
+const defaultCategories = () => ['Food', 'Clothing', 'Entertainment']
 
 export async function createDefaultCategories(userId: string) {
   return await Promise.all(
-    defaultCategories().map((category) =>
-      createCategory(userId, category)
-    )
+    defaultCategories().map((category) => createCategory(userId, category))
   )
 }
 
@@ -30,8 +24,7 @@ export async function createCategory(userId: string, name: string) {
 export async function createOrGetCategory(userId: string, name: string) {
   const existingCategory = await getCategoryByUserIdAndName(userId, name)
 
-  if (existingCategory)
-    return existingCategory
+  if (existingCategory) return existingCategory
 
   return await createCategory(userId, name)
 }
