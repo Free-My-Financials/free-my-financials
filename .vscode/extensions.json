@@ -5,6 +5,8 @@
     "formulahendry.auto-close-tag",
     "standard.vscode-standard",
     "vue.vscode-typescript-vue-plugin",
-    "bradlc.vscode-tailwindcss"
+    "bradlc.vscode-tailwindcss",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode"
   ]
 }
