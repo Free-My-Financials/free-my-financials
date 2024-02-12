@@ -10,7 +10,7 @@ describe('Auth Store', () => {
 
     auth.user = {
       id: '1',
-      username
+      username,
     }
 
     expect(auth.isLoggedIn).toBe(true)

@@ -11,15 +11,16 @@ export const useCategoryStore = defineStore('categories', () => {
   const hasCategory = (name: string) => categories.value.includes(name)
 
   const addCategory = async (name: string) => {
-    if (hasCategory(name))
-      return
+    if (hasCategory(name)) return
 
     categories.value.push(name)
 
     try {
       await $client.category.create.mutate({ name })
     } catch (error) {
-      categories.value = categories.value.filter((category) => category !== name)
+      categories.value = categories.value.filter(
+        (category) => category !== name
+      )
 
       toast.add({
         title: 'Error',
@@ -29,8 +30,7 @@ export const useCategoryStore = defineStore('categories', () => {
   }
 
   const fetchCategories = async () => {
-    if (!auth.isLoggedIn)
-      return
+    if (!auth.isLoggedIn) return
 
     try {
       const { data } = await $client.category.list.useQuery()

@@ -2,7 +2,11 @@ import { z } from 'zod'
 import { router, publicProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 import { isAuthed } from '../middleware/isAuthed'
-import { createCategory, getCategoriesByUserId, getCategoryById } from '~/server/utils/prisma/category'
+import {
+  createCategory,
+  getCategoriesByUserId,
+  getCategoryById,
+} from '~/server/utils/prisma/category'
 
 export const defaultCategories = ['Food', 'Clothing', 'Entertainment']
 
@@ -13,8 +17,12 @@ export default router({
       z.object({
         name: z.string(),
       })
-    ).mutation(async ({ input, ctx }) => {
-      const existingCategory = await getCategoryByUserIdAndName(ctx.user.id, input.name)
+    )
+    .mutation(async ({ input, ctx }) => {
+      const existingCategory = await getCategoryByUserIdAndName(
+        ctx.user.id,
+        input.name
+      )
 
       if (existingCategory)
         throw new TRPCError({
@@ -32,7 +40,8 @@ export default router({
       z.object({
         id: z.string(),
       })
-    ).query(async ({ input, ctx }) => {
+    )
+    .query(async ({ input, ctx }) => {
       const category = await getCategoryById(input.id)
 
       if (!category)
@@ -49,11 +58,9 @@ export default router({
 
       return category
     }),
-  list: publicProcedure
-    .use(isAuthed)
-    .query(async ({ ctx }) => {
-      const categories = await getCategoriesByUserId(ctx.user.id)
+  list: publicProcedure.use(isAuthed).query(async ({ ctx }) => {
+    const categories = await getCategoriesByUserId(ctx.user.id)
 
-      return categories
-    }),
+    return categories
+  }),
 })

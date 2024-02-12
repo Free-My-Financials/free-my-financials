@@ -3,13 +3,12 @@ import { createDefaultBudget } from './budget'
 import { createDefaultCategories } from './category'
 
 export async function createUser(data: {
-  username: string,
-  githubId?: number,
+  username: string
+  githubId?: number
 }) {
   const existingUser = await getUserByUsername(data.username)
 
-  if (existingUser)
-    throw new Error('User already exists')
+  if (existingUser) throw new Error('User already exists')
 
   const newUser = await prisma.user.create({ data })
 

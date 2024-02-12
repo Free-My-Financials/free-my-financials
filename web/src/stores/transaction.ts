@@ -1,8 +1,6 @@
-import { skipHydrate } from "pinia"
-
 export enum TransactionType {
-  INCOME = "Income",
-  EXPENSE = "Expense",
+  INCOME = 'Income',
+  EXPENSE = 'Expense',
 }
 
 export interface Transaction {
@@ -22,14 +20,38 @@ export const useTransactionStore = defineStore('transactions', () => {
   const transactions = ref<Transaction[]>([])
 
   const isEmpty = computed(() => transactions.value.length === 0)
-  const totalIncome = computed(() => transactions.value.filter((transaction) => transaction.type === TransactionType.INCOME).reduce((total, transaction) => total + transaction.amount, 0))
-  const totalExpense = computed(() => transactions.value.filter((transaction) => transaction.type === TransactionType.EXPENSE).reduce((total, transaction) => total + transaction.amount, 0))
-  const totalBalance = computed(() => transactions.value.reduce((total, transaction) => total + (transaction.type === TransactionType.INCOME ? transaction.amount : -transaction.amount), 0))
-  const hasTransaction = (id: string) => transactions.value.some((transaction) => transaction.id === id)
-  const getTransactionById = (id: string) => transactions.value.find((transaction) => transaction.id === id)
-  const getTransactionsByType = (type: TransactionType) => transactions.value.filter((transaction) => transaction.type === type)
-  const getTransactionsByCategory = (category: string) => transactions.value.filter((transaction) => transaction.category === category)
-  const getTransactionsByStore = (store: string) => transactions.value.filter((transaction) => transaction.store === store)
+  const totalIncome = computed(() =>
+    transactions.value
+      .filter((transaction) => transaction.type === TransactionType.INCOME)
+      .reduce((total, transaction) => total + transaction.amount, 0)
+  )
+  const totalExpense = computed(() =>
+    transactions.value
+      .filter((transaction) => transaction.type === TransactionType.EXPENSE)
+      .reduce((total, transaction) => total + transaction.amount, 0)
+  )
+  const totalBalance = computed(() =>
+    transactions.value.reduce(
+      (total, transaction) =>
+        total +
+        (transaction.type === TransactionType.INCOME
+          ? transaction.amount
+          : -transaction.amount),
+      0
+    )
+  )
+  const hasTransaction = (id: string) =>
+    transactions.value.some((transaction) => transaction.id === id)
+  const getTransactionById = (id: string) =>
+    transactions.value.find((transaction) => transaction.id === id)
+  const getTransactionsByType = (type: TransactionType) =>
+    transactions.value.filter((transaction) => transaction.type === type)
+  const getTransactionsByCategory = (category: string) =>
+    transactions.value.filter(
+      (transaction) => transaction.category === category
+    )
+  const getTransactionsByStore = (store: string) =>
+    transactions.value.filter((transaction) => transaction.store === store)
 
   const addTransaction = async (transaction: Transaction) => {
     transactions.value.push(transaction)
@@ -39,7 +61,7 @@ export const useTransactionStore = defineStore('transactions', () => {
 
     try {
       const result = await $client.transaction.create.mutate({
-        type: type === TransactionType.INCOME ? "INCOME" : "EXPENSE", // TODO: Fix this
+        type: type === TransactionType.INCOME ? 'INCOME' : 'EXPENSE', // TODO: Fix this
         store,
         amount,
         date,
@@ -71,7 +93,9 @@ export const useTransactionStore = defineStore('transactions', () => {
   }
 
   const removeTransaction = async (id: string) => {
-    const index = transactions.value.findIndex((transaction) => transaction.id === id)
+    const index = transactions.value.findIndex(
+      (transaction) => transaction.id === id
+    )
     const transaction = transactions.value[index]
     transactions.value.splice(index, 1)
 
@@ -88,8 +112,7 @@ export const useTransactionStore = defineStore('transactions', () => {
   }
 
   const fetchTransactions = async () => {
-    if (!auth.isLoggedIn)
-      return
+    if (!auth.isLoggedIn) return
 
     try {
       const { data } = await $client.transaction.list.useQuery()
@@ -98,14 +121,15 @@ export const useTransactionStore = defineStore('transactions', () => {
       //        after the query is called
       await new Promise((resolve) => setTimeout(resolve, 50))
 
-      if (!data?.value)
-        return
+      if (!data?.value) return
 
       transactions.value = []
       for (const transaction of data.value) {
         transactions.value.push({
           id: transaction.id,
-          type: TransactionType[transaction.type],
+          type: TransactionType[
+            transaction.type as keyof typeof TransactionType
+          ],
           store: transaction.store.name,
           amount: transaction.amount,
           date: new Date(transaction.date),

@@ -1,25 +1,27 @@
 import prisma from '.'
 
-export async function createStore(userId: string, data: {
-  name: string
-}) {
+export async function createStore(
+  userId: string,
+  data: {
+    name: string
+  }
+) {
   return await prisma.store.create({
     data: {
       ...data,
       user: {
         connect: {
           id: userId,
-        }
-      }
-    }
+        },
+      },
+    },
   })
 }
 
 export async function createOrGetStore(userId: string, name: string) {
   const existingStore = await getStoreByUserIdAndName(userId, name)
 
-  if (existingStore)
-    return existingStore
+  if (existingStore) return existingStore
 
   return await createStore(userId, { name })
 }

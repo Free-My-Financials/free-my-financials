@@ -2,15 +2,16 @@
 export default defineNuxtConfig({
   srcDir: 'src',
   typescript: {
-    strict: true
+    strict: true,
   },
   devtools: { enabled: true },
   modules: [
     '@nuxt/ui',
     '@pinia/nuxt',
     '@nuxt/test-utils/module',
+    '@nuxtjs/eslint-module',
   ],
   build: {
-    transpile: ['trpc-nuxt']
-  }
+    transpile: ['trpc-nuxt'],
+  },
 })
