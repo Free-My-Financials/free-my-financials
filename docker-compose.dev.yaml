@@ -1,4 +1,4 @@
-version: "3"
+version: '3'
 
 volumes:
   node_modules:
@@ -6,7 +6,7 @@ services:
   db:
     image: postgres:16.1-alpine
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres

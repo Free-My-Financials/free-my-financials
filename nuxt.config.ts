@@ -5,6 +5,7 @@ export default defineNuxtConfig({
     strict: true,
   },
   devtools: { enabled: true },
+  ignore: ['**/.direnv', '**/.devenv'],
   modules: [
     '@nuxt/ui',
     '@pinia/nuxt',
