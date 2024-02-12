@@ -80,3 +80,28 @@ $RECYCLE.BIN/
 *.lnk
 
 # End of https://www.toptal.com/developers/gitignore/api/linux,macos,windows,direnv
+
+# Created by https://www.toptal.com/developers/gitignore/api/nuxtjs
+# Edit at https://www.toptal.com/developers/gitignore?templates=nuxtjs
+
+### NuxtJS ###
+# Generated dirs
+dist
+.nuxt
+.nuxt-*
+.output
+.gen
+
+# Node dependencies
+node_modules
+
+# System files
+*.log
+
+# End of https://www.toptal.com/developers/gitignore/api/nuxtjs
+
+.env
+
+# Coverage folder
+
+src/coverage
