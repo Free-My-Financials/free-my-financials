@@ -1,6 +1,11 @@
 import { expect, test, vi } from 'vitest'
 import prisma from '~/server/utils/prisma/__mocks__/prisma'
-import { createUser, getUserById } from '~/server/utils/prisma/user'
+import {
+  createUser,
+  getUserById,
+  getUserByGithubId,
+  getUserByUsername,
+} from '~/server/utils/prisma/user'
 
 vi.mock('~/server/utils/prisma/prisma')
 
@@ -37,9 +42,23 @@ test('Creating user that already exists should return an error', async () => {
   expect(testUser).toEqual(new Error('User already exists'))
 })
 
-test('Finder a user by Id should return a user with the same name', async () => {
+test('Finding a user by Id should return a user with the same name', async () => {
   prisma.user.findUnique.mockResolvedValue({ ...user })
   const testUser = await getUserById(user.id)
 
   expect(testUser?.username).toBe(user.username)
+})
+
+test('Finding a user by githubId should return a user with the same name', async () => {
+  prisma.user.findUnique.mockResolvedValue({ ...user })
+  const testUser = await getUserByGithubId(user.githubId)
+
+  expect(testUser?.username).toBe(user.username)
+})
+
+test('Finding a user by username should return a user with the same githubId', async () => {
+  prisma.user.findUnique.mockResolvedValue({ ...user })
+  const testUser = await getUserByUsername(user.username)
+
+  expect(testUser?.githubId).toBe(user.githubId)
 })
