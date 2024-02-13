@@ -1,5 +1,5 @@
 import { inferAsyncReturnType } from '@trpc/server'
-import prisma from '../utils/prisma/prisma'
+import prisma from '../utils/prisma'
 import { User } from 'lucia'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,4 +1,4 @@
-import prisma from './prisma'
+import prisma from '.'
 
 const defaultBudget = () => {
   const today = new Date()

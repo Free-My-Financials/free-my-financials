@@ -1,4 +1,4 @@
-import prisma from './prisma'
+import prisma from '.'
 import { createDefaultBudget } from './budget'
 import { createDefaultCategories } from './category'
 

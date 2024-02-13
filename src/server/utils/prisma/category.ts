@@ -1,4 +1,4 @@
-import prisma from './prisma'
+import prisma from '.'
 
 const defaultCategories = () => ['Food', 'Clothing', 'Entertainment']
 

@@ -1,4 +1,4 @@
-import prisma from './prisma'
+import prisma from '.'
 
 export async function createStore(
   userId: string,

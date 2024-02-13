@@ -1,4 +1,4 @@
-import prisma from './prisma'
+import prisma from '.'
 import { createOrGetCategory } from './category'
 import { createOrGetStore } from './store'
 

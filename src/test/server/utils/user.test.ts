@@ -1,5 +1,5 @@
 import { expect, test, vi } from 'vitest'
-import prisma from '~/server/utils/prisma/__mocks__/prisma'
+import prisma from '~/server/utils/prisma/__mocks__'
 import {
   createUser,
   getUserById,
@@ -7,7 +7,7 @@ import {
   getUserByUsername,
 } from '~/server/utils/prisma/user'
 
-vi.mock('~/server/utils/prisma/prisma')
+vi.mock('~/server/utils/prisma')
 
 const user = {
   id: 'Hi',
