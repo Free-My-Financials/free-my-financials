@@ -127,22 +127,29 @@ async function submit() {
   )
     return
 
-  catagories.fetchCategories()
+  if (catagories.fetchCategories() == false) {
+    toast.add({
+      title: 'Success',
+      description: 'Transaction added successfully!',
+    })
 
-  resetState()
-  toast.add({
-    title: 'Success',
-    description: 'Transaction added successfully!',
-  })
-}
+    catagories.fetchCategories()
 
-function resetState() {
-  state.store = ''
-  state.amount = ''
-  state.date = ''
-  state.type = TransactionType.EXPENSE
-  state.category = ''
-  state.customCategory = false
-  state.customCategoryName = ''
+    resetState()
+    toast.add({
+      title: 'Success',
+      description: 'Transaction added successfully!',
+    })
+  }
+
+  function resetState() {
+    state.store = ''
+    state.amount = ''
+    state.date = ''
+    state.type = TransactionType.EXPENSE
+    state.category = ''
+    state.customCategory = false
+    state.customCategoryName = ''
+  }
 }
 </script>

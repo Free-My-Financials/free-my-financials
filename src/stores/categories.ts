@@ -40,18 +40,12 @@ export const useCategoryStore = defineStore('categories', () => {
       await new Promise((resolve) => setTimeout(resolve, 50))
 
       if (!data?.value) {
-        return toast.add({
-          title: 'Error',
-          description: 'Something went wrong',
-        })
+        return false
       }
 
       categories.value = data.value.map((category) => category.name)
     } catch (error) {
-      return toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
+      return false
     }
   }
 
