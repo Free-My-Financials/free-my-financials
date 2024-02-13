@@ -1,6 +1,6 @@
 import { expect, test, vi } from 'vitest'
 import prisma from '~/server/utils/prisma/__mocks__/prisma'
-import { createUser } from '~/server/utils/prisma/user'
+import { createUser, getUserById } from '~/server/utils/prisma/user'
 
 vi.mock('~/server/utils/prisma/prisma')
 
@@ -35,4 +35,11 @@ test('Creating user that already exists should return an error', async () => {
     githubId: user.githubId,
   })
   expect(testUser).toEqual(new Error('User already exists'))
+})
+
+test('Finder a user by Id should return a user with the same name', async () => {
+  prisma.user.findUnique.mockResolvedValue({ ...user })
+  const testUser = await getUserById(user.id)
+
+  expect(testUser?.username).toBe(user.username)
 })
