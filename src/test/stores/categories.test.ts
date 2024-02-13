@@ -7,6 +7,11 @@ describe('Categories Store', () => {
     expect(categories.categories).toEqual([])
   })
 
+  test('categories is empty if  not logged in and nothing has been added', async () => {
+    const categories = useCategoryStore()
+    expect(categories.isEmpty).toBeTruthy()
+  })
+
   test('addCategory works', async () => {
     const categories = useCategoryStore()
     categories.addCategory('orange')
