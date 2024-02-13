@@ -7,7 +7,8 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   ignore: ['**/.direnv', '**/.devenv'],
   modules: [
-    '@nuxt/ui',
+    '@nuxtjs/tailwindcss',
+    'shadcn-nuxt',
     '@pinia/nuxt',
     '@nuxt/test-utils/module',
     '@nuxtjs/eslint-module',
@@ -15,4 +16,5 @@ export default defineNuxtConfig({
   build: {
     transpile: ['trpc-nuxt'],
   },
+  shadcn: { prefix: 'UI', componentDir: 'src/components/ui' },
 })

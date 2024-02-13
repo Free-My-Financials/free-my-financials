@@ -7,7 +7,6 @@ export interface Budget {
 export const useBudgetStore = defineStore('budget', () => {
   const auth = useAuthStore()
   const { $client } = useNuxtApp()
-  const toast = useToast()
 
   const budget = ref<Budget>({
     startDate: new Date(),
@@ -79,11 +78,6 @@ export const useBudgetStore = defineStore('budget', () => {
       })
     } catch (error) {
       budget.value.startDate = oldDate
-
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
     }
   }
 
@@ -99,11 +93,6 @@ export const useBudgetStore = defineStore('budget', () => {
       })
     } catch (error) {
       budget.value.endDate = oldDate
-
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
     }
   }
 
@@ -119,11 +108,6 @@ export const useBudgetStore = defineStore('budget', () => {
       })
     } catch (error) {
       budget.value.amount = oldAmount
-
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
     }
   }
 
@@ -133,20 +117,13 @@ export const useBudgetStore = defineStore('budget', () => {
     try {
       const { data } = await $client.budget.get.useQuery()
 
-      if (!data.value)
-        return toast.add({
-          title: 'Error',
-          description: 'Something went wrong',
-        })
+      if (!data.value) return
 
       budget.value.amount = data.value.amount
       budget.value.startDate = new Date(data.value.start)
       budget.value.endDate = new Date(data.value.end)
     } catch (error) {
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
+      console.error(error)
     }
   }
 

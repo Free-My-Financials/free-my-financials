@@ -3,7 +3,6 @@ import { skipHydrate } from 'pinia'
 export const useCategoryStore = defineStore('categories', () => {
   const auth = useAuthStore()
   const { $client } = useNuxtApp()
-  const toast = useToast()
 
   const categories = ref<string[]>([])
 
@@ -21,11 +20,6 @@ export const useCategoryStore = defineStore('categories', () => {
       categories.value = categories.value.filter(
         (category) => category !== name
       )
-
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
     }
   }
 
@@ -39,19 +33,11 @@ export const useCategoryStore = defineStore('categories', () => {
       //        after the query is called
       await new Promise((resolve) => setTimeout(resolve, 50))
 
-      if (!data?.value) {
-        return toast.add({
-          title: 'Error',
-          description: 'Something went wrong',
-        })
-      }
+      if (!data?.value) return
 
       categories.value = data.value.map((category) => category.name)
     } catch (error) {
-      return toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
+      console.error(error)
     }
   }
 

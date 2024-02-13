@@ -1,9 +1,5 @@
 <template>
   <div>
-    <FHeader />
-    <UContainer>
-      <slot />
-    </UContainer>
-    <UNotifications />
+    <slot />
   </div>
 </template>

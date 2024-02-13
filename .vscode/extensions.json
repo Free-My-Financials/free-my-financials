@@ -7,6 +7,7 @@
     "vue.vscode-typescript-vue-plugin",
     "bradlc.vscode-tailwindcss",
     "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode"
+    "esbenp.prettier-vscode",
+    "selemondev.shadcn-vue"
   ]
 }

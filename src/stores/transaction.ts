@@ -15,7 +15,6 @@ export interface Transaction {
 export const useTransactionStore = defineStore('transactions', () => {
   const auth = useAuthStore()
   const { $client } = useNuxtApp()
-  const toast = useToast()
 
   const transactions = ref<Transaction[]>([])
 
@@ -83,11 +82,6 @@ export const useTransactionStore = defineStore('transactions', () => {
     } catch (error) {
       transactions.value.splice(index, 1)
 
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
-
       return null
     }
   }
@@ -103,11 +97,6 @@ export const useTransactionStore = defineStore('transactions', () => {
       await $client.transaction.delete.mutate({ id })
     } catch (error) {
       transactions.value.splice(index, 0, transaction)
-
-      return toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
     }
   }
 
@@ -137,10 +126,7 @@ export const useTransactionStore = defineStore('transactions', () => {
         })
       }
     } catch (error) {
-      return toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
+      console.error(error)
     }
   }
 
