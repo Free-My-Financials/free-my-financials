@@ -18,31 +18,37 @@ const category = {
 const defaultCategories = [
   {
     id: 'Food',
-    name: 'IsVery',
+    name: 'Food',
     createdAt: new Date('2024-06-15'),
     updatedAt: new Date('2024-06-15'),
     userId: 'Sleepy',
   },
   {
     id: 'Clothing',
-    name: 'IsVery',
+    name: 'Clothing',
     createdAt: new Date('2024-06-15'),
     updatedAt: new Date('2024-06-15'),
     userId: 'Sleepy',
   },
   {
     id: 'Entertainment',
-    name: 'IsVery',
+    name: 'Entertainment',
     createdAt: new Date('2024-06-15'),
     updatedAt: new Date('2024-06-15'),
     userId: 'Sleepy',
   },
 ]
 
-test('Default Category creation should return that same category', async () => {
+test('Default Category creation should return the defaults', async () => {
   prisma.category.create.mockResolvedValueOnce({ ...defaultCategories[0] })
   prisma.category.create.mockResolvedValueOnce({ ...defaultCategories[1] })
   prisma.category.create.mockResolvedValueOnce({ ...defaultCategories[2] })
   const testCategories = await createDefaultCategories('Sleepy')
   expect(testCategories).toEqual(defaultCategories)
+})
+
+test('Category creation should return the same category', async () => {
+  prisma.category.create.mockResolvedValueOnce({ ...category })
+  const testCategory = await createCategory('Sleepy', 'IsVery')
+  expect(testCategory).toEqual(category)
 })
