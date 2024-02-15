@@ -133,11 +133,7 @@ export const useBudgetStore = defineStore('budget', () => {
     try {
       const { data } = await $client.budget.get.useQuery()
 
-      if (!data.value)
-        return toast.add({
-          title: 'Error',
-          description: 'Something went wrong',
-        })
+      if (!data.value) return new Error('Something went wrong')
 
       budget.value.amount = data.value.amount
       budget.value.startDate = new Date(data.value.start)
