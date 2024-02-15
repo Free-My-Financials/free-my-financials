@@ -3,6 +3,7 @@ import prisma from '~/server/utils/prisma/__mocks__'
 import {
   createCategory,
   createDefaultCategories,
+  createOrGetCategory,
 } from '~/server/utils/prisma/category'
 
 vi.mock('~/server/utils/prisma')
@@ -50,5 +51,17 @@ test('Default Category creation should return the defaults', async () => {
 test('Category creation should return the same category', async () => {
   prisma.category.create.mockResolvedValueOnce({ ...category })
   const testCategory = await createCategory('Sleepy', 'IsVery')
+  expect(testCategory).toEqual(category)
+})
+
+test('createOrGetCategory returns existing category when it exists', async () => {
+  prisma.category.findUnique.mockResolvedValueOnce({ ...category })
+  const testCategory = await createOrGetCategory('Sleepy', 'IsVery')
+  expect(testCategory).toEqual(category)
+})
+
+test('createOrGetCategory returns created category when it is made', async () => {
+  prisma.category.create.mockResolvedValueOnce({ ...category })
+  const testCategory = await createOrGetCategory('Sleepy', 'IsVery')
   expect(testCategory).toEqual(category)
 })
