@@ -5,6 +5,8 @@ import {
   createDefaultCategories,
   createOrGetCategory,
   getCategoriesByUserId,
+  getCategoryById,
+  getCategoryByUserIdAndName,
 } from '~/server/utils/prisma/category'
 
 vi.mock('~/server/utils/prisma')
@@ -71,4 +73,16 @@ test('getCategoriesByUserId returns users categories', async () => {
   prisma.category.findMany.mockResolvedValueOnce(defaultCategories)
   const testCategories = await getCategoriesByUserId('Sleepy')
   expect(testCategories).toEqual(defaultCategories)
+})
+
+test('getCategoryById returns the correct category', async () => {
+  prisma.category.findUnique.mockResolvedValueOnce({ ...category })
+  const testCategory = await getCategoryById('Pandora')
+  expect(testCategory).toEqual(category)
+})
+
+test('getCategoryByUserIdAndName returns the correct category', async () => {
+  prisma.category.findUnique.mockResolvedValueOnce({ ...category })
+  const testCategory = await getCategoryByUserIdAndName('Sleep', 'IsVery')
+  expect(testCategory).toEqual(category)
 })
