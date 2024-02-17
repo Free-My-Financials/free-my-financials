@@ -4,6 +4,7 @@ import {
   createStore,
   createOrGetStore,
   getStoresByUserId,
+  getStoreByUserIdAndName,
 } from '~/server/utils/prisma/store'
 
 vi.mock('~/server/utils/prisma')
@@ -45,7 +46,7 @@ test('createOrGetStore should return the same store if it creates the store', as
   expect(testStore).toEqual(store)
 })
 
-test('createOrGetStore should return the same store if it already has the store', async () => {
+test('createOrGetStore should return the existing store if it already has the store', async () => {
   prisma.store.findUnique.mockResolvedValueOnce({ ...store })
   const testStore = await createOrGetStore('NotPandora', 'The Milk Store')
   expect(testStore).toEqual(store)
@@ -55,4 +56,13 @@ test('getStoresByUserId should return the correct array', async () => {
   prisma.store.findMany.mockResolvedValueOnce(storeArray)
   const testStores = await getStoresByUserId('NotPandora')
   expect(testStores).toEqual(storeArray)
+})
+
+test('getStoreByUserIdAndName should return the correct store', async () => {
+  prisma.store.findUnique.mockResolvedValueOnce({ ...store })
+  const testStore = await getStoreByUserIdAndName(
+    'NotPandora',
+    'The Milk Store'
+  )
+  expect(testStore).toEqual(store)
 })
