@@ -1,6 +1,6 @@
 import { expect, test, vi } from 'vitest'
 import prisma from '~/server/utils/prisma/__mocks__'
-import { createStore } from '~/server/utils/prisma/store'
+import { createStore, createOrGetStore } from '~/server/utils/prisma/store'
 
 vi.mock('~/server/utils/prisma')
 
@@ -15,5 +15,17 @@ const store = {
 test('Store creation should return the same store', async () => {
   prisma.store.create.mockResolvedValueOnce({ ...store })
   const testStore = await createStore('NotPandora', 'The Milk Store')
+  expect(testStore).toEqual(store)
+})
+
+test('createOrGetStore should return the same store if it creates the store', async () => {
+  prisma.store.create.mockResolvedValueOnce({ ...store })
+  const testStore = await createOrGetStore('NotPandora', 'The Milk Store')
+  expect(testStore).toEqual(store)
+})
+
+test('createOrGetStore should return the same store if the store exists', async () => {
+  prisma.store.findUnique.mockResolvedValueOnce({ ...store })
+  const testStore = await createOrGetStore('NotPandora', 'The Milk Store')
   expect(testStore).toEqual(store)
 })
