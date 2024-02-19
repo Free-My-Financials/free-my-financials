@@ -49,12 +49,22 @@
         placeholder="Search transactions by store or category"
       />
     </div>
+    <ConfirmationModal
+      :is-open="deleteModalActive"
+      :content="deleteModalContent"
+      @cancel="onDeleteModalCancel"
+      @confirm="onDeleteModalConfirm"
+    />
   </div>
 </template>
 
 <script setup>
 const transactions = useTransactionStore()
 const searchQuery = ref('')
+
+const deleteModalActive = ref(false)
+const deleteModalContent = ref('')
+const currentID = ref('')
 
 const formatDate = (dateString) => {
   const options = {
@@ -141,11 +151,31 @@ const calculateFilteredTotalBalance = computed(() => {
 })
 
 function confirmDeleteTransaction(id) {
-  const isConfirmed = window.confirm(
-    'Are you sure you want to delete this transaction?'
-  )
+  const transaction = transactions.getTransactionById(id)
 
-  if (isConfirmed) transactions.removeTransaction(id)
+  currentID.value = id
+
+  deleteModalContent.value =
+    'Are you sure you want to delete transaction from ' +
+    formatDate(transaction.date) +
+    ' at ' +
+    transaction.store +
+    ' for $' +
+    transaction.amount / 100.0 +
+    ' in the ' +
+    transaction.category +
+    ' category?'
+
+  deleteModalActive.value = true
+}
+
+function onDeleteModalCancel() {
+  deleteModalActive.value = false
+}
+
+function onDeleteModalConfirm() {
+  transactions.removeTransaction(currentID.value)
+  deleteModalActive.value = false
 }
 </script>
 
