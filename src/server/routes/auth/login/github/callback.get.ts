@@ -45,7 +45,7 @@ export default defineEventHandler(async (event) => {
       'Set-Cookie',
       lucia.createSessionCookie(session.id).serialize()
     )
-    return sendRedirect(event, '/')
+    return sendRedirect(event, '/budget')
   } catch (e) {
     // the specific error message depends on the provider
     if (e instanceof OAuth2RequestError) {
