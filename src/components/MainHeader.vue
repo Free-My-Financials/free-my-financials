@@ -5,8 +5,8 @@
 
       <div class="flex-grow"></div>
 
-      <UINavigationMenuItem class="p-">
-        <UIButton>Get Started</UIButton>
+      <UINavigationMenuItem>
+        <GetStartedButton />
       </UINavigationMenuItem>
     </UINavigationMenuList>
   </UINavigationMenu>
