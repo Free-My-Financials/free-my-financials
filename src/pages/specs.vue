@@ -1,36 +1,57 @@
 <template>
-  <div class="charts-container">
-    <FinancialPieChart :transactions="transactions" />
-    <canvas ref="barChart" @click="handleBarClick"></canvas>
+  <div class="page-container">
+    <div class="charts-container">
+      <canvas ref="pieChartCanvas"></canvas>
+    </div>
+
+    <div class="table-container"></div>
+
+    <div class="search-container"></div>
+    <ConfirmationModal
+      :is-open="deleteModalActive"
+      :content="deleteModalContent"
+      @cancel="onDeleteModalCancel"
+      @confirm="onDeleteModalConfirm"
+    />
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import Chart from 'chart.js/auto'
-import { useRouter } from 'vue-router'
 import { useTransactionStore } from '~/stores/transaction'
 
 const transactions = useTransactionStore()
+const deleteModalActive = ref(false)
+const deleteModalContent = ref('')
+const currentID = ref('')
 
-const pieChart = ref(null)
-const barChart = ref(null)
-const router = useRouter()
+const pieChartCanvas = ref(null)
 
 onMounted(() => {
-  if (pieChart.value) {
-    const ctx = pieChart.value.getContext('2d')
+  renderPieChart()
+})
+
+function renderPieChart() {
+  if (pieChartCanvas.value) {
+    const ctx = pieChartCanvas.value.getContext('2d')
 
     const categories = {}
+    let totalAmount = 0
+
     transactions.transactions.forEach((transaction) => {
       if (transaction.category) {
         categories[transaction.category] =
           (categories[transaction.category] || 0) + transaction.amount
+        totalAmount += transaction.amount
       }
     })
 
     const categoryLabels = Object.keys(categories)
     const categoryAmounts = Object.values(categories)
+    const percentages = categoryAmounts.map(
+      (amount) => (amount / totalAmount) * 100
+    )
 
     new Chart(ctx, {
       type: 'pie',
@@ -38,7 +59,7 @@ onMounted(() => {
         labels: categoryLabels,
         datasets: [
           {
-            data: categoryAmounts,
+            data: percentages,
             backgroundColor: [
               'rgba(255, 99, 132, 0.6)',
               'rgba(54, 162, 235, 0.6)',
@@ -56,25 +77,53 @@ onMounted(() => {
       },
     })
   }
-})
-
-function handleBarClick(event) {
-  const barChartInstance = barChart.value
-  const activeElements = barChartInstance.getElementsAtEvent(event)
-
-  if (activeElements.length > 0) {
-    const selectedIndex = activeElements[0].index
-    const labels = barChartInstance.data.labels
-    const selectedMonth = labels[selectedIndex]
-    router.push({ name: 'calendar', params: { month: selectedMonth } })
-  }
 }
 </script>
 
 <style scoped>
-.charts-container {
+.page-container {
   display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+}
+
+.charts-container {
+  flex: 1;
+}
+
+.table-container {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.search-container {
+  border-radius: 25px;
+  box-shadow: 0px 0px 0px;
+  width: 100%;
+  padding-top: 10px;
+  padding-left: 20px;
+  height: 2.5rem;
+  box-shadow: 0px 0px 0px;
+  width: 35%;
+  font-size: 16px;
+  line-height: 125%;
+  display: flex;
+}
+
+.search-container input {
+  width: 100%;
+  padding-left: 40px;
+  left: -10px;
+  border-radius: 15px;
+}
+
+.search-container:hover {
+  border-radius: 25px;
+}
+
+.search-container .search-icon {
+  position: relative;
+  left: 25px;
+  top: 5px;
+  font-size: 18px;
+  color: #555;
 }
 </style>
