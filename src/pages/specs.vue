@@ -20,6 +20,9 @@
       <div class="left-container">
         <div class="charts-container">
           <canvas ref="pieChartCanvas"></canvas>
+          <div v-if="showQuote" class="quote-container">
+            <p>No transactions found for the month of {{ currentMonthName }}</p>
+          </div>
         </div>
       </div>
 
@@ -39,7 +42,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed, watch } from 'vue'
+import { onMounted, ref } from 'vue'
 import Chart from 'chart.js/auto'
 import { useTransactionStore } from '~/stores/transaction'
 
@@ -53,12 +56,13 @@ const currentMonthName = ref(
 )
 const pieChartCanvas = ref(null)
 let chartInstance = null
+let showQuote = ref(false)
 
 onMounted(() => {
-  renderPieChart()
+  renderChart()
 })
 
-function renderPieChart() {
+function renderChart() {
   if (pieChartCanvas.value) {
     const ctx = pieChartCanvas.value.getContext('2d')
     const categories = {}
@@ -72,6 +76,17 @@ function renderPieChart() {
         )
       }
     )
+
+    if (filteredTransactions.length === 0) {
+      showQuote.value = true
+      if (chartInstance) {
+        chartInstance.destroy()
+      }
+      return
+    } else {
+      showQuote.value = false
+    }
+
     filteredTransactions.forEach((transaction) => {
       if (transaction.category) {
         categories[transaction.category] =
@@ -123,7 +138,6 @@ function prevMonth() {
     currentMonth.value -= 1
   }
   updateMonthName()
-  renderPieChart()
 }
 
 function nextMonth() {
@@ -134,18 +148,14 @@ function nextMonth() {
     currentMonth.value += 1
   }
   updateMonthName()
-  renderPieChart()
 }
 
 function updateMonthName() {
   currentMonthName.value = new Intl.DateTimeFormat('en-US', {
     month: 'long',
   }).format(new Date(currentYear.value, currentMonth.value, 1))
+  renderChart()
 }
-
-onMounted(() => {
-  updateMonthName()
-})
 </script>
 
 <style scoped>
@@ -192,6 +202,9 @@ onMounted(() => {
 .left-container {
   flex: 1;
   padding-right: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .right-container {
@@ -203,7 +216,7 @@ onMounted(() => {
   padding: 10px;
 }
 
-.table-container,
-.search-container {
+.quote-container {
+  text-align: center;
 }
 </style>
