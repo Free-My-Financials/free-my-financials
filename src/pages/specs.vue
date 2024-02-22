@@ -1,32 +1,40 @@
 <template>
   <div class="page-container">
-    <div class="calendar-container">
-      <div class="calendar-nav">
+    <div class="header">
+      <div class="nav-buttons">
         <UButton type="button" @click="prevMonth" class="nav-button">
           &lt;
         </UButton>
-        <div class="month-heading">
-          <h2>{{ currentMonthName }} {{ currentYear }}</h2>
-        </div>
+      </div>
+      <div class="month-heading">
+        <h2>{{ currentMonthName }} {{ currentYear }}</h2>
+      </div>
+      <div class="nav-buttons">
         <UButton type="button" @click="nextMonth" class="nav-button">
           &gt;
         </UButton>
       </div>
     </div>
 
-    <div class="charts-container">
-      <canvas ref="pieChartCanvas"></canvas>
+    <div class="content-container">
+      <div class="left-container">
+        <div class="charts-container">
+          <canvas ref="pieChartCanvas"></canvas>
+        </div>
+      </div>
+
+      <div class="right-container">
+        <div class="table-container"></div>
+
+        <div class="search-container"></div>
+        <ConfirmationModal
+          :is-open="deleteModalActive"
+          :content="deleteModalContent"
+          @cancel="onDeleteModalCancel"
+          @confirm="onDeleteModalConfirm"
+        />
+      </div>
     </div>
-
-    <div class="table-container"></div>
-
-    <div class="search-container"></div>
-    <ConfirmationModal
-      :is-open="deleteModalActive"
-      :content="deleteModalContent"
-      @cancel="onDeleteModalCancel"
-      @confirm="onDeleteModalConfirm"
-    />
   </div>
 </template>
 
@@ -146,19 +154,25 @@ onMounted(() => {
   flex-direction: column;
 }
 
-.calendar-container {
+.header {
   background-color: #053505;
   color: #f0f8ff;
   border-radius: 5px;
   margin-bottom: 20px;
   padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.calendar-nav {
+.nav-buttons {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
+}
+
+.month-heading {
+  flex-grow: 1;
+  text-align: center;
 }
 
 .nav-button {
@@ -168,35 +182,28 @@ onMounted(() => {
   padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
-}
-
-.month-heading {
-  display: flex;
-  align-items: center;
-}
-
-.total-balance {
-  display: flex;
-  align-items: center;
-  margin-left: 20px;
-}
-
-.balance-container {
-  display: flex;
-  align-items: center;
   margin-left: 10px;
 }
 
-.arrow {
-  margin-left: 5px;
-  font-size: 1.5em;
+.content-container {
+  display: flex;
 }
 
-.arrow-up {
-  color: green;
+.left-container {
+  flex: 1;
+  padding-right: 10px;
 }
 
-.arrow-down {
-  color: red;
+.right-container {
+  flex: 1;
+  padding-left: 10px;
+}
+
+.charts-container {
+  padding: 10px;
+}
+
+.table-container,
+.search-container {
 }
 </style>
