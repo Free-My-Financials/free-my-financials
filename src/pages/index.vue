@@ -71,6 +71,14 @@
             change in your monthly spending.
           </p>
         </li>
+        <li class="feature-item">
+          <h2 class="feature-title">Monitor Monthly Changes</h2>
+          <p class="feature-text">
+            Visit the
+            <NuxtLink to="/specs" class="green-text-link"> Specs </NuxtLink>
+            page. Placeholder text
+          </p>
+        </li>
       </ul>
     </div>
   </div>
