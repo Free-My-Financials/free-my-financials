@@ -5,6 +5,8 @@ export default defineVitestConfig({
     environment: 'nuxt',
     coverage: {
       reporter: ['text', 'json', 'html'],
+      exclude: ['**/components/ui/**'],
     },
+    exclude: ['.direnv/**', 'node_modules/**'],
   },
 })
