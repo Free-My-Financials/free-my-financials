@@ -1,9 +1,9 @@
 <template>
   <NuxtLayout name="main">
     <div
-      class="py-16 px-16 bg-violet-600 text-white flex flex-row justify-center"
+      class="flex flex-row justify-center bg-violet-600 px-16 py-16 text-white"
     >
-      <div class="flex-shrink flex flex-row">
+      <div class="flex flex-shrink flex-row">
         <div class="w-1/2">
           <h1 class="text-6xl font-bold">Shift Your Financial Philosophy</h1>
           <h2 class="text-4xl font-semibold">
@@ -19,7 +19,7 @@
             viewBox="0 0 24 24"
             strokeWidth="1.5"
             stroke="white"
-            class="w-64 h-64"
+            class="h-64 w-64"
           >
             <path
               strokeLinecap="round"
