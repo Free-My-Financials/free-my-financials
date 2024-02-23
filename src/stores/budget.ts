@@ -1,3 +1,5 @@
+import { skipHydrate } from 'pinia'
+
 export interface Budget {
   startDate: Date
   amount: number
@@ -5,7 +7,6 @@ export interface Budget {
 }
 
 export const useBudgetStore = defineStore('budget', () => {
-  const auth = useAuthStore()
   const { $client } = useNuxtApp()
 
   const budget = ref<Budget>({
@@ -112,8 +113,6 @@ export const useBudgetStore = defineStore('budget', () => {
   }
 
   const fetchBudget = async () => {
-    if (!auth.isLoggedIn) return
-
     try {
       const { data } = await $client.budget.get.useQuery()
 
@@ -130,7 +129,7 @@ export const useBudgetStore = defineStore('budget', () => {
   fetchBudget()
 
   return {
-    budget,
+    budget: skipHydrate(budget),
     amount,
     startDate,
     endDate,
@@ -150,3 +149,6 @@ export const useBudgetStore = defineStore('budget', () => {
     fetchBudget,
   }
 })
+
+if (import.meta.hot)
+  import.meta.hot.accept(acceptHMRUpdate(useBudgetStore, import.meta.hot))

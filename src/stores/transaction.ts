@@ -1,3 +1,5 @@
+import { skipHydrate } from 'pinia'
+
 export enum TransactionType {
   INCOME = 'Income',
   EXPENSE = 'Expense',
@@ -13,7 +15,6 @@ export interface Transaction {
 }
 
 export const useTransactionStore = defineStore('transactions', () => {
-  const auth = useAuthStore()
   const { $client } = useNuxtApp()
 
   const transactions = ref<Transaction[]>([])
@@ -101,14 +102,8 @@ export const useTransactionStore = defineStore('transactions', () => {
   }
 
   const fetchTransactions = async () => {
-    if (!auth.isLoggedIn) return
-
     try {
       const { data } = await $client.transaction.list.useQuery()
-
-      // FIXME: This is a workaround for and issue where the data is not available immediately
-      //        after the query is called
-      await new Promise((resolve) => setTimeout(resolve, 50))
 
       if (!data?.value) return
 
@@ -133,7 +128,7 @@ export const useTransactionStore = defineStore('transactions', () => {
   fetchTransactions()
 
   return {
-    transactions,
+    transactions: skipHydrate(transactions),
     isEmpty,
     totalIncome,
     totalExpense,
@@ -148,3 +143,6 @@ export const useTransactionStore = defineStore('transactions', () => {
     fetchTransactions,
   }
 })
+
+if (import.meta.hot)
+  import.meta.hot.accept(acceptHMRUpdate(useTransactionStore, import.meta.hot))

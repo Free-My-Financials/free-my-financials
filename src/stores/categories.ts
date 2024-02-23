@@ -1,7 +1,6 @@
 import { skipHydrate } from 'pinia'
 
 export const useCategoryStore = defineStore('categories', () => {
-  const auth = useAuthStore()
   const { $client } = useNuxtApp()
 
   const categories = ref<string[]>([])
@@ -24,14 +23,8 @@ export const useCategoryStore = defineStore('categories', () => {
   }
 
   const fetchCategories = async () => {
-    if (!auth.isLoggedIn) return
-
     try {
       const { data } = await $client.category.list.useQuery()
-
-      // FIXME: This is a workaround for and issue where the data is not available immediately
-      //        after the query is called
-      await new Promise((resolve) => setTimeout(resolve, 50))
 
       if (!data?.value) return
 
@@ -51,3 +44,6 @@ export const useCategoryStore = defineStore('categories', () => {
     fetchCategories,
   }
 })
+
+if (import.meta.hot)
+  import.meta.hot.accept(acceptHMRUpdate(useCategoryStore, import.meta.hot))

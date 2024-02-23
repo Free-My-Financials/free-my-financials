@@ -5,7 +5,7 @@
       <UITableHead>Amount</UITableHead>
     </UITableHeader>
     <UITableBody>
-      <CategoryTableRow
+      <BudgetTableRow
         v-for="category in categories.categories"
         :key="category"
         :category="category"

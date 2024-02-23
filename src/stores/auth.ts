@@ -1,3 +1,5 @@
+import { skipHydrate } from 'pinia'
+
 interface User {
   id: string
   username: string
@@ -26,7 +28,7 @@ export const useAuthStore = defineStore('auth', () => {
     await navigateTo('/login')
   }
 
-  const isLoggedIn = computed(() => user.value !== null)
+  const isLoggedIn = computed(() => !!user.value)
 
   const setUser = (newUser: User) => (user.value = newUser)
 
@@ -41,10 +43,13 @@ export const useAuthStore = defineStore('auth', () => {
   fetchUser()
 
   return {
-    user,
+    user: skipHydrate(user),
     register,
     login,
     logout,
     isLoggedIn,
   }
 })
+
+if (import.meta.hot)
+  import.meta.hot.accept(acceptHMRUpdate(useAuthStore, import.meta.hot))
