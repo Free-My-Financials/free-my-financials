@@ -25,31 +25,40 @@
       </div>
 
       <div class="right-container">
-        <div class="budget-container">
-          <p class="budget-summary">
-            You have {{ remainingMonths }} months and {{ remainingDays }} days
-            left of your budget. You've spent
-            <DollarAmount
-              :amount="Math.abs(budget.totalBalance - budget.amount)"
-            />
-            of your <DollarAmount :amount="budget.amount" /> budget, leaving you
-            with <DollarAmount :amount="budget.totalBalance" /> left to spend.
-          </p>
-          <div class="button-container">
-            <NuxtLink to="/budget/budget" class="green-button">
-              Budget Transactions
-            </NuxtLink>
+        <template v-if="remainingDays > 0">
+          <div class="budget-container">
+            <p class="budget-summary">
+              You have
+              <template v-if="remainingWeeks > 0">
+                {{ remainingWeeks }} week{{ remainingWeeks > 1 ? 's' : '' }}
+                <template v-if="remainingDays > 0">
+                  and {{ remainingDays }} day{{ remainingDays > 1 ? 's' : '' }}
+                </template>
+              </template>
+              <template v-else>
+                {{ remainingDays }} day{{ remainingDays > 1 ? 's' : '' }}
+              </template>
+              left of your budget. You've spent
+              <DollarAmount :amount="spendingToDate" />
+              since the start of your budgeeeeeet. You're
+              <span :class="isOnTrack ? 'on-track' : 'off-track'">
+                {{ isOnTrack ? 'on track' : 'not on track' }}
+              </span>
+              to keep under your budget.
+            </p>
+            <div class="button-container">
+              <NuxtLink to="/budget/budget" class="green-button">
+                Budget Transactions
+              </NuxtLink>
+            </div>
           </div>
-        </div>
+        </template>
 
-        <div class="table-container"></div>
-        <div class="search-container"></div>
-        <ConfirmationModal
-          :is-open="deleteModalActive"
-          :content="deleteModalContent"
-          @cancel="onDeleteModalCancel"
-          @confirm="onDeleteModalConfirm"
-        />
+        <template v-else>
+          <div class="budget-container">
+            <p class="budget-summary">No Active Budget</p>
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -189,42 +198,22 @@ const remaining = computed(() => {
   return budget.amount - totalSpent.value
 })
 
-const remainingMonths = computed(() => {
-  const currentDate = new Date()
-  const endDate = new Date(budget.endDate)
-  const diffMonths =
-    endDate.getMonth() -
-    currentDate.getMonth() +
-    12 * (endDate.getFullYear() - currentDate.getFullYear())
-  return diffMonths
+const remainingWeeks = computed(() => {
+  const remainingDays = budget.endDate - Date.now()
+  return Math.floor(remainingDays / (1000 * 60 * 60 * 24 * 7))
 })
 
 const remainingDays = computed(() => {
-  const currentDate = new Date()
-  const endDate = new Date(budget.endDate)
-  const diffTime = endDate - currentDate
-  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-  return diffDays
+  const remainingDays = budget.endDate - Date.now()
+  return Math.ceil(remainingDays / (1000 * 60 * 60 * 24)) % 7
 })
 
-const columns = [
-  {
-    key: 'store',
-    label: 'Store',
-    class: 'italic',
-    sortable: true,
-  },
-  {
-    key: 'amount',
-    label: 'Amount',
-    sortable: true,
-  },
-  {
-    key: 'date',
-    label: 'Date',
-    sortable: true,
-  },
-]
+const daysElapsed = Math.ceil(
+  (Date.now() - budget.startDate) / (1000 * 60 * 60 * 24)
+)
+const spendingToDate = budget.totalBalance - budget.amount
+
+const isOnTrack = budget.totalBalance >= 0
 </script>
 
 <style scoped>
@@ -286,6 +275,14 @@ const columns = [
 
 .budget-summary {
   margin-bottom: 20px;
+}
+
+.on-track {
+  color: green;
+}
+
+.off-track {
+  color: red;
 }
 
 .button-container {
