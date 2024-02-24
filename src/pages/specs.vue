@@ -27,8 +27,37 @@
       </div>
 
       <div class="right-container">
-        <div class="table-container"></div>
+        <!-- Display Budget Information -->
+        <div class="budget-container">
+          <h3>
+            Start of budget: <UBadge :label="budget.startDate.toDateString()" />
+          </h3>
+          <h3>
+            End of budget: <UBadge :label="budget.endDate.toDateString()" />
+          </h3>
+          <h3>
+            TOTAL BALANCE: <DollarAmount :amount="budget.totalBalance" />
+            <UBadge label="Out of" /> <DollarAmount :amount="budget.amount" />
+          </h3>
+          <UTable
+            :sort="{ column: 'date', direction: 'desc' }"
+            :rows="budget.transactions"
+            :columns="columns"
+          >
+            <template #amount-data="{ row }">
+              <DollarAmount
+                :amount="
+                  row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)
+                "
+              />
+            </template>
+            <template #date-data="{ row }">
+              <span>{{ new Date(row.date.toString()).toDateString() }}</span>
+            </template>
+          </UTable>
+        </div>
 
+        <div class="table-container"></div>
         <div class="search-container"></div>
         <ConfirmationModal
           :is-open="deleteModalActive"
@@ -45,8 +74,10 @@
 import { onMounted, ref } from 'vue'
 import Chart from 'chart.js/auto'
 import { useTransactionStore } from '~/stores/transaction'
+import { useBudgetStore } from '~/stores/budget' // Import useBudgetStore
 
 const transactions = useTransactionStore()
+const budget = useBudgetStore() // Add useBudgetStore
 const currentYear = ref(new Date().getFullYear())
 const currentMonth = ref(new Date().getMonth())
 const currentMonthName = ref(
@@ -218,5 +249,12 @@ function updateMonthName() {
 
 .quote-container {
   text-align: center;
+}
+
+.budget-container {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 20px;
 }
 </style>
