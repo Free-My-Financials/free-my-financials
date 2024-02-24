@@ -27,18 +27,14 @@
       </div>
 
       <div class="right-container">
-        <!-- Display Budget Information -->
         <div class="budget-container">
-          <h3>
-            Start of budget: <UBadge :label="budget.startDate.toDateString()" />
-          </h3>
-          <h3>
-            End of budget: <UBadge :label="budget.endDate.toDateString()" />
-          </h3>
-          <h3>
-            TOTAL BALANCE: <DollarAmount :amount="budget.totalBalance" />
-            <UBadge label="Out of" /> <DollarAmount :amount="budget.amount" />
-          </h3>
+          <p>
+            You have {{ remainingMonths }} months and {{ remainingDays }} days
+            left of your budget. You've spent
+            <DollarAmount :amount="budget.totalBalance - budget.amount" /> of
+            your <DollarAmount :amount="budget.amount" /> budget, leaving you
+            with <DollarAmount :amount="budget.totalBalance" /> left to spend.
+          </p>
           <UTable
             :sort="{ column: 'date', direction: 'desc' }"
             :rows="budget.transactions"
@@ -46,9 +42,7 @@
           >
             <template #amount-data="{ row }">
               <DollarAmount
-                :amount="
-                  row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)
-                "
+                :amount="row.amount * (row.type === 'EXPENSE' ? -1 : 1)"
               />
             </template>
             <template #date-data="{ row }">
@@ -71,13 +65,13 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import Chart from 'chart.js/auto'
 import { useTransactionStore } from '~/stores/transaction'
-import { useBudgetStore } from '~/stores/budget' // Import useBudgetStore
+import { useBudgetStore } from '~/stores/budget'
 
 const transactions = useTransactionStore()
-const budget = useBudgetStore() // Add useBudgetStore
+const budget = useBudgetStore()
 const currentYear = ref(new Date().getFullYear())
 const currentMonth = ref(new Date().getMonth())
 const currentMonthName = ref(
@@ -187,6 +181,59 @@ function updateMonthName() {
   }).format(new Date(currentYear.value, currentMonth.value, 1))
   renderChart()
 }
+
+const totalSpent = computed(() => {
+  return budget.transactions.reduce((total, transaction) => {
+    return total + (transaction.type === 'EXPENSE' ? transaction.amount : 0)
+  }, 0)
+})
+
+const budgetAmountSpent = computed(() => {
+  return budget.transactions.reduce((total, transaction) => {
+    return total + (transaction.type === 'EXPENSE' ? transaction.amount : 0)
+  }, 0)
+})
+
+const remaining = computed(() => {
+  return budget.amount - totalSpent.value
+})
+
+const remainingMonths = computed(() => {
+  const currentDate = new Date()
+  const endDate = new Date(budget.endDate)
+  const diffMonths =
+    endDate.getMonth() -
+    currentDate.getMonth() +
+    12 * (endDate.getFullYear() - currentDate.getFullYear())
+  return diffMonths
+})
+
+const remainingDays = computed(() => {
+  const currentDate = new Date()
+  const endDate = new Date(budget.endDate)
+  const diffTime = endDate - currentDate
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+  return diffDays
+})
+
+const columns = [
+  {
+    key: 'store',
+    label: 'Store',
+    class: 'italic',
+    sortable: true,
+  },
+  {
+    key: 'amount',
+    label: 'Amount',
+    sortable: true,
+  },
+  {
+    key: 'date',
+    label: 'Date',
+    sortable: true,
+  },
+]
 </script>
 
 <style scoped>
