@@ -3,15 +3,13 @@
     <div class="header">
       <div class="nav-buttons">
         <UButton type="button" @click="prevMonth" class="nav-button">
-          &lt;
+          &lt; Previous Month
         </UButton>
       </div>
-      <div class="month-heading">
-        <h2>{{ currentMonthName }} {{ currentYear }}</h2>
-      </div>
+      <h2 class="month-heading">{{ currentMonthName }} {{ currentYear }}</h2>
       <div class="nav-buttons">
         <UButton type="button" @click="nextMonth" class="nav-button">
-          &gt;
+          Next Month &gt;
         </UButton>
       </div>
     </div>
@@ -28,27 +26,20 @@
 
       <div class="right-container">
         <div class="budget-container">
-          <p>
+          <p class="budget-summary">
             You have {{ remainingMonths }} months and {{ remainingDays }} days
             left of your budget. You've spent
-            <DollarAmount :amount="budget.totalBalance - budget.amount" /> of
-            your <DollarAmount :amount="budget.amount" /> budget, leaving you
+            <DollarAmount
+              :amount="Math.abs(budget.totalBalance - budget.amount)"
+            />
+            of your <DollarAmount :amount="budget.amount" /> budget, leaving you
             with <DollarAmount :amount="budget.totalBalance" /> left to spend.
           </p>
-          <UTable
-            :sort="{ column: 'date', direction: 'desc' }"
-            :rows="budget.transactions"
-            :columns="columns"
-          >
-            <template #amount-data="{ row }">
-              <DollarAmount
-                :amount="row.amount * (row.type === 'EXPENSE' ? -1 : 1)"
-              />
-            </template>
-            <template #date-data="{ row }">
-              <span>{{ new Date(row.date.toString()).toDateString() }}</span>
-            </template>
-          </UTable>
+          <div class="button-container">
+            <NuxtLink to="/budget/budget" class="green-button">
+              Budget Transactions
+            </NuxtLink>
+          </div>
         </div>
 
         <div class="table-container"></div>
@@ -237,40 +228,40 @@ const columns = [
 </script>
 
 <style scoped>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 .page-container {
-  display: flex;
-  flex-direction: column;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .header {
   background-color: #053505;
   color: #f0f8ff;
   border-radius: 5px;
-  margin-bottom: 20px;
   padding: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.nav-buttons {
-  display: flex;
-  align-items: center;
+  margin-bottom: 20px;
 }
 
 .month-heading {
-  flex-grow: 1;
-  text-align: center;
+  font-size: 1.5rem;
 }
 
 .nav-button {
   background-color: #006400;
   color: #f0f8ff;
   border: none;
-  padding: 5px 10px;
+  padding: 8px 16px;
   border-radius: 5px;
   cursor: pointer;
-  margin-left: 10px;
+  margin: 0 10px;
 }
 
 .content-container {
@@ -279,29 +270,42 @@ const columns = [
 
 .left-container {
   flex: 1;
-  padding-right: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .right-container {
   flex: 1;
-  padding-left: 10px;
-}
-
-.charts-container {
-  padding: 10px;
-}
-
-.quote-container {
-  text-align: center;
+  padding-left: 20px;
 }
 
 .budget-container {
-  padding: 10px;
+  padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-bottom: 20px;
+}
+
+.budget-summary {
+  margin-bottom: 20px;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.green-button {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.green-button:hover {
+  background-color: #45a049;
 }
 </style>

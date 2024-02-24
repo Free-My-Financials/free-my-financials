@@ -1,12 +1,14 @@
 <template>
   <div class="calendar-container">
     <div class="calendar-nav">
-      <UButton type="button" @click="prevMonth"> &lt; </UButton>
+      <UButton type="button" @click="prevMonth" class="nav-button">
+        &lt; Previous Month
+      </UButton>
       <h2>{{ currentMonthName }} {{ currentYear }}</h2>
       <span v-if="showMonthlyBalance" class="total-balance">
         Monthly Balance:
         <div class="balance-container">
-          <span class="balance-label" />
+          <span class="balance-label"></span>
           <DollarAmount :amount="monthlyBalance" />
           <i
             v-show="showArrow"
@@ -21,7 +23,9 @@
           </i>
         </div>
       </span>
-      <UButton type="button" @click="nextMonth"> &gt; </UButton>
+      <UButton type="button" @click="nextMonth" class="nav-button">
+        Next Month &gt;
+      </UButton>
     </div>
     <div class="calendar">
       <div class="weekdays">
@@ -49,7 +53,7 @@
           >
             <DollarAmount :amount="dailyBalances[day]" />
           </span>
-          <span v-else />
+          <span v-else></span>
           <div
             v-if="isBudgetStart(day) || isBudgetEnd(day)"
             class="budget-dates"
@@ -245,44 +249,13 @@ function nextMonth() {
 </script>
 
 <style scoped>
-.total-balance {
-  display: flex;
-  align-items: center;
-}
-
-.balance-container {
-  display: flex;
-  align-items: center;
-  margin-left: 5px;
-}
-
-.arrow {
-  margin-left: 5px;
-  font-size: 1.5em;
-}
-
-.arrow-up {
-  color: green;
-}
-
-.arrow-down {
-  color: red;
-}
-
 .calendar-container {
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 96vh;
+  height: 100vh;
   justify-content: center;
-}
-
-h2 {
-  margin-bottom: 10px;
-  margin-top: 10px;
-  font-size: 1.5em;
-  color: #ffffff;
 }
 
 .calendar-nav {
@@ -307,6 +280,13 @@ h2 {
   background-color: #f0f8ff;
   margin-bottom: 10px;
   box-sizing: border-box;
+}
+
+h2 {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  font-size: 1.5em;
+  color: #ffffff;
 }
 
 .weekdays {
@@ -343,5 +323,39 @@ h2 {
 
 .blank {
   flex: 1;
+}
+
+.total-balance {
+  display: flex;
+  align-items: center;
+}
+
+.balance-container {
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
+}
+
+.arrow {
+  margin-left: 5px;
+  font-size: 1.5em;
+}
+
+.arrow-up {
+  color: green;
+}
+
+.arrow-down {
+  color: red;
+}
+
+.nav-button {
+  background-color: #006400;
+  color: #f0f8ff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
 }
 </style>
