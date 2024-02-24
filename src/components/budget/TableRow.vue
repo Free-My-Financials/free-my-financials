@@ -4,6 +4,9 @@
     <UITableCell>
       <DollarAmount :amount="amount" />
     </UITableCell>
+    <UITableCell>
+      <TransactionCreateDialog :category="category" />
+    </UITableCell>
   </UITableRow>
 </template>
 
