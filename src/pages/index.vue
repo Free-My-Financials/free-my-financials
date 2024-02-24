@@ -76,7 +76,9 @@
           <p class="feature-text">
             Visit the
             <NuxtLink to="/specs" class="green-text-link"> Specs </NuxtLink>
-            page. Placeholder text
+            page. Visualize your spending through graphs, showcasing your
+            monthly purchases in graph format, as well as key statistics on your
+            budgeting progress.
           </p>
         </li>
       </ul>

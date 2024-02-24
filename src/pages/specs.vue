@@ -69,24 +69,6 @@
   </div>
 </template>
 
-<style scoped>
-.budget-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-height: 100px;
-}
-
-.quote-wrapper {
-  text-align: center;
-}
-
-.button-container {
-  margin-top: 10px;
-}
-</style>
-
 <script setup>
 import { onMounted, ref, computed } from 'vue'
 import Chart from 'chart.js/auto'
@@ -160,12 +142,12 @@ function renderChart() {
           {
             data: percentages,
             backgroundColor: [
-              'rgba(255, 99, 132, 0.6)',
-              'rgba(54, 162, 235, 0.6)',
-              'rgba(255, 206, 86, 0.6)',
-              'rgba(75, 192, 192, 0.6)',
-              'rgba(153, 102, 255, 0.6)',
-              'rgba(255, 159, 64, 0.6)',
+              'rgba(144, 238, 144, 0.6)',
+              'rgba(50, 205, 50, 0.6)',
+              'rgba(0, 128, 0, 0.6)',
+              'rgba(0, 100, 0, 0.6)',
+              'rgba(34, 139, 34, 0.6)',
+              'rgba(0, 255, 0, 0.6)',
             ],
           },
         ],
@@ -319,9 +301,10 @@ const isOnTrack = budget.totalBalance >= 0
   justify-content: center;
   align-items: center;
   text-align: center;
+  flex-direction: column;
   min-height: 100px;
+  margin-top: 10px;
 }
-
 .budget-summary {
   justify-content: center;
 }
@@ -336,6 +319,7 @@ const isOnTrack = budget.totalBalance >= 0
 
 .button-container {
   display: flex;
+  padding-top: 20px;
   justify-content: center;
 }
 
