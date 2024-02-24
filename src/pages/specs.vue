@@ -57,12 +57,21 @@
         To see a more in depth overview of transactions taking place within your
         budget, click the button below.
       </p>
-      <div class="quote-wrapper" v-if="remainingDays <= 0">
-        <p class="budget-summary">No Active Budget</p>
-      </div>
       <div class="button-container">
         <NuxtLink to="/budget/budget" class="green-button">
           Budget Transactions
+        </NuxtLink>
+      </div>
+    </div>
+    <div class="budget-container" v-else>
+      <div class="quote-wrapper">
+        <p class="budget-summary">
+          No active budget, please set one on the following page.
+        </p>
+      </div>
+      <div class="button-container">
+        <NuxtLink to="/budget/editBudget" class="green-button">
+          Add Budget
         </NuxtLink>
       </div>
     </div>
