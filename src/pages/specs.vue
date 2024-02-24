@@ -13,56 +13,79 @@
         </UButton>
       </div>
     </div>
-
     <div class="content-container">
       <div class="left-container">
         <div class="charts-container">
           <canvas ref="pieChartCanvas"></canvas>
           <div v-if="showQuote" class="quote-container">
-            <p>No transactions found for the month of {{ currentMonthName }}</p>
+            <div class="quote-wrapper">
+              <p>
+                No transactions found for the month of {{ currentMonthName }}
+              </p>
+            </div>
           </div>
         </div>
       </div>
-
-      <div class="right-container">
-        <template v-if="remainingDays > 0">
-          <div class="budget-container">
-            <p class="budget-summary">
-              You have
-              <template v-if="remainingWeeks > 0">
-                {{ remainingWeeks }} week{{ remainingWeeks > 1 ? 's' : '' }}
-                <template v-if="remainingDays > 0">
-                  and {{ remainingDays }} day{{ remainingDays > 1 ? 's' : '' }}
-                </template>
-              </template>
-              <template v-else>
-                {{ remainingDays }} day{{ remainingDays > 1 ? 's' : '' }}
-              </template>
-              left of your budget. You've spent
-              <DollarAmount :amount="spendingToDate" />
-              since the start of your budgeeeeeet. You're
-              <span :class="isOnTrack ? 'on-track' : 'off-track'">
-                {{ isOnTrack ? 'on track' : 'not on track' }}
-              </span>
-              to keep under your budget.
-            </p>
-            <div class="button-container">
-              <NuxtLink to="/budget/budget" class="green-button">
-                Budget Transactions
-              </NuxtLink>
-            </div>
-          </div>
+      <div class="right-container"></div>
+    </div>
+    <div class="budget-container" v-if="remainingDays > 0">
+      <p class="budget-summary">
+        Your budget has
+        <template v-if="remainingWeeks > 0">
+          {{ remainingWeeks }} week{{ remainingWeeks > 1 ? 's' : '' }}
+          <template v-if="remainingDays > 0">
+            and {{ remainingDays }} day{{ remainingDays > 1 ? 's' : '' }}
+          </template>
         </template>
-
         <template v-else>
-          <div class="budget-container">
-            <p class="budget-summary">No Active Budget</p>
-          </div>
+          {{ remainingDays }} day{{ remainingDays > 1 ? 's' : '' }}
         </template>
+        left. You're
+        <span :class="isOnTrack ? 'on-track' : 'off-track'">
+          {{ isOnTrack ? 'on track' : 'not on track' }}
+        </span>
+        to keep under your set budget of
+        <DollarAmount :amount="budget.amount" />, with
+        <template v-if="budget.totalBalance > 0">
+          <DollarAmount :amount="budget.totalBalance" />
+          available.
+        </template>
+        <template v-else>
+          <DollarAmount :amount="budget.totalBalance" />
+          past allowed spending.
+        </template>
+        To see a more in depth overview of transactions taking place within your
+        budget, click the button below.
+      </p>
+      <div class="quote-wrapper" v-if="remainingDays <= 0">
+        <p class="budget-summary">No Active Budget</p>
+      </div>
+      <div class="button-container">
+        <NuxtLink to="/budget/budget" class="green-button">
+          Budget Transactions
+        </NuxtLink>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.budget-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100px;
+}
+
+.quote-wrapper {
+  text-align: center;
+}
+
+.button-container {
+  margin-top: 10px;
+}
+</style>
 
 <script setup>
 import { onMounted, ref, computed } from 'vue'
@@ -266,15 +289,41 @@ const isOnTrack = budget.totalBalance >= 0
   padding-left: 20px;
 }
 
+.charts-container {
+  position: relative;
+  min-height: 400px;
+  padding-bottom: 20px;
+}
+
+.quote-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  text-align: center;
+}
+
+.quote-wrapper {
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .budget-container {
   padding: 20px;
-  border: 1px solid #ccc;
+  border: 1px solid #146d36;
   border-radius: 5px;
   margin-bottom: 20px;
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 100px;
 }
 
 .budget-summary {
-  margin-bottom: 20px;
+  justify-content: center;
 }
 
 .on-track {
