@@ -2,13 +2,13 @@
   <div class="page-container">
     <div class="header">
       <div class="nav-buttons">
-        <UButton type="button" @click="prevMonth" class="nav-button">
+        <UButton type="button" class="nav-button" @click="prevMonth">
           &lt; Previous Month
         </UButton>
       </div>
       <h2 class="month-heading">{{ currentMonthName }} {{ currentYear }}</h2>
       <div class="nav-buttons">
-        <UButton type="button" @click="nextMonth" class="nav-button">
+        <UButton type="button" class="nav-button" @click="nextMonth">
           Next Month &gt;
         </UButton>
       </div>
@@ -27,7 +27,7 @@
         </div>
       </div>
       <div class="right-container">
-        <div class="charts-container" v-if="!showLineChartQuote">
+        <div v-if="!showLineChartQuote" class="charts-container">
           <canvas ref="lineChartCanvas" class="line-chart"></canvas>
         </div>
         <div v-if="showLineChartQuote" class="quote-container">
@@ -40,7 +40,7 @@
     <div class="bar-graph-container">
       <canvas ref="barGraphCanvas"></canvas>
     </div>
-    <div class="budget-container" v-if="remainingDays > 0">
+    <div v-if="remainingDays > 0" class="budget-container">
       <p class="budget-summary">
         Your budget has
         <template v-if="remainingWeeks > 0">
@@ -75,7 +75,7 @@
         </NuxtLink>
       </div>
     </div>
-    <div class="budget-container" v-else>
+    <div v-else class="budget-container">
       <div class="quote-wrapper">
         <p class="budget-summary">
           No active budget, please set one on the following page.
@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
+import { onMounted, ref } from 'vue'
 import Chart from 'chart.js/auto'
 import { useTransactionStore } from '~/stores/transaction'
 import { useBudgetStore } from '~/stores/budget'
@@ -111,8 +111,8 @@ const barGraphCanvas = ref(null)
 let pieChartInstance = null
 let lineChartInstance = null
 let barGraphInstance = null
-let showPieChartQuote = ref(false)
-let showLineChartQuote = ref(false)
+const showPieChartQuote = ref(false)
+const showLineChartQuote = ref(false)
 
 onMounted(() => {
   renderCharts()
@@ -256,6 +256,8 @@ function renderBarGraph() {
     const months = Object.keys(monthlyTransactions)
     const totalTransactions = Object.values(monthlyTransactions)
 
+    const monthlyIncome = getMonthlyIncome()
+
     if (barGraphInstance) {
       barGraphInstance.destroy()
     }
@@ -263,12 +265,17 @@ function renderBarGraph() {
     barGraphInstance = new Chart(ctx, {
       type: 'bar',
       data: {
-        labels: months, // Months on the y-axis
+        labels: months,
         datasets: [
           {
-            label: 'Total Transactions',
+            label: 'Total Income',
+            data: monthlyIncome,
+            backgroundColor: 'rgba(144, 238, 144, 0.6)',
+          },
+          {
+            label: 'Total Expense',
             data: totalTransactions,
-            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+            backgroundColor: 'rgba(255, 0, 0, 0.6)',
           },
         ],
       },
@@ -285,6 +292,30 @@ function renderBarGraph() {
     })
   }
 }
+
+function getMonthlyIncome() {
+  const monthlyIncome = {}
+
+  for (let i = 0; i < 12; i++) {
+    const monthYear = `${i + 1}/${currentYear.value}`
+    monthlyIncome[monthYear] = 0
+  }
+
+  transactions.transactions.forEach((transaction) => {
+    const transactionDate = new Date(transaction.date)
+    const monthYear = `${transactionDate.getMonth() + 1}/${transactionDate.getFullYear()}`
+
+    if (
+      transaction.type === TransactionType.INCOME &&
+      transactionDate.getFullYear() === currentYear.value
+    ) {
+      monthlyIncome[monthYear] += transaction.amount / 100
+    }
+  })
+
+  return Object.values(monthlyIncome)
+}
+
 function getDailyTransactions() {
   const dailyTransactions = {}
   let balance = 0
@@ -371,22 +402,6 @@ function updateMonthName() {
   renderCharts()
 }
 
-const totalSpent = computed(() => {
-  return budget.transactions.reduce((total, transaction) => {
-    return total + (transaction.type === 'EXPENSE' ? transaction.amount : 0)
-  }, 0)
-})
-
-const budgetAmountSpent = computed(() => {
-  return budget.transactions.reduce((total, transaction) => {
-    return total + (transaction.type === 'EXPENSE' ? transaction.amount : 0)
-  }, 0)
-})
-
-const remaining = computed(() => {
-  return budget.amount - totalSpent.value
-})
-
 const remainingWeeks = computed(() => {
   const remainingDays = budget.endDate - Date.now()
   return Math.floor(remainingDays / (1000 * 60 * 60 * 24 * 7))
@@ -396,11 +411,6 @@ const remainingDays = computed(() => {
   const remainingDays = budget.endDate - Date.now()
   return Math.ceil(remainingDays / (1000 * 60 * 60 * 24)) % 7
 })
-
-const daysElapsed = Math.ceil(
-  (Date.now() - budget.startDate) / (1000 * 60 * 60 * 24)
-)
-const spendingToDate = budget.totalBalance - budget.amount
 
 const isOnTrack = budget.totalBalance >= 0
 </script>
@@ -446,13 +456,9 @@ const isOnTrack = budget.totalBalance >= 0
   display: flex;
 }
 
-.left-container {
-  flex: 1;
-}
-
+.left-container,
 .right-container {
   flex: 1;
-  padding-left: 20px;
 }
 
 .line-chart {
@@ -501,12 +507,6 @@ const isOnTrack = budget.totalBalance >= 0
   margin-top: 10px;
 }
 
-.charts-container {
-  width: 100%;
-  position: relative;
-  min-height: 400px;
-  padding-bottom: 20px;
-}
 .budget-summary {
   justify-content: center;
 }

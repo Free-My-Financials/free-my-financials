@@ -1,7 +1,7 @@
 <template>
   <div class="calendar-container">
     <div class="calendar-nav">
-      <UButton type="button" @click="prevMonth" class="nav-button">
+      <UButton type="button" class="nav-button" @click="prevMonth">
         &lt; Previous Month
       </UButton>
       <h2>{{ currentMonthName }} {{ currentYear }}</h2>
@@ -23,7 +23,7 @@
           </i>
         </div>
       </span>
-      <UButton type="button" @click="nextMonth" class="nav-button">
+      <UButton type="button" class="nav-button" @click="nextMonth">
         Next Month &gt;
       </UButton>
     </div>
