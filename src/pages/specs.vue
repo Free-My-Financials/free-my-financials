@@ -35,10 +35,10 @@
             <p>No transactions found for the month of {{ currentMonthName }}</p>
           </div>
         </div>
-        <div class="charts-container">
-          <canvas ref="barGraphCanvas"></canvas>
-        </div>
       </div>
+    </div>
+    <div class="bar-graph-container">
+      <canvas ref="barGraphCanvas"></canvas>
     </div>
     <div class="budget-container" v-if="remainingDays > 0">
       <p class="budget-summary">
@@ -460,7 +460,14 @@ const isOnTrack = budget.totalBalance >= 0
 }
 
 .charts-container {
+  width: 100%;
   position: relative;
+  min-height: 400px;
+  padding-bottom: 20px;
+}
+
+.bar-graph-container {
+  width: 100%;
   min-height: 400px;
   padding-bottom: 20px;
 }
@@ -492,6 +499,13 @@ const isOnTrack = budget.totalBalance >= 0
   flex-direction: column;
   min-height: 100px;
   margin-top: 10px;
+}
+
+.charts-container {
+  width: 100%;
+  position: relative;
+  min-height: 400px;
+  padding-bottom: 20px;
 }
 .budget-summary {
   justify-content: center;
