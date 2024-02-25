@@ -17,7 +17,7 @@
       <div class="left-container">
         <div class="charts-container">
           <canvas ref="pieChartCanvas"></canvas>
-          <div v-if="showQuote" class="quote-container">
+          <div v-if="showPieChartQuote" class="quote-container">
             <div class="quote-wrapper">
               <p>
                 No transactions found for the month of {{ currentMonthName }}
@@ -26,7 +26,18 @@
           </div>
         </div>
       </div>
-      <div class="right-container"></div>
+      <div class="right-container">
+        <div class="charts-container">
+          <canvas ref="lineChartCanvas"></canvas>
+          <div v-if="showLineChartQuote" class="quote-container">
+            <div class="quote-wrapper">
+              <p>
+                No transactions found for the month of {{ currentMonthName }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <div class="budget-container" v-if="remainingDays > 0">
       <p class="budget-summary">
@@ -54,7 +65,7 @@
           <DollarAmount :amount="budget.totalBalance" />
           past allowed spending.
         </template>
-        To see a more in depth overview of transactions taking place within your
+        To see a more in-depth overview of transactions taking place within your
         budget, click the button below.
       </p>
       <div class="button-container">
@@ -94,14 +105,18 @@ const currentMonthName = ref(
   )
 )
 const pieChartCanvas = ref(null)
-let chartInstance = null
-let showQuote = ref(false)
+const lineChartCanvas = ref(null)
+let pieChartInstance = null
+let lineChartInstance = null
+let showPieChartQuote = ref(false)
+let showLineChartQuote = ref(false)
 
 onMounted(() => {
-  renderChart()
+  renderPieChart()
+  renderLineChart()
 })
 
-function renderChart() {
+function renderPieChart() {
   if (pieChartCanvas.value) {
     const ctx = pieChartCanvas.value.getContext('2d')
     const categories = {}
@@ -117,20 +132,20 @@ function renderChart() {
     )
 
     if (filteredTransactions.length === 0) {
-      showQuote.value = true
-      if (chartInstance) {
-        chartInstance.destroy()
+      showPieChartQuote.value = true
+      if (pieChartInstance) {
+        pieChartInstance.destroy()
       }
       return
     } else {
-      showQuote.value = false
+      showPieChartQuote.value = false
     }
 
     filteredTransactions.forEach((transaction) => {
       if (transaction.category) {
         categories[transaction.category] =
-          (categories[transaction.category] || 0) + transaction.amount
-        totalAmount += transaction.amount
+          (categories[transaction.category] || 0) + transaction.amount / 100
+        totalAmount += transaction.amount / 100
       }
     })
     const categoryLabels = Object.keys(categories)
@@ -139,11 +154,11 @@ function renderChart() {
       (amount) => (amount / totalAmount) * 100
     )
 
-    if (chartInstance) {
-      chartInstance.destroy()
+    if (pieChartInstance) {
+      pieChartInstance.destroy()
     }
 
-    chartInstance = new Chart(ctx, {
+    pieChartInstance = new Chart(ctx, {
       type: 'pie',
       data: {
         labels: categoryLabels,
@@ -167,6 +182,72 @@ function renderChart() {
       },
     })
   }
+}
+
+function renderLineChart() {
+  if (lineChartCanvas.value) {
+    const ctx = lineChartCanvas.value.getContext('2d')
+    const dailyTransactions = getDailyTransactions()
+
+    if (Object.keys(dailyTransactions).length === 0) {
+      showLineChartQuote.value = true
+      if (lineChartInstance) {
+        lineChartInstance.destroy()
+      }
+      return
+    } else {
+      showLineChartQuote.value = false
+    }
+
+    const days = Object.keys(dailyTransactions)
+    const amounts = Object.values(dailyTransactions)
+
+    if (lineChartInstance) {
+      lineChartInstance.destroy()
+    }
+
+    lineChartInstance = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: days,
+        datasets: [
+          {
+            label: 'Transactions',
+            data: amounts,
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    })
+  }
+}
+
+function getDailyTransactions() {
+  const dailyTransactions = {}
+
+  transactions.transactions.forEach((transaction) => {
+    const transactionDate = new Date(transaction.date)
+    if (
+      transactionDate.getMonth() === currentMonth.value &&
+      transactionDate.getFullYear() === currentYear.value
+    ) {
+      const day = transactionDate.getDate()
+      dailyTransactions[day] =
+        (dailyTransactions[day] || 0) + transaction.amount / 100
+    }
+  })
+
+  return dailyTransactions
 }
 
 function prevMonth() {
@@ -193,7 +274,8 @@ function updateMonthName() {
   currentMonthName.value = new Intl.DateTimeFormat('en-US', {
     month: 'long',
   }).format(new Date(currentYear.value, currentMonth.value, 1))
-  renderChart()
+  renderPieChart()
+  renderLineChart()
 }
 
 const totalSpent = computed(() => {
