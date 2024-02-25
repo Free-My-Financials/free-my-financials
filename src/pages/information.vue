@@ -1,6 +1,5 @@
 <template>
   <div class="page-container">
-    <!-- Overall Money Saving Tips Section -->
     <div class="content-container">
       <div class="column">
         <div class="header">
@@ -11,7 +10,7 @@
             <li>
               <a
                 href="https://moneymentors.ca/money-tips/8-tips-to-avoid-spending-money-on-wants/"
-                >1. How to Stop Spending Money</a
+                >How to Stop Spending Money</a
               >
               <p>
                 This article provides some basic tips and tricks on how you can
@@ -22,7 +21,7 @@
             <li>
               <a
                 href="https://www.pnc.com/insights/personal-finance/save/how-to-stop-spending-money.html"
-                >2. Top 10 Tips to Stay in Control of you Finances</a
+                >Top 10 Tips to Stay in Control of you Finances</a
               >
               <p>
                 This article by PNC banking provides a list of tips to help you
@@ -33,7 +32,7 @@
             <li>
               <a
                 href="https://resources.depaul.edu/financial-fitness/tackle-overspending/Pages/solutions-for-overspending.aspx"
-                >3. Solutions for Overspending</a
+                >Solutions for Overspending</a
               >
               <p>
                 This article written by DePaul lists some serious (and some
@@ -45,7 +44,6 @@
         </div>
       </div>
 
-      <!-- Avoiding Buying Unnecessary Things Section -->
       <div class="column">
         <div class="header">
           <h2 class="page-heading">Cutting Unnecessary Spending</h2>
@@ -91,7 +89,6 @@
         </div>
       </div>
 
-      <!-- Good Budgeting Habits Section -->
       <div class="column">
         <div class="header">
           <h2 class="page-heading">Good Budgeting Habits</h2>
@@ -100,7 +97,7 @@
           <ul>
             <li>
               <a
-                href="https://www.unbiased.co.uk/discover/personal-finance/budgeting/mindful-spending-how-to-stop-spending-money-on-unnecessary-things"
+                href="https://www.unfcu.org/financial-wellness/50-30-20-rule/#:~:text=The%2050-30-20%20rule%20recommends%20putting%2050%25%20of,closer%20look%20at%20each%20category."
                 >50-30-20</a
               >
               <p>
@@ -153,7 +150,7 @@
 }
 
 .column {
-  width: calc(33.33% - 20px); /* Adjust width based on the number of columns */
+  width: calc(33.33% - 20px);
 }
 
 .header {
@@ -162,7 +159,7 @@
   border-radius: 5px;
   padding: 10px;
   margin-bottom: 20px;
-  text-align: center; /* Center header text */
+  text-align: center;
 }
 
 .page-heading {

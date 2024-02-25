@@ -87,15 +87,54 @@
         </NuxtLink>
       </div>
     </div>
+    <div v-if="showRelevantLinks" class="relevant-links-container">
+      <p>Here are some articles that might be relevant to you :</p>
+      <ul>
+        <li v-if="showUnnecessarySpendingLink">
+          <a
+            href="https://www.unbiased.co.uk/discover/personal-finance/budgeting/mindful-spending-how-to-stop-spending-money-on-unnecessary-things"
+            class="relevant-link"
+            >Mindful Spending</a
+          >
+          <a
+            href="https://merrickbank.com/Learn/Budgeting/5-Ways-to-Avoid-Unnecessary-Spending"
+            class="relevant-link"
+            >Ways to Avoid Unnecessary Spending</a
+          >
+        </li>
+        <li v-if="showBudgetingHelpLink">
+          <a
+            href="https://www.unfcu.org/financial-wellness/50-30-20-rule/#:~:text=The%2050-30-20%20rule%20recommends%20putting%2050%25%20of,closer%20look%20at%20each%20category."
+            class="relevant-link"
+            >Budgeting Basics: The 50-30-20 Rule</a
+          >
+          <a
+            href="https://www.discover.com/personal-loans/resources/consolidate-debt/good-financial-habits/"
+            class="relevant-link"
+            >Good Money Habits</a
+          >
+          <a
+            href="https://bettermoneyhabits.bankofamerica.com/en/saving-budgeting/ways-to-save-money"
+            class="relevant-link"
+            >Simple Ways to Save</a
+          >
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, computed } from 'vue'
 import Chart from 'chart.js/auto'
 import { useTransactionStore } from '~/stores/transaction'
 import { useBudgetStore } from '~/stores/budget'
 
+const showRelevantLinks = computed(() => {
+  return showUnnecessarySpendingLink.value || showBudgetingHelpLink.value
+})
+
+const showBudgetingHelpLink = ref(false)
 const transactions = useTransactionStore()
 const budget = useBudgetStore()
 const currentYear = ref(new Date().getFullYear())
@@ -413,6 +452,20 @@ const remainingDays = computed(() => {
 })
 
 const isOnTrack = budget.totalBalance >= 0
+
+const showUnnecessarySpendingLink = computed(() => {
+  const entertainmentTransactions = transactions.transactions.filter(
+    (transaction) =>
+      transaction.category === 'Entertainment' &&
+      new Date(transaction.date).getMonth() === currentMonth.value &&
+      new Date(transaction.date).getFullYear() === currentYear.value
+  )
+  return entertainmentTransactions.length > 4
+})
+
+if (!isOnTrack) {
+  showBudgetingHelpLink.value = true
+}
 </script>
 
 <style scoped>
@@ -470,6 +523,37 @@ const isOnTrack = budget.totalBalance >= 0
   position: relative;
   min-height: 400px;
   padding-bottom: 20px;
+}
+.relevant-links-container {
+  padding: 20px;
+  border: 1px solid #146d36;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.relevant-links-container p {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.relevant-links-container ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.relevant-links-container li {
+  margin-bottom: 5px;
+}
+
+.relevant-link {
+  text-decoration: none;
+  color: #006400;
+  font-weight: bold;
+  display: block;
+}
+
+.relevant-link:hover {
+  text-decoration: underline;
 }
 
 .bar-graph-container {
