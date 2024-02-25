@@ -70,6 +70,19 @@
       <NuxtLink to="/specs"> Specs </NuxtLink>
     </p>
 
+    <p
+      v-if="auth.isLoggedIn"
+      :class="[
+        {
+          'text-white dark:text-gray-800': route.name === 'information',
+        },
+        'hover:text-white',
+        'dark:hover:text-gray-800',
+      ]"
+    >
+      <NuxtLink to="/information"> Information </NuxtLink>
+    </p>
+
     <div class="flex-grow" />
 
     <!-- Logout -->

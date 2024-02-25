@@ -81,6 +81,16 @@
             budgeting progress.
           </p>
         </li>
+        <li class="feature-item">
+          <h2 class="feature-title">Monitor Monthly Changes</h2>
+          <p class="feature-text">
+            Visit the
+            <NuxtLink to="/information" class="green-text-link">
+              Information
+            </NuxtLink>
+            page. Placeholder text
+          </p>
+        </li>
       </ul>
     </div>
   </div>
