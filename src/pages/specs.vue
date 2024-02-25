@@ -27,14 +27,12 @@
         </div>
       </div>
       <div class="right-container">
-        <div class="charts-container">
-          <canvas ref="lineChartCanvas"></canvas>
-          <div v-if="showLineChartQuote" class="quote-container">
-            <div class="quote-wrapper">
-              <p>
-                No transactions found for the month of {{ currentMonthName }}
-              </p>
-            </div>
+        <div class="charts-container" v-if="!showLineChartQuote">
+          <canvas ref="lineChartCanvas" class="line-chart"></canvas>
+        </div>
+        <div v-if="showLineChartQuote" class="quote-container">
+          <div class="quote-wrapper">
+            <p>No transactions found for the month of {{ currentMonthName }}</p>
           </div>
         </div>
       </div>
@@ -112,9 +110,13 @@ let showPieChartQuote = ref(false)
 let showLineChartQuote = ref(false)
 
 onMounted(() => {
+  renderCharts()
+})
+
+function renderCharts() {
   renderPieChart()
   renderLineChart()
-})
+}
 
 function renderPieChart() {
   if (pieChartCanvas.value) {
@@ -201,6 +203,11 @@ function renderLineChart() {
 
     const days = Object.keys(dailyTransactions)
     const amounts = Object.values(dailyTransactions)
+    let lineColor = 'green'
+
+    if (Math.min(...amounts) < 0) {
+      lineColor = 'red'
+    }
 
     if (lineChartInstance) {
       lineChartInstance.destroy()
@@ -212,9 +219,8 @@ function renderLineChart() {
         labels: days,
         datasets: [
           {
-            label: 'Transactions',
             data: amounts,
-            borderColor: 'rgba(75, 192, 192, 1)',
+            borderColor: lineColor,
             borderWidth: 1,
           },
         ],
@@ -227,6 +233,11 @@ function renderLineChart() {
             beginAtZero: true,
           },
         },
+        plugins: {
+          legend: {
+            display: false,
+          },
+        },
       },
     })
   }
@@ -234,6 +245,7 @@ function renderLineChart() {
 
 function getDailyTransactions() {
   const dailyTransactions = {}
+  let balance = 0
 
   transactions.transactions.forEach((transaction) => {
     const transactionDate = new Date(transaction.date)
@@ -242,10 +254,27 @@ function getDailyTransactions() {
       transactionDate.getFullYear() === currentYear.value
     ) {
       const day = transactionDate.getDate()
-      dailyTransactions[day] =
-        (dailyTransactions[day] || 0) + transaction.amount / 100
+
+      if (transaction.type === TransactionType.EXPENSE) {
+        balance -= transaction.amount / 100
+      } else {
+        balance += transaction.amount / 100
+      }
+
+      dailyTransactions[day] = balance
     }
   })
+
+  const daysInMonth = new Date(
+    currentYear.value,
+    currentMonth.value + 1,
+    0
+  ).getDate()
+  for (let i = 1; i <= daysInMonth; i++) {
+    if (!(i in dailyTransactions)) {
+      dailyTransactions[i] = dailyTransactions[i - 1] || 0
+    }
+  }
 
   return dailyTransactions
 }
@@ -274,8 +303,7 @@ function updateMonthName() {
   currentMonthName.value = new Intl.DateTimeFormat('en-US', {
     month: 'long',
   }).format(new Date(currentYear.value, currentMonth.value, 1))
-  renderPieChart()
-  renderLineChart()
+  renderCharts()
 }
 
 const totalSpent = computed(() => {
@@ -360,6 +388,10 @@ const isOnTrack = budget.totalBalance >= 0
 .right-container {
   flex: 1;
   padding-left: 20px;
+}
+
+.line-chart {
+  border-color: green;
 }
 
 .charts-container {
