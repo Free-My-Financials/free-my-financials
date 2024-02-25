@@ -35,6 +35,9 @@
             <p>No transactions found for the month of {{ currentMonthName }}</p>
           </div>
         </div>
+        <div class="charts-container">
+          <canvas ref="barGraphCanvas"></canvas>
+        </div>
       </div>
     </div>
     <div class="budget-container" v-if="remainingDays > 0">
@@ -104,8 +107,10 @@ const currentMonthName = ref(
 )
 const pieChartCanvas = ref(null)
 const lineChartCanvas = ref(null)
+const barGraphCanvas = ref(null)
 let pieChartInstance = null
 let lineChartInstance = null
+let barGraphInstance = null
 let showPieChartQuote = ref(false)
 let showLineChartQuote = ref(false)
 
@@ -116,6 +121,7 @@ onMounted(() => {
 function renderCharts() {
   renderPieChart()
   renderLineChart()
+  renderBarGraph()
 }
 
 function renderPieChart() {
@@ -243,6 +249,42 @@ function renderLineChart() {
   }
 }
 
+function renderBarGraph() {
+  if (barGraphCanvas.value) {
+    const ctx = barGraphCanvas.value.getContext('2d')
+    const monthlyTransactions = getMonthlyTransactions()
+    const months = Object.keys(monthlyTransactions)
+    const totalTransactions = Object.values(monthlyTransactions)
+
+    if (barGraphInstance) {
+      barGraphInstance.destroy()
+    }
+
+    barGraphInstance = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: months, // Months on the y-axis
+        datasets: [
+          {
+            label: 'Total Transactions',
+            data: totalTransactions,
+            backgroundColor: 'rgba(54, 162, 235, 0.6)',
+          },
+        ],
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: {
+            beginAtZero: true,
+          },
+        },
+      },
+    })
+  }
+}
 function getDailyTransactions() {
   const dailyTransactions = {}
   let balance = 0
@@ -277,6 +319,29 @@ function getDailyTransactions() {
   }
 
   return dailyTransactions
+}
+
+function getMonthlyTransactions() {
+  const monthlyTransactions = {}
+
+  for (let i = 0; i < 12; i++) {
+    const monthYear = `${i + 1}/${currentYear.value}`
+    monthlyTransactions[monthYear] = 0
+  }
+
+  transactions.transactions.forEach((transaction) => {
+    const transactionDate = new Date(transaction.date)
+    const monthYear = `${transactionDate.getMonth() + 1}/${transactionDate.getFullYear()}`
+
+    if (
+      transaction.type === TransactionType.EXPENSE &&
+      transactionDate.getFullYear() === currentYear.value
+    ) {
+      monthlyTransactions[monthYear] += transaction.amount / 100
+    }
+  })
+
+  return monthlyTransactions
 }
 
 function prevMonth() {
