@@ -2,37 +2,37 @@ import prisma from '.'
 
 const defaultCategories = () => ['Food', 'Clothing', 'Entertainment']
 
-export async function createDefaultCategories(userId: string) {
+export async function createDefaultCategories(budgetId: string) {
   return await Promise.all(
-    defaultCategories().map((category) => createCategory(userId, category))
+    defaultCategories().map((category) => createCategory(budgetId, category))
   )
 }
 
-export async function createCategory(userId: string, name: string) {
+export async function createCategory(budgetId: string, name: string) {
   return await prisma.category.create({
     data: {
       name,
-      user: {
+      budget: {
         connect: {
-          id: userId,
+          id: budgetId,
         },
       },
     },
   })
 }
 
-export async function createOrGetCategory(userId: string, name: string) {
-  const existingCategory = await getCategoryByUserIdAndName(userId, name)
+export async function createOrGetCategory(budgetId: string, name: string) {
+  const existingCategory = await getCategoryByBudgetIdAndName(budgetId, name)
 
   if (existingCategory) return existingCategory
 
-  return await createCategory(userId, name)
+  return await createCategory(budgetId, name)
 }
 
-export async function getCategoriesByUserId(userId: string) {
+export async function getCategoriesByBudgetId(budgetId: string) {
   return await prisma.category.findMany({
     where: {
-      userId,
+      budgetId,
     },
   })
 }
@@ -45,12 +45,15 @@ export async function getCategoryById(id: string) {
   })
 }
 
-export async function getCategoryByUserIdAndName(userId: string, name: string) {
+export async function getCategoryByBudgetIdAndName(
+  budgetId: string,
+  name: string
+) {
   return await prisma.category.findUnique({
     where: {
-      name_userId: {
+      name_budgetId: {
         name,
-        userId,
+        budgetId,
       },
     },
   })

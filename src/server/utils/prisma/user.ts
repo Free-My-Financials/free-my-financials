@@ -12,8 +12,8 @@ export async function createUser(data: {
 
   const newUser = await prisma.user.create({ data })
 
-  createDefaultBudget(newUser.id)
-  createDefaultCategories(newUser.id)
+  const budget = await createDefaultBudget(newUser.id)
+  await createDefaultCategories(budget.id)
 
   return newUser
 }
