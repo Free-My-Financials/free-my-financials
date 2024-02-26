@@ -28,9 +28,10 @@
       <USelect
         v-if="!state.customCategory"
         v-model="state.category"
-        :options="catagories.categories"
+        :options="filteredCategories"
         :placeholder="'Category of Purchase'"
       />
+
       <UInput
         v-if="state.customCategory"
         id="customCategory"
@@ -74,7 +75,9 @@
 const transactions = useTransactionStore()
 const catagories = useCategoryStore()
 const toast = useToast()
-
+const filteredCategories = computed(() => {
+  return catagories.categories.filter((category) => category.trim() !== '')
+})
 const state = reactive({
   store: '',
   amount: '',
