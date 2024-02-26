@@ -44,7 +44,10 @@
           )"
           :key="day"
           class="day"
-          :class="{ 'budget-day': budget.dateIsInBudget(day) }"
+          :class="{
+            'current-day': isCurrentDay(day),
+            'budget-day': budget.dateIsInBudget(day),
+          }"
         >
           {{ day }}
           <br />
@@ -89,6 +92,15 @@ const firstDayOfMonth = ref(
 
 const showArrow = ref(false)
 const isPositiveChange = ref(false)
+
+function isCurrentDay(day) {
+  const today = new Date()
+  return (
+    day === today.getDate() &&
+    currentMonth.value === today.getMonth() &&
+    currentYear.value === today.getFullYear()
+  )
+}
 
 function isBudgetStart(day) {
   const startDate = budget.startDate.getDate()
@@ -357,5 +369,9 @@ h2 {
   border-radius: 5px;
   cursor: pointer;
   margin-left: 10px;
+}
+
+.current-day {
+  background-color: rgba(144, 238, 144, 0.4);
 }
 </style>
