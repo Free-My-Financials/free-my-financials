@@ -155,6 +155,7 @@ const showLineChartQuote = ref(false)
 
 onMounted(() => {
   renderCharts()
+  budget.fetchBudget()
 })
 
 function renderCharts() {

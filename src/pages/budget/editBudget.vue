@@ -23,22 +23,28 @@
 </template>
 
 <script lang="ts" setup>
+import { ref } from 'vue'
+import { useBudgetStore } from '~/stores/budget'
+
 const budget = useBudgetStore()
 const toast = useToast()
 
-const state = reactive({
+const state = ref({
   amount: 0,
   startDate: '',
   endDate: '',
 })
 
 async function submit() {
-  if (state.amount && state.startDate && state.endDate) {
+  if (state.value.amount && state.value.startDate && state.value.endDate) {
     budget.setBudget({
-      amount: Math.round(state.amount * 100),
-      startDate: new Date(state.startDate + 'T00:00:00'),
-      endDate: new Date(state.endDate + 'T00:00:00'),
+      amount: Math.round(state.value.amount * 100),
+      startDate: new Date(state.value.startDate + 'T00:00:00'),
+      endDate: new Date(state.value.endDate + 'T00:00:00'),
     })
+
+    await budget.fetchBudget()
+
     resetState()
     toast.add({
       title: 'Success',
@@ -53,8 +59,12 @@ async function submit() {
 }
 
 function resetState() {
-  state.amount = 0
-  state.startDate = ''
-  state.endDate = ''
+  state.value.amount = 0
+  state.value.startDate = ''
+  state.value.endDate = ''
 }
+
+onMounted(() => {
+  budget.fetchBudget()
+})
 </script>

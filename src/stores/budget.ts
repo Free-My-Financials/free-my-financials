@@ -126,7 +126,6 @@ export const useBudgetStore = defineStore('budget', () => {
       })
     }
   }
-
   const fetchBudget = async () => {
     if (!auth.isLoggedIn) return
 
@@ -146,8 +145,9 @@ export const useBudgetStore = defineStore('budget', () => {
     }
   }
 
-  fetchBudget()
-
+  watchEffect(() => {
+    fetchBudget()
+  })
   return {
     budget,
     amount,
