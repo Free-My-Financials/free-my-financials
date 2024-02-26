@@ -82,13 +82,15 @@
           </p>
         </li>
         <li class="feature-item">
-          <h2 class="feature-title">Monitor Monthly Changes</h2>
+          <h2 class="feature-title">Financial Literacy</h2>
           <p class="feature-text">
             Visit the
             <NuxtLink to="/information" class="green-text-link">
               Information
             </NuxtLink>
-            page. Placeholder text
+            page. View some articles that may help educate you on budgeting and
+            financial literacy. Features tips and tricks to help make budgeting
+            less of a hassle, and more of an automated process.
           </p>
         </li>
       </ul>
