@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div id="budget-page">
     <h3>
       Start of budget:
       <UBadge :label="budget.startDate.toDateString()" />
@@ -28,11 +28,23 @@
         <span>{{ new Date(row.date.toString()).toDateString() }}</span>
       </template>
     </UTable>
+    <UButton type="button" class="nav-button" @click="printDiv('budget-page')">
+      Print Your budget
+    </UButton>
   </div>
 </template>
 
 <script lang="ts" setup>
 const budget = useBudgetStore()
+
+function printDiv(divName: string) {
+  console.log(divName)
+  const printContents = document.getElementById(divName).innerHTML
+  const w = window.open()
+  w?.document.write(printContents)
+  w?.print()
+  w?.close()
+}
 
 const columns = [
   {
