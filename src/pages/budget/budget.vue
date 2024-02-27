@@ -52,4 +52,7 @@ const columns = [
     sortable: true,
   },
 ]
+onMounted(() => {
+  budget.fetchBudget()
+})
 </script>

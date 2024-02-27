@@ -71,6 +71,28 @@
             change in your monthly spending.
           </p>
         </li>
+        <li class="feature-item">
+          <h2 class="feature-title">Monitor Monthly Changes</h2>
+          <p class="feature-text">
+            Visit the
+            <NuxtLink to="/specs" class="green-text-link"> Specs </NuxtLink>
+            page. Visualize your spending through graphs, showcasing your
+            monthly purchases in graph format, as well as key statistics on your
+            budgeting progress.
+          </p>
+        </li>
+        <li class="feature-item">
+          <h2 class="feature-title">Financial Literacy</h2>
+          <p class="feature-text">
+            Visit the
+            <NuxtLink to="/information" class="green-text-link">
+              Information
+            </NuxtLink>
+            page. View some articles that may help educate you on budgeting and
+            financial literacy. Features tips and tricks to help make budgeting
+            less of a hassle, and more of an automated process.
+          </p>
+        </li>
       </ul>
     </div>
   </div>
