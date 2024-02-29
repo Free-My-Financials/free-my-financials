@@ -47,7 +47,7 @@
     "@lucia-auth/adapter-prisma": "^4.0.0",
     "@nuxt/ui": "^2.10.0",
     "@pinia/nuxt": "^0.5.1",
-    "@prisma/client": "^5.10.1",
+    "@prisma/client": "^5.10.2",
     "@trpc/client": "^10.45.0",
     "@trpc/server": "^10.45.0",
     "arctic": "^1.1.0",
