@@ -1,4 +1,6 @@
 export interface Budget {
+  id: string
+  name: string
   startDate: Date
   amount: number
   endDate: Date
@@ -10,6 +12,8 @@ export const useBudgetStore = defineStore('budget', () => {
   const toast = useToast()
 
   const budget = ref<Budget>({
+    id: '',
+    name: '',
     startDate: new Date(),
     amount: 0,
     endDate: new Date(),
@@ -76,6 +80,7 @@ export const useBudgetStore = defineStore('budget', () => {
     try {
       await $client.budget.update.mutate({
         start: date,
+        id: budget.value.id,
       })
     } catch (error) {
       budget.value.startDate = oldDate
@@ -96,6 +101,7 @@ export const useBudgetStore = defineStore('budget', () => {
     try {
       await $client.budget.update.mutate({
         end: date,
+        id: budget.value.id,
       })
     } catch (error) {
       budget.value.endDate = oldDate
@@ -116,6 +122,7 @@ export const useBudgetStore = defineStore('budget', () => {
     try {
       await $client.budget.update.mutate({
         amount,
+        id: budget.value.id,
       })
     } catch (error) {
       budget.value.amount = oldAmount
@@ -131,13 +138,16 @@ export const useBudgetStore = defineStore('budget', () => {
     if (!auth.isLoggedIn) return
 
     try {
-      const { data } = await $client.budget.get.useQuery()
+      const { data } = await $client.budget.list.useQuery()
 
       if (!data.value) return new Error('Something went wrong')
+      if (data.value.length === 0) return new Error('Something went wrong')
 
-      budget.value.amount = data.value.amount
-      budget.value.startDate = new Date(data.value.start)
-      budget.value.endDate = new Date(data.value.end)
+      budget.value.amount = data.value[0].amount
+      budget.value.name = data.value[0].name
+      budget.value.id = data.value[0].id
+      budget.value.startDate = new Date(data.value[0].start)
+      budget.value.endDate = new Date(data.value[0].end)
     } catch (error) {
       toast.add({
         title: 'Error',
