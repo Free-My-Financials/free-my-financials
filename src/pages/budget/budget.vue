@@ -1,38 +1,54 @@
 <template>
   <div>
-    <h3>
-      Start of budget:
-      <UBadge :label="budget.startDate.toDateString()" />
-    </h3>
-    <h3>
-      End of budget:
-      <UBadge :label="budget.endDate.toDateString()" />
-    </h3>
-    <h3>
-      TOTAL BALANCE:
-      <DollarAmount :amount="budget.totalBalance" />
-      <UBadge label="Out of" />
-      <DollarAmount :amount="budget.amount" />
-    </h3>
-    <UTable
-      :sort="{ column: 'date', direction: 'desc' }"
-      :rows="budget.transactions"
-      :columns="columns"
-    >
-      <template #amount-data="{ row }">
-        <DollarAmount
-          :amount="row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)"
-        />
-      </template>
-      <template #date-data="{ row }">
-        <span>{{ new Date(row.date.toString()).toDateString() }}</span>
-      </template>
-    </UTable>
+    <div id="budget-page">
+      <h3>
+        Start of budget:
+        <UBadge :label="budget.startDate.toDateString()" />
+      </h3>
+      <h3>
+        End of budget:
+        <UBadge :label="budget.endDate.toDateString()" />
+      </h3>
+      <h3>
+        TOTAL BALANCE:
+        <DollarAmount :amount="budget.totalBalance" />
+        <UBadge label="Out of" />
+        <DollarAmount :amount="budget.amount" />
+      </h3>
+
+      <UTable
+        :sort="{ column: 'date', direction: 'desc' }"
+        :rows="budget.transactions"
+        :columns="columns"
+      >
+        <template #amount-data="{ row }">
+          <DollarAmount
+            :amount="
+              row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)
+            "
+          />
+        </template>
+        <template #date-data="{ row }">
+          <span>{{ new Date(row.date.toString()).toDateString() }}</span>
+        </template>
+      </UTable>
+    </div>
+    <UButton type="button" class="nav-button" @click="printDiv('budget-page')">
+      Print Your budget
+    </UButton>
   </div>
 </template>
 
 <script lang="ts" setup>
 const budget = useBudgetStore()
+
+function printDiv(divName: string) {
+  const printContents = document.getElementById(divName).innerHTML
+  const w = window.open()
+  w?.document.write(printContents)
+  w?.print()
+  w?.close()
+}
 
 const columns = [
   {
