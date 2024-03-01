@@ -6,6 +6,7 @@ import { createOrGetStore } from './store'
 export async function createTransaction(
   userId: string,
   data: {
+    budgetId: string
     type: TransactionType
     amount: number
     date: Date
@@ -13,7 +14,10 @@ export async function createTransaction(
     store: string
   }
 ) {
-  const { id: categoryId } = await createOrGetCategory(userId, data.category)
+  const { id: categoryId } = await createOrGetCategory(
+    data.budgetId,
+    data.category
+  )
   const { id: storeId } = await createOrGetStore(userId, data.store)
 
   return await prisma.transaction.create({
@@ -36,10 +40,16 @@ export async function createTransaction(
           id: userId,
         },
       },
+      budget: {
+        connect: {
+          id: data.budgetId,
+        },
+      },
     },
     include: {
       category: true,
       store: true,
+      budget: true,
     },
   })
 }

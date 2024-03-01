@@ -135,7 +135,9 @@ export const useBudgetStore = defineStore('budget', () => {
   }
 
   const fetchBudget = async () => {
-    if (!auth.isLoggedIn) return
+    if (budget.value.id) return
+
+    await auth.fetchUser()
 
     try {
       const { data } = await $client.budget.list.useQuery()

@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     '@nuxt/test-utils/module',
     '@nuxtjs/eslint-module',
   ],
+  ssr: false,
   build: {
     transpile: ['trpc-nuxt'],
   },

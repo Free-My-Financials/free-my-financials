@@ -1,7 +1,5 @@
-import { skipHydrate } from 'pinia'
-
 export const useCategoryStore = defineStore('categories', () => {
-  const auth = useAuthStore()
+  const budget = useBudgetStore()
   const { $client } = useNuxtApp()
   const toast = useToast()
 
@@ -16,7 +14,10 @@ export const useCategoryStore = defineStore('categories', () => {
     categories.value.push(name)
 
     try {
-      await $client.category.create.mutate({ name })
+      await $client.category.create.mutate({
+        budgetId: budget.budget.id,
+        name,
+      })
     } catch (error) {
       categories.value = categories.value.filter(
         (category) => category !== name
@@ -30,10 +31,14 @@ export const useCategoryStore = defineStore('categories', () => {
   }
 
   const fetchCategories = async () => {
-    if (!auth.isLoggedIn) return
+    if (!isEmpty.value) return
+
+    await budget.fetchBudget()
 
     try {
-      const { data } = await $client.category.list.useQuery()
+      const { data } = await $client.category.list.useQuery({
+        budgetId: budget.budget.id,
+      })
 
       // FIXME: This is a workaround for and issue where the data is not available immediately
       //        after the query is called
@@ -58,7 +63,7 @@ export const useCategoryStore = defineStore('categories', () => {
   fetchCategories()
 
   return {
-    categories: skipHydrate(categories),
+    categories,
     isEmpty,
     hasCategory,
     addCategory,

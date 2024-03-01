@@ -5,6 +5,7 @@ export enum TransactionType {
 
 export interface Transaction {
   id: string
+  budgetId: string
   type: TransactionType
   store: string
   amount: number
@@ -13,7 +14,7 @@ export interface Transaction {
 }
 
 export const useTransactionStore = defineStore('transactions', () => {
-  const auth = useAuthStore()
+  const budget = useBudgetStore()
   const { $client } = useNuxtApp()
   const toast = useToast()
 
@@ -61,6 +62,7 @@ export const useTransactionStore = defineStore('transactions', () => {
 
     try {
       const result = await $client.transaction.create.mutate({
+        budgetId: budget.budget.id,
         type: type === TransactionType.INCOME ? 'INCOME' : 'EXPENSE', // TODO: Fix this
         store,
         amount,
@@ -70,6 +72,7 @@ export const useTransactionStore = defineStore('transactions', () => {
 
       const newTransaction = {
         id: result.id,
+        budgetId: result.budgetId,
         type: TransactionType[result.type],
         store: result.store.name,
         amount: result.amount,
@@ -112,7 +115,9 @@ export const useTransactionStore = defineStore('transactions', () => {
   }
 
   const fetchTransactions = async () => {
-    if (!auth.isLoggedIn) return
+    if (transactions.value.length > 0) return
+
+    await budget.fetchBudget()
 
     try {
       const { data } = await $client.transaction.list.useQuery()
@@ -127,6 +132,7 @@ export const useTransactionStore = defineStore('transactions', () => {
       for (const transaction of data.value) {
         transactions.value.push({
           id: transaction.id,
+          budgetId: transaction.budgetId,
           type: TransactionType[
             transaction.type as keyof typeof TransactionType
           ],
