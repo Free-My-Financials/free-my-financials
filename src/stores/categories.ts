@@ -40,10 +40,6 @@ export const useCategoryStore = defineStore('categories', () => {
         budgetId: budget.budget.id,
       })
 
-      // FIXME: This is a workaround for and issue where the data is not available immediately
-      //        after the query is called
-      await new Promise((resolve) => setTimeout(resolve, 50))
-
       if (!data?.value) {
         return toast.add({
           title: 'Error',
