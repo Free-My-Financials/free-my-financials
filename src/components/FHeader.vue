@@ -106,7 +106,7 @@
         'dark:hover:text-gray-800',
       ]"
     >
-      <NuxtLink to="/user"> Login </NuxtLink>
+      <NuxtLink to="/login"> Login </NuxtLink>
     </p>
   </header>
 </template>
