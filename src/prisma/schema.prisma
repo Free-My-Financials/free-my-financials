@@ -45,7 +45,7 @@ model Budget {
   transactions  Transaction[]
   categories    Category[]
 
-  @@unique([name, id])
+  @@unique([name, userId])
 }
 
 enum TransactionType {
