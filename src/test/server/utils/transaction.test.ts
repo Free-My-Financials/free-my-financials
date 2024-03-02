@@ -16,6 +16,7 @@ const transactionData = {
   date: new Date('2024-06-15'),
   category: 'Food',
   store: 'Walmart',
+  budgetId: 'PandoraBudget',
 }
 
 const transactionExpense = {
@@ -26,6 +27,7 @@ const transactionExpense = {
   createdAt: new Date('2024-06-15'),
   updatedAt: new Date('2024-06-15'),
   userId: 'Pandora',
+  budgetId: 'PandoraBudget',
   categoryId: 'Food',
   storeId: 'Walmart',
 }
@@ -43,24 +45,24 @@ const category = {
   name: 'Food',
   createdAt: new Date('2024-06-15'),
   updatedAt: new Date('2024-06-15'),
-  userId: 'Pandora',
+  budgetId: 'PandoraBudget',
 }
 
 // i cant get creating transaction to work with testing
 
 test('Creating a transaction returns the created transaction', async () => {
-  prisma.store.findUnique.mockResolvedValue({ ...store })
-  prisma.category.findUnique.mockResolvedValue({ ...category })
-  prisma.transaction.create.mockResolvedValue({ ...transactionExpense })
+  prisma.store.findUnique.mockResolvedValue(store)
+  prisma.category.findUnique.mockResolvedValue(category)
+  prisma.transaction.create.mockResolvedValue(transactionExpense)
   const testTransaction = await createTransaction(
-    transactionExpense.userId,
+    transactionExpense.budgetId,
     transactionData
   )
   expect(testTransaction).toEqual(transactionExpense)
 })
 
 test('Getting transaction should return that transaction', async () => {
-  prisma.transaction.findUnique.mockResolvedValue({ ...transactionExpense })
+  prisma.transaction.findUnique.mockResolvedValue(transactionExpense)
   const testTransaction = await getTransactionById(transactionExpense.id)
   expect(testTransaction).toEqual(transactionExpense)
 })
@@ -74,7 +76,7 @@ test('Getting transactions by user id should return that arrays with relevant tr
 })
 
 test('Deleting a transaction should return deleted transaction', async () => {
-  prisma.transaction.delete.mockResolvedValue({ ...transactionExpense })
+  prisma.transaction.delete.mockResolvedValue(transactionExpense)
   const testTransaction = await deleteTransactionById(transactionExpense.id)
   expect(testTransaction).toEqual(transactionExpense)
 })
