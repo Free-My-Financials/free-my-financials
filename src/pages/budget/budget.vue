@@ -1,6 +1,10 @@
 <template>
   <div>
     <h3>
+      Budget:
+      <UBadge :label="budget.budget.name" />
+    </h3>
+    <h3>
       Start of budget:
       <UBadge :label="budget.startDate.toDateString()" />
     </h3>
@@ -33,7 +37,6 @@
 
 <script lang="ts" setup>
 const budget = useBudgetStore()
-
 const columns = [
   {
     key: 'store',

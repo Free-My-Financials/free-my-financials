@@ -69,8 +69,29 @@ export const useBudgetStore = defineStore('budget', () => {
     setAmount(budget.amount)
     setStartDate(budget.startDate)
     setEndDate(budget.endDate)
+    setName(budget.name)
   }
 
+  const setName = async (Name: string) => {
+    if (budget.value.name === Name) return
+
+    const oldName = budget.value.name
+    budget.value.name = Name
+
+    try {
+      await $client.budget.update.mutate({
+        name: Name,
+        id: budget.value.id,
+      })
+    } catch (error) {
+      budget.value.name = oldName
+
+      toast.add({
+        title: 'Error',
+        description: 'Something went wrong',
+      })
+    }
+  }
   const setStartDate = async (date: Date) => {
     if (budget.value.startDate.getTime() === date.getTime()) return
 

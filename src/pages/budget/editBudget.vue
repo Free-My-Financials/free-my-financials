@@ -1,5 +1,8 @@
 <template>
   <UForm :state="state" @submit="submit">
+    <UFormGroup label="Name">
+      <UInput id="name" v-model="state.name" name="name" />
+    </UFormGroup>
     <UFormGroup label="Budget Total">
       <UInput
         id="amount"
@@ -30,11 +33,14 @@ const state = reactive({
   amount: 0,
   startDate: '',
   endDate: '',
+  name: '',
 })
 
 async function submit() {
-  if (state.amount && state.startDate && state.endDate) {
+  if (state.amount && state.startDate && state.endDate && state.name) {
     budget.setBudget({
+      id: '',
+      name: state.name,
       amount: Math.round(state.amount * 100),
       startDate: new Date(state.startDate + 'T00:00:00'),
       endDate: new Date(state.endDate + 'T00:00:00'),
@@ -56,5 +62,6 @@ function resetState() {
   state.amount = 0
   state.startDate = ''
   state.endDate = ''
+  state.name = ''
 }
 </script>
