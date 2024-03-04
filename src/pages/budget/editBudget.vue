@@ -1,7 +1,12 @@
 <template>
   <UForm :state="state" @submit="submit">
     <UFormGroup label="Name">
-      <UInput id="name" v-model="state.name" name="name" />
+      <UInput
+        id="name"
+        v-model="state.name"
+        name="name"
+        :placeholder="budget.budget.name"
+      />
     </UFormGroup>
     <UFormGroup label="Budget Total">
       <UInput
