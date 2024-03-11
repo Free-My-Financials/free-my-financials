@@ -6,6 +6,7 @@ import {
   getBudgetById,
   getBudgetsByUserId,
   updateBudgetById,
+  createBudget,
 } from '~/server/utils/prisma/budget'
 
 export default router({
@@ -39,7 +40,6 @@ export default router({
 
     return budgets
   }),
-
   update: publicProcedure
     .use(isAuthed)
     .input(
@@ -71,5 +71,25 @@ export default router({
       const newBudget = await updateBudgetById(input.id, input)
 
       return newBudget
+    }),
+
+  create: publicProcedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        name: z.string(),
+        amount: z.number().positive().int(),
+        start: z.date({
+          coerce: true,
+        }),
+        end: z.date({
+          coerce: true,
+        }),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const budget = await createBudget(ctx.user.id, input)
+
+      return budget
     }),
 })

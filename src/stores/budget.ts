@@ -155,6 +155,58 @@ export const useBudgetStore = defineStore('budget', () => {
     }
   }
 
+  const createNewBudget = async (data: {
+    name: string
+    amount: number
+    start: Date
+    end: Date
+  }) => {
+    await auth.fetchUser()
+
+    try {
+      const info = $client.budget.create.query(data)
+      return info
+    } catch (error) {
+      toast.add({
+        title: 'Error',
+        description: 'Something went wrong',
+      })
+    }
+  }
+
+  const createBudgetSelection = async () => {
+    await auth.fetchUser()
+    try {
+      const { data } = await $client.budget.list.useQuery()
+      if (!data.value) return new Error('Something went wrong')
+      if (data.value.length === 0) return new Error('Something went wrong')
+      console.log(data)
+      const numberOfBudgets = data.value.length
+      const budgetOptions: { label: string; value: string }[][] = new Array(
+        numberOfBudgets
+      )
+
+      for (let num = 0; num <= numberOfBudgets - 1; num++) {
+        const name = data.value[num].name.toString()
+        const id = data.value[num].id.toString()
+        budgetOptions.push([
+          {
+            label: name,
+            value: id,
+            //click: () => {budget.value.id = this.value},
+          },
+        ])
+      }
+
+      return budgetOptions
+    } catch (error) {
+      toast.add({
+        title: 'Error',
+        description: 'Something went wrong',
+      })
+    }
+  }
+
   const fetchBudget = async () => {
     if (budget.value.id) return
 
@@ -195,6 +247,8 @@ export const useBudgetStore = defineStore('budget', () => {
     totalIncome,
     totalExpense,
     totalBalance,
+    createNewBudget,
+    createBudgetSelection,
     setBudget,
     setStartDate,
     setEndDate,
