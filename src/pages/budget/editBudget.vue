@@ -34,6 +34,8 @@
 </template>
 
 <script lang="ts" setup>
+import { useBudgetStore } from '~/stores/budget'
+
 const budget = useBudgetStore()
 const toast = useToast()
 
@@ -89,4 +91,8 @@ function resetState() {
   state.endDate = ''
   state.name = ''
 }
+
+onMounted(() => {
+  budget.fetchBudget()
+})
 </script>

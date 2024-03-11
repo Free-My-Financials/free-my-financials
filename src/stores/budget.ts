@@ -270,8 +270,9 @@ export const useBudgetStore = defineStore('budget', () => {
     }
   }
 
-  fetchBudget()
-
+  watchEffect(() => {
+    fetchBudget()
+  })
   return {
     budget,
     amount,
