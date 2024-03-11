@@ -118,6 +118,7 @@ describe('Budget Store', () => {
 
     expect(
       budget.transactionIsInBudget({
+        budgetId: defaultBudget.id,
         date: new Date('2023-12-31'),
       } as Transaction)
     ).toBe(false)
@@ -128,6 +129,7 @@ describe('Budget Store', () => {
 
     expect(
       budget.transactionIsInBudget({
+        budgetId: defaultBudget.id,
         date: new Date('2025-01-01'),
       } as Transaction)
     ).toBe(false)
@@ -138,6 +140,7 @@ describe('Budget Store', () => {
 
     expect(
       budget.transactionIsInBudget({
+        budgetId: defaultBudget.id,
         date: new Date('2024-06-15'),
       } as Transaction)
     ).toBe(true)

@@ -11,6 +11,8 @@ export const useBudgetStore = defineStore('budget', () => {
   const { $client } = useNuxtApp()
   const toast = useToast()
 
+  const currentID = useCookie('currentBudgetID')
+
   const budget = ref<Budget>({
     id: '',
     name: '',
@@ -34,7 +36,10 @@ export const useBudgetStore = defineStore('budget', () => {
   }
 
   const transactionIsInBudget = (transaction: Transaction) => {
-    return dateIsInBudget(transaction.date)
+    return (
+      transaction.budgetId == budget.value.id &&
+      dateIsInBudget(transaction.date)
+    )
   }
 
   const transactions = computed(() => {
@@ -65,11 +70,12 @@ export const useBudgetStore = defineStore('budget', () => {
     )
   )
 
-  const setBudget = (budget: Budget) => {
-    setAmount(budget.amount)
-    setStartDate(budget.startDate)
-    setEndDate(budget.endDate)
-    setName(budget.name)
+  const setBudget = (data: Budget) => {
+    budget.value.id = data.id
+    setAmount(data.amount)
+    setStartDate(data.startDate)
+    setEndDate(data.endDate)
+    setName(data.name)
   }
 
   const setName = async (Name: string) => {
@@ -182,9 +188,11 @@ export const useBudgetStore = defineStore('budget', () => {
       if (data.value.length === 0) return new Error('Something went wrong')
       console.log(data)
       const numberOfBudgets = data.value.length
-      const budgetOptions: { label: string; value: string }[][] = new Array(
-        numberOfBudgets
-      )
+      const budgetOptions: {
+        label: string
+        value: string
+        click: () => void
+      }[][] = new Array(numberOfBudgets)
 
       for (let num = 0; num <= numberOfBudgets - 1; num++) {
         const name = data.value[num].name.toString()
@@ -193,7 +201,10 @@ export const useBudgetStore = defineStore('budget', () => {
           {
             label: name,
             value: id,
-            //click: () => {budget.value.id = this.value},
+            click: () => {
+              currentID.value = id
+              window.location.reload()
+            },
           },
         ])
       }
@@ -208,7 +219,10 @@ export const useBudgetStore = defineStore('budget', () => {
   }
 
   const fetchBudget = async () => {
-    if (budget.value.id) return
+    if (currentID.value) {
+      fetchBudgetByID(currentID.value)
+      return
+    }
 
     await auth.fetchUser()
 
@@ -218,11 +232,36 @@ export const useBudgetStore = defineStore('budget', () => {
       if (!data.value) return new Error('Something went wrong')
       if (data.value.length === 0) return new Error('Something went wrong')
 
+      currentID.value = data.value[0].id
       budget.value.amount = data.value[0].amount
       budget.value.name = data.value[0].name
       budget.value.id = data.value[0].id
       budget.value.startDate = new Date(data.value[0].start)
       budget.value.endDate = new Date(data.value[0].end)
+    } catch (error) {
+      toast.add({
+        title: 'Error',
+        description: 'Something went wrong',
+      })
+    }
+  }
+
+  const fetchBudgetByID = async (id: string) => {
+    if (budget.value.id === id) return
+
+    await auth.fetchUser()
+
+    try {
+      const { data } = await $client.budget.get.useQuery({
+        id: id,
+      })
+      if (!data.value) return new Error('Something went wrong')
+
+      budget.value.amount = data.value.amount
+      budget.value.name = data.value.name
+      budget.value.id = data.value.id
+      budget.value.startDate = new Date(data.value.start)
+      budget.value.endDate = new Date(data.value.end)
     } catch (error) {
       toast.add({
         title: 'Error',

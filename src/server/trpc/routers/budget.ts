@@ -90,6 +90,8 @@ export default router({
     .query(async ({ input, ctx }) => {
       const budget = await createBudget(ctx.user.id, input)
 
+      await createDefaultCategories(budget.id)
+
       return budget
     }),
 })
