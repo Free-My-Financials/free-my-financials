@@ -8,12 +8,12 @@ export async function createUser(data: {
 }) {
   const existingUser = await getUserByUsername(data.username)
 
-  if (existingUser) return new Error('User already exists')
+  if (existingUser) throw new Error('User already exists')
 
   const newUser = await prisma.user.create({ data })
 
-  createDefaultBudget(newUser.id)
-  createDefaultCategories(newUser.id)
+  const budget = await createDefaultBudget(newUser.id)
+  await createDefaultCategories(budget.id)
 
   return newUser
 }

@@ -35,19 +35,19 @@ const storeArray = [
 ]
 
 test('Store creation should return the same store', async () => {
-  prisma.store.create.mockResolvedValueOnce({ ...store })
-  const testStore = await createStore('NotPandora', 'The Milk Store')
+  prisma.store.create.mockResolvedValueOnce(store)
+  const testStore = await createStore('NotPandora', { name: 'The Milk Store' })
   expect(testStore).toEqual(store)
 })
 
 test('createOrGetStore should return the same store if it creates the store', async () => {
-  prisma.store.create.mockResolvedValueOnce({ ...store })
+  prisma.store.create.mockResolvedValueOnce(store)
   const testStore = await createOrGetStore('NotPandora', 'The Milk Store')
   expect(testStore).toEqual(store)
 })
 
 test('createOrGetStore should return the existing store if it already has the store', async () => {
-  prisma.store.findUnique.mockResolvedValueOnce({ ...store })
+  prisma.store.findUnique.mockResolvedValueOnce(store)
   const testStore = await createOrGetStore('NotPandora', 'The Milk Store')
   expect(testStore).toEqual(store)
 })
@@ -59,7 +59,7 @@ test('getStoresByUserId should return the correct array', async () => {
 })
 
 test('getStoreByUserIdAndName should return the correct store', async () => {
-  prisma.store.findUnique.mockResolvedValueOnce({ ...store })
+  prisma.store.findUnique.mockResolvedValueOnce(store)
   const testStore = await getStoreByUserIdAndName(
     'NotPandora',
     'The Milk Store'

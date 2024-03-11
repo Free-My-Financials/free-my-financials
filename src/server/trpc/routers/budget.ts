@@ -3,27 +3,49 @@ import { router, publicProcedure } from '../trpc'
 import { TRPCError } from '@trpc/server'
 import { isAuthed } from '../middleware/isAuthed'
 import {
-  getBudgetByUserId,
-  updateBudgetByUserId,
+  getBudgetById,
+  getBudgetsByUserId,
+  updateBudgetById,
+  createBudget,
 } from '~/server/utils/prisma/budget'
 
 export default router({
-  get: publicProcedure.use(isAuthed).query(async ({ ctx }) => {
-    const budget = await getBudgetByUserId(ctx.user.id)
+  get: publicProcedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async ({ input }) => {
+      const budget = await getBudgetById(input.id)
 
-    if (!budget)
+      if (!budget)
+        throw new TRPCError({
+          code: 'NOT_FOUND',
+          message: 'Budget not found',
+        })
+
+      return budget
+    }),
+
+  list: publicProcedure.use(isAuthed).query(async ({ ctx }) => {
+    const budgets = await getBudgetsByUserId(ctx.user.id)
+
+    if (!budgets)
       throw new TRPCError({
         code: 'NOT_FOUND',
         message: 'Budget not found',
       })
 
-    return budget
+    return budgets
   }),
-
   update: publicProcedure
     .use(isAuthed)
     .input(
       z.object({
+        id: z.string(),
+        name: z.string().optional(),
         amount: z.number().positive().int().optional(),
         start: z
           .date({
@@ -37,8 +59,8 @@ export default router({
           .optional(),
       })
     )
-    .mutation(async ({ input, ctx }) => {
-      const budget = await getBudgetByUserId(ctx.user.id)
+    .mutation(async ({ input }) => {
+      const budget = await getBudgetById(input.id)
 
       if (!budget)
         throw new TRPCError({
@@ -46,8 +68,30 @@ export default router({
           message: 'Budget not found',
         })
 
-      const newBudget = await updateBudgetByUserId(ctx.user.id, input)
+      const newBudget = await updateBudgetById(input.id, input)
 
       return newBudget
+    }),
+
+  create: publicProcedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        name: z.string(),
+        amount: z.number().positive().int(),
+        start: z.date({
+          coerce: true,
+        }),
+        end: z.date({
+          coerce: true,
+        }),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const budget = await createBudget(ctx.user.id, input)
+
+      await createDefaultCategories(budget.id)
+
+      return budget
     }),
 })

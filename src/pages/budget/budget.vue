@@ -2,6 +2,20 @@
   <div>
     <div id="budget-page">
       <h3>
+        Budget:
+        <UBadge :label="budget.budget.name" />
+        <UDropdown
+          :items="budgetOptions"
+          :popper="{ placement: 'bottom-start' }"
+        >
+          <UButton
+            color="white"
+            label="Budgets"
+            trailing-icon="i-heroicons-chevron-down-20-solid"
+          />
+        </UDropdown>
+      </h3>
+      <h3>
         Start of budget:
         <UBadge :label="budget.startDate.toDateString()" />
       </h3>
@@ -41,7 +55,7 @@
 
 <script lang="ts" setup>
 const budget = useBudgetStore()
-
+const budgetOptions = await budget.createBudgetSelection()
 function printDiv(divName: string) {
   const printContents = document.getElementById(divName).innerHTML
   const w = window.open()

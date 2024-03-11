@@ -4,9 +4,11 @@ import { TRPCError } from '@trpc/server'
 import { isAuthed } from '../middleware/isAuthed'
 import {
   createCategory,
-  getCategoriesByUserId,
+  getCategoriesByBudgetId,
+  getCategoryByBudgetIdAndName,
   getCategoryById,
 } from '~/server/utils/prisma/category'
+import { getBudgetById } from '~/server/utils/prisma/budget'
 
 export const defaultCategories = ['Food', 'Clothing', 'Entertainment']
 
@@ -15,12 +17,21 @@ export default router({
     .use(isAuthed)
     .input(
       z.object({
+        budgetId: z.string(),
         name: z.string(),
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const existingCategory = await getCategoryByUserIdAndName(
-        ctx.user.id,
+      const budget = await getBudgetById(input.budgetId)
+
+      if (!budget || budget.userId !== ctx.user.id)
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User not authorized',
+        })
+
+      const existingCategory = await getCategoryByBudgetIdAndName(
+        input.budgetId,
         input.name
       )
 
@@ -30,10 +41,11 @@ export default router({
           message: 'Category already exists',
         })
 
-      const newCategory = await createCategory(ctx.user.id, input.name)
+      const newCategory = await createCategory(input.budgetId, input.name)
 
       return newCategory
     }),
+
   get: publicProcedure
     .use(isAuthed)
     .input(
@@ -50,7 +62,9 @@ export default router({
           message: 'Category not found',
         })
 
-      if (category.userId !== ctx.user.id)
+      const budget = await getBudgetById(category.budgetId)
+
+      if (!budget || budget.userId !== ctx.user.id)
         throw new TRPCError({
           code: 'UNAUTHORIZED',
           message: 'User not authorized',
@@ -58,9 +72,25 @@ export default router({
 
       return category
     }),
-  list: publicProcedure.use(isAuthed).query(async ({ ctx }) => {
-    const categories = await getCategoriesByUserId(ctx.user.id)
 
-    return categories
-  }),
+  list: publicProcedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        budgetId: z.string(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const budget = await getBudgetById(input.budgetId)
+
+      if (!budget || budget.userId !== ctx.user.id)
+        throw new TRPCError({
+          code: 'UNAUTHORIZED',
+          message: 'User not authorized',
+        })
+
+      const categories = await getCategoriesByBudgetId(input.budgetId)
+
+      return categories
+    }),
 })

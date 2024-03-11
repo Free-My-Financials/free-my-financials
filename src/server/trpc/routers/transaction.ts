@@ -14,6 +14,7 @@ export default router({
     .use(isAuthed)
     .input(
       z.object({
+        budgetId: z.string(),
         type: z.enum(['INCOME', 'EXPENSE']),
         amount: z.number().positive().int(),
         date: z.date({

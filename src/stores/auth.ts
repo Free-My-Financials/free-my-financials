@@ -31,6 +31,8 @@ export const useAuthStore = defineStore('auth', () => {
   const setUser = (newUser: User) => (user.value = newUser)
 
   const fetchUser = async () => {
+    if (isLoggedIn.value) return
+
     const { data } = await $client.user.get.useQuery()
 
     if (!data.value?.user) return
@@ -46,5 +48,6 @@ export const useAuthStore = defineStore('auth', () => {
     login,
     logout,
     isLoggedIn,
+    fetchUser,
   }
 })

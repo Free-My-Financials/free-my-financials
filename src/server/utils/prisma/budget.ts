@@ -6,6 +6,7 @@ const defaultBudget = () => {
   const end = new Date(today.getFullYear(), today.getMonth() + 1, 0)
 
   return {
+    name: 'Default',
     amount: 0,
     start,
     end,
@@ -19,6 +20,7 @@ export async function createDefaultBudget(userId: string) {
 export async function createBudget(
   userId: string,
   data: {
+    name: string
     amount: number
     start: Date
     end: Date
@@ -26,9 +28,7 @@ export async function createBudget(
 ) {
   return await prisma.budget.create({
     data: {
-      amount: data.amount,
-      start: data.start,
-      end: data.end,
+      ...data,
       user: {
         connect: {
           id: userId,
@@ -38,17 +38,26 @@ export async function createBudget(
   })
 }
 
-export async function getBudgetByUserId(userId: string) {
+export async function getBudgetById(id: string) {
   return await prisma.budget.findUnique({
+    where: {
+      id,
+    },
+  })
+}
+
+export async function getBudgetsByUserId(userId: string) {
+  return await prisma.budget.findMany({
     where: {
       userId,
     },
   })
 }
 
-export async function updateBudgetByUserId(
-  userId: string,
+export async function updateBudgetById(
+  id: string,
   data: {
+    name?: string
     amount?: number
     start?: Date
     end?: Date
@@ -56,7 +65,7 @@ export async function updateBudgetByUserId(
 ) {
   return await prisma.budget.update({
     where: {
-      userId,
+      id,
     },
     data,
   })

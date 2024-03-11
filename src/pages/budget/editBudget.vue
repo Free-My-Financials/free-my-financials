@@ -1,5 +1,16 @@
 <template>
   <UForm :state="state" @submit="submit">
+    <UFormGroup label="Click to create a new budget">
+      <UCheckbox v-model="state.newBudget" name="newBudget" />
+    </UFormGroup>
+    <UFormGroup label="Name">
+      <UInput
+        id="name"
+        v-model="state.name"
+        name="name"
+        :placeholder="budget.budget.name"
+      />
+    </UFormGroup>
     <UFormGroup label="Budget Total">
       <UInput
         id="amount"
@@ -23,33 +34,49 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
 import { useBudgetStore } from '~/stores/budget'
 
 const budget = useBudgetStore()
 const toast = useToast()
 
-const state = ref({
+const state = reactive({
+  newBudget: false,
   amount: 0,
   startDate: '',
   endDate: '',
+  name: '',
 })
 
 async function submit() {
-  if (state.value.amount && state.value.startDate && state.value.endDate) {
-    budget.setBudget({
-      amount: Math.round(state.value.amount * 100),
-      startDate: new Date(state.value.startDate + 'T00:00:00'),
-      endDate: new Date(state.value.endDate + 'T00:00:00'),
-    })
+  if (state.amount && state.startDate && state.endDate && state.name) {
+    if (state.newBudget == true) {
+      budget.createNewBudget({
+        name: state.name.toString(),
+        amount: Math.round(state.amount * 100),
+        start: new Date(state.startDate + 'T00:00:00'),
+        end: new Date(state.endDate + 'T00:00:00'),
+      })
 
-    await budget.fetchBudget()
+      resetState()
+      toast.add({
+        title: 'Success',
+        description: 'Budget created successfully!',
+      })
+    } else {
+      budget.setBudget({
+        id: budget.budget.id,
+        name: state.name,
+        amount: Math.round(state.amount * 100),
+        startDate: new Date(state.startDate + 'T00:00:00'),
+        endDate: new Date(state.endDate + 'T00:00:00'),
+      })
 
-    resetState()
-    toast.add({
-      title: 'Success',
-      description: 'Budget edit successfully!',
-    })
+      resetState()
+      toast.add({
+        title: 'Success',
+        description: 'Budget edited successfully!',
+      })
+    }
   } else {
     toast.add({
       title: 'Invalid Input',
@@ -59,9 +86,10 @@ async function submit() {
 }
 
 function resetState() {
-  state.value.amount = 0
-  state.value.startDate = ''
-  state.value.endDate = ''
+  state.amount = 0
+  state.startDate = ''
+  state.endDate = ''
+  state.name = ''
 }
 
 onMounted(() => {
