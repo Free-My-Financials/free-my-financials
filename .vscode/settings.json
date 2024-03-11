@@ -1,6 +1,9 @@
 {
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.formatOnSave": true,
-  "standard.engine": "ts-standard",
+  "editor.formatOnPaste": true,
+  "editor.formatOnSaveMode": "file",
+  "files.autoSave": "onFocusChange",
   "volar.format.initialIndent": {
     "html": false
   },
