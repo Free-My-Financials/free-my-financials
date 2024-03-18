@@ -1,6 +1,6 @@
 <template>
   <div class="page-container">
-    <div class="table-container">
+    <div id="transaction-page" class="table-container">
       <h3>
         TOTAL BALANCE:
         <DollarAmount :amount="transactions.totalBalance" />
@@ -41,6 +41,13 @@
           <span>{{ formatDate(row.date) }}</span>
         </template>
       </UTable>
+      <UButton
+        type="button"
+        class="nav-button"
+        @click="printDiv('transaction-page')"
+      >
+        Print Transaction Data
+      </UButton>
     </div>
     <div class="search-container">
       <span class="search-icon">&#128269;</span>
