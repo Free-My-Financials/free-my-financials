@@ -192,7 +192,7 @@ export const useBudgetStore = defineStore('budget', () => {
         label: string
         value: string
         click: () => void
-      }[][] = new Array(numberOfBudgets)
+      }[][] = []
 
       for (let num = 0; num <= numberOfBudgets - 1; num++) {
         const name = data.value[num].name.toString()
