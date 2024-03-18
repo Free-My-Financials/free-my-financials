@@ -54,15 +54,10 @@
 </template>
 
 <script lang="ts" setup>
+import printDiv from '~/utils/printDiv'
+
 const budget = useBudgetStore()
 const budgetOptions = await budget.createBudgetSelection()
-function printDiv(divName: string) {
-  const printContents = document.getElementById(divName).innerHTML
-  const w = window.open()
-  w?.document.write(printContents)
-  w?.print()
-  w?.close()
-}
 
 const columns = [
   {
