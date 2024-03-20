@@ -76,6 +76,11 @@ export const useBudgetStore = defineStore('budget', () => {
     setStartDate(data.startDate)
     setEndDate(data.endDate)
     setName(data.name)
+
+    if (currentID.value != data.id) {
+      currentID.value = data.id
+      fetchBudget()
+    }
   }
 
   const setName = async (Name: string) => {
