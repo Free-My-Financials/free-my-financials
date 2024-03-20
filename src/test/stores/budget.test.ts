@@ -1,4 +1,4 @@
-import { describe, beforeEach, test, expect, vi } from 'vitest'
+import { describe, beforeEach, test, expect } from 'vitest'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 
 const defaultBudget = {
