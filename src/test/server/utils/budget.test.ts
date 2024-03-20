@@ -5,6 +5,7 @@ import {
   createDefaultBudget,
   getBudgetsByUserId,
   updateBudgetById,
+  getBudgetById,
 } from '~/server/utils/prisma/budget'
 
 vi.mock('~/server/utils/prisma')
@@ -80,5 +81,11 @@ test('Updating a budget by user Id should have the updated amount', async () => 
 test('Create the defaultBudget', async () => {
   prisma.budget.create.mockResolvedValue(BudgetReturn)
   const testBudget = await createDefaultBudget(user.id)
+  expect(testBudget?.id).toEqual(BudgetReturn.id)
+})
+
+test('Get Budget By id', async () => {
+  prisma.budget.findUnique.mockResolvedValue(BudgetReturn)
+  const testBudget = await getBudgetById('hi')
   expect(testBudget?.id).toEqual(BudgetReturn.id)
 })
