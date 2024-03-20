@@ -299,5 +299,6 @@ export const useBudgetStore = defineStore('budget', () => {
     setEndDate,
     setAmount,
     fetchBudget,
+    fetchBudgetByID,
   }
 })

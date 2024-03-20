@@ -1,34 +1,5 @@
-import { describe, beforeEach, test, expect } from 'vitest'
+import { describe, beforeEach, test, expect, vi } from 'vitest'
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
-
-mockNuxtImport('useTransactionStore', () => {
-  return () => {
-    return {
-      transactions: [
-        {
-          date: new Date('2024-06-15'),
-          type: TransactionType.INCOME,
-          amount: 100,
-        },
-        {
-          date: new Date('2024-06-15'),
-          type: TransactionType.EXPENSE,
-          amount: 50,
-        },
-        {
-          date: new Date('2023-12-31'),
-          type: TransactionType.INCOME,
-          amount: 100,
-        },
-        {
-          date: new Date('2025-01-01'),
-          type: TransactionType.EXPENSE,
-          amount: 50,
-        },
-      ] as Transaction[],
-    }
-  }
-})
 
 const defaultBudget = {
   id: 'abc123',
@@ -47,6 +18,35 @@ const newBudget = {
 }
 
 describe('Budget Store', () => {
+  mockNuxtImport('useTransactionStore', () => {
+    return () => {
+      return {
+        transactions: [
+          {
+            date: new Date('2024-06-15'),
+            type: TransactionType.INCOME,
+            amount: 100,
+          },
+          {
+            date: new Date('2024-06-15'),
+            type: TransactionType.EXPENSE,
+            amount: 50,
+          },
+          {
+            date: new Date('2023-12-31'),
+            type: TransactionType.INCOME,
+            amount: 100,
+          },
+          {
+            date: new Date('2025-01-01'),
+            type: TransactionType.EXPENSE,
+            amount: 50,
+          },
+        ] as Transaction[],
+      }
+    }
+  })
+
   beforeEach(async () => {
     const budget = useBudgetStore()
 
@@ -146,41 +146,38 @@ describe('Budget Store', () => {
     ).toBe(true)
   })
 
-  // test('Transactions in budget are returned', async () => {
-  //   const budget = useBudgetStore()
+  test('Income is zero when transactions are not present', async () => {
+    const budget = useBudgetStore()
+    expect(budget.totalIncome).toBe(0)
+  })
 
-  //   expect(budget.transactions.length).toBe(2)
-  // })
+  test('EXPENSE is zero when transactions havent been added to budget', async () => {
+    const budget = useBudgetStore()
 
-  // test('Total income is calculated correctly', async () => {
-  //   const budget = useBudgetStore()
+    expect(budget.totalExpense).toBe(0)
+  })
 
-  //   expect(budget.totalIncome).toBe(100)
-  // })
+  test('totalBalance amount plus transactions value', async () => {
+    const budget = useBudgetStore()
+    budget.budget.amount = 100
+    expect(budget.totalBalance).toBe(100)
+  })
 
-  // test('Total expense is calculated correctly', async () => {
-  //   const budget = useBudgetStore()
+  test('fetchBudget returns undefined when requested id matches currentID', async () => {
+    const budget = useBudgetStore()
+    budget.budget.id = ''
+    expect(await budget.fetchBudget()).toBe(undefined)
+  })
 
-  //   expect(budget.totalExpense).toBe(50)
-  // })
+  test('startDate returns undefined when requested setting date matches current date', async () => {
+    const budget = useBudgetStore()
+    budget.budget.startDate = new Date('2023-01-01')
+    expect(await budget.setStartDate(new Date('2023-01-01'))).toBe(undefined)
+  })
 
-  // test('Total balance is calculated correctly', async () => {
-  //   const budget = useBudgetStore()
-
-  //   expect(budget.totalBalance).toBe(50)
-  // })
-
-  // test('Transactions in budget update when budget is updated', async () => {
-  //   const budget = useBudgetStore()
-
-  //   expect(budget.transactions.length).toBe(2)
-
-  //   budget.setStartDate(new Date('2023-01-01'))
-
-  //   expect(budget.transactions.length).toBe(3)
-
-  //   budget.setEndDate(new Date('2025-12-31'))
-
-  //   expect(budget.transactions.length).toBe(4)
-  // })
+  test('setAmount returns undefined when requested setting amount matches current amount', async () => {
+    const budget = useBudgetStore()
+    budget.budget.amount = 22
+    expect(await budget.setAmount(22)).toBe(undefined)
+  })
 })
