@@ -2,7 +2,6 @@
   "recommendations": [
     "vue.volar",
     "formulahendry.auto-close-tag",
-    "vue.vscode-typescript-vue-plugin",
     "bradlc.vscode-tailwindcss",
     "dbaeumer.vscode-eslint",
     "esbenp.prettier-vscode"
