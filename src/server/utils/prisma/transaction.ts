@@ -85,3 +85,21 @@ export async function deleteTransactionById(id: string) {
     },
   })
 }
+
+export async function editTransaction(
+  id: string,
+  data: {
+    amount?: number
+    date?: Date
+    categoryId?: string
+    budgetId?: string
+    storeId?: string
+  }
+) {
+  return await prisma.transaction.update({
+    where: {
+      id,
+    },
+    data,
+  })
+}
