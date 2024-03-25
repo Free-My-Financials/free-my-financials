@@ -23,6 +23,8 @@ const transactionData = {
 const transactionEditData = {
   amount: 70.0,
   date: new Date('2024-07-23'),
+  categoryId: 'nameii',
+  storeId: '17382',
 }
 
 const transactionExpense = {
@@ -47,8 +49,8 @@ const transactionExpenseEdited = {
   updatedAt: new Date('2024-06-15'),
   userId: 'Pandora',
   budgetId: 'PandoraBudget',
-  categoryId: 'Food',
-  storeId: 'Walmart',
+  categoryId: 'nameii',
+  storeId: '17382',
 }
 
 const store = {
