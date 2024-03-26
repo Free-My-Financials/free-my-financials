@@ -82,7 +82,6 @@
     >
       <NuxtLink to="/information"> Information </NuxtLink>
     </p>
-
     <div class="flex-grow" />
 
     <!-- Logout -->
@@ -109,6 +108,7 @@
       <NuxtLink to="/login"> Login </NuxtLink>
     </p>
   </header>
+  <BudgetDropDown v-if="auth.isLoggedIn"></BudgetDropDown>
 </template>
 
 <script lang="ts" setup>

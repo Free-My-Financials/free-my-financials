@@ -180,4 +180,15 @@ describe('Budget Store', () => {
     budget.budget.amount = 22
     expect(await budget.setAmount(22)).toBe(undefined)
   })
+
+  test('Budget starts when the month is correct', async () => {
+    const budget = useBudgetStore()
+    expect(budget.hasStarted).toBe(true)
+  })
+
+  test('Budget ends when the month is correct', async () => {
+    const budget = useBudgetStore()
+    budget.budget.endDate = new Date('2023-01-01')
+    expect(budget.hasEnded).toBe(true)
+  })
 })

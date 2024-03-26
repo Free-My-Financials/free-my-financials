@@ -1,12 +1,18 @@
-import { describe, test, expect } from 'vitest'
+import { describe, test, expect, beforeEach } from 'vitest'
 
 describe('Transactions Store', () => {
   enum TransactionType {
     INCOME = 'Income',
     EXPENSE = 'Expense',
   }
+  beforeEach(async () => {
+    const transaction = useTransactionStore()
+
+    transaction.$reset
+  })
 
   const sampleTransaction = {
+    budgetId: 'Money',
     id: 'Hi',
     type: TransactionType.EXPENSE,
     store: 'Fortnite',
@@ -14,7 +20,17 @@ describe('Transactions Store', () => {
     date: new Date('2023-01-01'),
     category: 'Food',
   }
+  const sampleTransaction2 = {
+    budgetId: 'Money',
+    id: 'ei',
+    type: TransactionType.EXPENSE,
+    store: 'Soup',
+    amount: 99,
+    date: new Date('2023-03-01'),
+    category: 'Clothing',
+  }
   const sampleIncome = {
+    budgetId: 'Money',
     id: 'SuperHi',
     type: TransactionType.INCOME,
     store: 'Bounty Hunting',
@@ -23,6 +39,7 @@ describe('Transactions Store', () => {
     category: 'Income',
   }
   const sampleSecondaryTransaction = {
+    budgetId: 'Money',
     id: 'LowHi',
     type: TransactionType.EXPENSE,
     store: 'Fortnite',
@@ -42,6 +59,12 @@ describe('Transactions Store', () => {
     transactions.addTransaction(sampleTransaction)
 
     expect(transactions.transactions.length).toBeGreaterThan(0)
+  })
+
+  test('Transaction being added returns the same transaction', async () => {
+    const transactions = useTransactionStore()
+
+    expect(transactions.getTransactionById('Hi')).toEqual(sampleTransaction)
   })
 
   test('Transactions have a Total Balance ', async () => {
@@ -114,5 +137,11 @@ describe('Transactions Store', () => {
     expect(transactions.getTransactionById(sampleTransaction.id)).toEqual(
       sampleTransaction
     )
+  })
+
+  test('Transaction adding returns null when it cannot reach the server', async () => {
+    const transactions = useTransactionStore()
+
+    expect(await transactions.addTransaction(sampleTransaction2)).toEqual(null)
   })
 })
