@@ -1,7 +1,6 @@
 <template>
   <div>
     <div id="budget-page">
-      <BudgetDropDown></BudgetDropDown>
       <h3>
         Start of budget:
         <UBadge :label="budget.startDate.toDateString()" />
