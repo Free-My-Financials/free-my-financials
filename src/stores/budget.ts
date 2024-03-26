@@ -199,6 +199,15 @@ export const useBudgetStore = defineStore('budget', () => {
         click: () => void
       }[][] = []
 
+      budgetOptions.push([
+        {
+          label: 'Create New Budget',
+          value: '',
+          click: () => {
+            window.location.assign('/budget/editBudget')
+          },
+        },
+      ])
       for (let num = 0; num <= numberOfBudgets - 1; num++) {
         const name = data.value[num].name.toString()
         const id = data.value[num].id.toString()
@@ -213,7 +222,6 @@ export const useBudgetStore = defineStore('budget', () => {
           },
         ])
       }
-
       return budgetOptions
     } catch (error) {
       toast.add({

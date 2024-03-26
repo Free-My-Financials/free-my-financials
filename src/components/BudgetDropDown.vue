@@ -13,6 +13,8 @@
 </template>
 
 <script lang="ts" setup>
+// THE FIRST LINK, that being "Create A New Budget" is created in
+// budget.createBudgetSelection(), so when the time comes to merge budget page and edit budget page, look there
 const budget = useBudgetStore()
 const budgetOptions = await budget.createBudgetSelection()
 
