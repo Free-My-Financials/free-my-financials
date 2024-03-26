@@ -108,7 +108,7 @@
       <NuxtLink to="/login"> Login </NuxtLink>
     </p>
   </header>
-  <BudgetDropDown></BudgetDropDown>
+  <BudgetDropDown v-if="auth.isLoggedIn"></BudgetDropDown>
 </template>
 
 <script lang="ts" setup>
