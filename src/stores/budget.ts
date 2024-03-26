@@ -220,6 +220,7 @@ export const useBudgetStore = defineStore('budget', () => {
         title: 'Error',
         description: 'Something went wrong',
       })
+      return new Error('Something went wrong')
     }
   }
 

@@ -1,20 +1,7 @@
 <template>
   <div>
     <div id="budget-page">
-      <h3>
-        Budget:
-        <UBadge :label="budget.budget.name" />
-        <UDropdown
-          :items="budgetOptions"
-          :popper="{ placement: 'bottom-start' }"
-        >
-          <UButton
-            color="white"
-            label="Budgets"
-            trailing-icon="i-heroicons-chevron-down-20-solid"
-          />
-        </UDropdown>
-      </h3>
+      <BudgetDropDown></BudgetDropDown>
       <h3>
         Start of budget:
         <UBadge :label="budget.startDate.toDateString()" />
@@ -57,7 +44,6 @@
 import printDiv from '~/utils/printDiv'
 
 const budget = useBudgetStore()
-const budgetOptions = await budget.createBudgetSelection()
 
 const columns = [
   {
