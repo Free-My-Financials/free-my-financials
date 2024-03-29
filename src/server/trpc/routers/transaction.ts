@@ -7,6 +7,7 @@ import {
   deleteTransactionById,
   getTransactionById,
   getTransactionsByUserId,
+  editTransaction,
 } from '~/server/utils/prisma/transaction'
 
 export default router({
@@ -83,5 +84,23 @@ export default router({
       const deletedTransaction = await deleteTransactionById(input.id)
 
       return deletedTransaction
+    }),
+
+  editTransaction: publicProcedure
+    .use(isAuthed)
+    .input(
+      z.object({
+        id: z.string(),
+        amount: z.number().positive().int().optional(),
+        date: z.date({ coerce: true }).optional(),
+        categoryId: z.string().optional(),
+        budgetId: z.string().optional(),
+        storeId: z.string().optional(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const updatedTransaction = await editTransaction(input.id, input)
+
+      return updatedTransaction
     }),
 })

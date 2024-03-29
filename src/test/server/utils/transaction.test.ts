@@ -6,6 +6,7 @@ import {
   getTransactionById,
   deleteTransactionById,
   createTransaction,
+  editTransaction,
 } from '~/server/utils/prisma/transaction'
 
 vi.mock('~/server/utils/prisma')
@@ -19,6 +20,13 @@ const transactionData = {
   budgetId: 'PandoraBudget',
 }
 
+const transactionEditData = {
+  amount: 70.0,
+  date: new Date('2024-07-23'),
+  categoryId: 'nameii',
+  storeId: '17382',
+}
+
 const transactionExpense = {
   id: 'Will Smith',
   type: TransactionType.EXPENSE,
@@ -30,6 +38,19 @@ const transactionExpense = {
   budgetId: 'PandoraBudget',
   categoryId: 'Food',
   storeId: 'Walmart',
+}
+
+const transactionExpenseEdited = {
+  id: 'Will Smith',
+  type: TransactionType.EXPENSE,
+  amount: 70.0,
+  date: new Date('2024-07-23'),
+  createdAt: new Date('2024-06-15'),
+  updatedAt: new Date('2024-06-15'),
+  userId: 'Pandora',
+  budgetId: 'PandoraBudget',
+  categoryId: 'nameii',
+  storeId: '17382',
 }
 
 const store = {
@@ -79,4 +100,13 @@ test('Deleting a transaction should return deleted transaction', async () => {
   prisma.transaction.delete.mockResolvedValue(transactionExpense)
   const testTransaction = await deleteTransactionById(transactionExpense.id)
   expect(testTransaction).toEqual(transactionExpense)
+})
+
+test('editing a transaction returns the new transaction', async () => {
+  prisma.transaction.update.mockResolvedValue(transactionExpenseEdited)
+  const testTransaction = await editTransaction(
+    transactionExpense.id,
+    transactionEditData
+  )
+  expect(testTransaction).toEqual(transactionExpenseEdited)
 })
