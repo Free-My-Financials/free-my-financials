@@ -50,13 +50,23 @@ const state = reactive({
 async function submit() {
   if (state.amount && state.startDate && state.endDate && state.name) {
     if (state.newBudget == true) {
-      budget.createNewBudget({
+      const new_budget = {
         name: state.name.toString(),
         amount: Math.round(state.amount * 100),
         start: new Date(state.startDate + 'T00:00:00'),
         end: new Date(state.endDate + 'T00:00:00'),
-      })
-
+      }
+      const created_budget = await budget.createNewBudget(new_budget)
+      console.log(created_budget)
+      if (created_budget != undefined) {
+        budget.setBudget({
+          id: created_budget.id,
+          name: created_budget.name,
+          startDate: new Date(created_budget.start),
+          endDate: new Date(created_budget.end),
+          amount: created_budget.amount,
+        })
+      }
       resetState()
       toast.add({
         title: 'Success',

@@ -146,6 +146,27 @@ export const useTransactionStore = defineStore('transactions', () => {
     }
   }
 
+  const editTransaction = async (data: {
+    id: string
+    amount?: number
+    date?: Date
+    categoryId?: string
+    budgetId?: string
+    storeId?: string
+  }) => {
+    try {
+      const newTransaction =
+        await $client.transaction.editTransaction.mutate(data)
+
+      return newTransaction
+    } catch (error) {
+      return toast.add({
+        title: 'Error',
+        description: 'Something went wrong',
+      })
+    }
+  }
+
   fetchTransactions()
 
   return {
@@ -162,5 +183,6 @@ export const useTransactionStore = defineStore('transactions', () => {
     addTransaction,
     removeTransaction,
     fetchTransactions,
+    editTransaction,
   }
 })

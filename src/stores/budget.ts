@@ -76,6 +76,11 @@ export const useBudgetStore = defineStore('budget', () => {
     setStartDate(data.startDate)
     setEndDate(data.endDate)
     setName(data.name)
+
+    if (currentID.value != data.id) {
+      currentID.value = data.id
+      fetchBudget()
+    }
   }
 
   const setName = async (Name: string) => {
@@ -192,8 +197,17 @@ export const useBudgetStore = defineStore('budget', () => {
         label: string
         value: string
         click: () => void
-      }[][] = new Array(numberOfBudgets)
+      }[][] = []
 
+      budgetOptions.push([
+        {
+          label: 'Create New Budget',
+          value: '',
+          click: () => {
+            window.location.assign('/budget/editBudget')
+          },
+        },
+      ])
       for (let num = 0; num <= numberOfBudgets - 1; num++) {
         const name = data.value[num].name.toString()
         const id = data.value[num].id.toString()
@@ -208,13 +222,13 @@ export const useBudgetStore = defineStore('budget', () => {
           },
         ])
       }
-
       return budgetOptions
     } catch (error) {
       toast.add({
         title: 'Error',
         description: 'Something went wrong',
       })
+      return new Error('Something went wrong')
     }
   }
 
@@ -294,5 +308,6 @@ export const useBudgetStore = defineStore('budget', () => {
     setEndDate,
     setAmount,
     fetchBudget,
+    fetchBudgetByID,
   }
 })

@@ -41,18 +41,16 @@ export const useCategoryStore = defineStore('categories', () => {
       })
 
       if (!data?.value) {
-        return toast.add({
-          title: 'Error',
-          description: 'Something went wrong',
-        })
+        return new Error('Something went wrong')
       }
 
       categories.value = data.value.map((category) => category.name)
     } catch (error) {
-      return toast.add({
+      toast.add({
         title: 'Error',
         description: 'Something went wrong',
       })
+      return new Error('Something went wrong')
     }
   }
 
