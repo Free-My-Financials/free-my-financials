@@ -65,6 +65,10 @@
 
     <UFormGroup label="Date">
       <UInput id="date" v-model="state.date" type="date" name="Date" />
+      <div style="display: flex; align-items: center; margin-top: 8px">
+        <UCheckbox v-model="state.isRecurring" />
+        <label style="margin-left: 8px">Is this transaction recurring?</label>
+      </div>
     </UFormGroup>
 
     <UButton type="submit"> Submit </UButton>
@@ -86,6 +90,7 @@ const state = reactive({
   category: '',
   customCategory: false,
   customCategoryName: '',
+  isRecurring: false,
 })
 
 const canSubmit = computed(() => {
@@ -126,6 +131,7 @@ async function submit() {
       category: state.customCategory
         ? state.customCategoryName
         : state.category,
+      budgetId: '',
     }))
   )
     return
@@ -138,7 +144,9 @@ async function submit() {
     description: 'Transaction added successfully!',
   })
 }
-
+function toggleRecurring() {
+  state.isRecurring = !state.isRecurring
+}
 function resetState() {
   state.store = ''
   state.amount = ''
