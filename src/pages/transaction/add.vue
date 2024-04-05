@@ -160,7 +160,7 @@ async function submit() {
     })
   } else {
     const recurrenceType = state.recurrenceType
-    let currentDate = new Date(transactionDate)
+    const currentDate = new Date(transactionDate)
 
     while (currentDate <= recurrenceEndDate) {
       success = await transactions.addTransaction({
