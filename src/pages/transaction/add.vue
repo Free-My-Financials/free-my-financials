@@ -112,10 +112,14 @@ const canSubmit = computed(() => {
       ? (state.category !== null && state.category !== '') ||
         state.customCategory
       : true
+  const validRecurrenceSelected =
+    !state.isRecurring || state.recurrenceType !== ''
+
   return (
     requiredFieldsFilled &&
     validCategorySelected &&
-    (state.customCategory ? state.customCategoryName.trim() !== '' : true)
+    (state.customCategory ? state.customCategoryName.trim() !== '' : true) &&
+    validRecurrenceSelected
   )
 })
 
@@ -126,17 +130,23 @@ async function submit() {
       description: 'Please fill in all the fields.',
     })
     return
+  } else {
+    toast.add({
+      title: 'Success',
+      description: 'Transaction added successfully.',
+    })
   }
-
   const parsedAmount = parseFloat(state.amount)
 
   if (isNaN(parsedAmount)) return
 
   const transactionDate = new Date(state.date + 'T00:00:00')
-  const recurrenceEndDate = new Date(new Date().getFullYear(), 11, 31) // End of current year
+  const recurrenceEndDate = new Date(new Date().getFullYear(), 11, 31)
+
+  let success = false
 
   if (!state.isRecurring) {
-    const success = await transactions.addTransaction({
+    success = await transactions.addTransaction({
       id: Math.random().toString(36).substring(7),
       type: state.type,
       store: state.store,
@@ -147,28 +157,13 @@ async function submit() {
         : state.category,
       budgetId: '',
     })
-
-    if (success) {
-      catagories.fetchCategories()
-      resetState()
-      toast.add({
-        title: 'Success',
-        description: 'Transaction added successfully!',
-      })
-    } else {
-      toast.add({
-        title: 'Error',
-        description: 'Failed to add transaction.',
-      })
-    }
   } else {
     // Handle recurring transaction
     const recurrenceType = state.recurrenceType
     let currentDate = new Date(transactionDate)
 
-    let addedTransactions = 0
     while (currentDate <= recurrenceEndDate) {
-      const success = await transactions.addTransaction({
+      success = await transactions.addTransaction({
         id: Math.random().toString(36).substring(7),
         type: state.type,
         store: state.store,
@@ -179,10 +174,6 @@ async function submit() {
           : state.category,
         budgetId: '',
       })
-
-      if (success) {
-        addedTransactions++
-      }
 
       switch (recurrenceType) {
         case 'weekly':
@@ -198,20 +189,22 @@ async function submit() {
           break
       }
     }
+  }
 
-    if (addedTransactions > 0) {
-      catagories.fetchCategories()
-      resetState()
-      toast.add({
-        title: 'Success',
-        description: `${addedTransactions} recurring transactions added successfully!`,
-      })
-    } else {
-      toast.add({
-        title: 'Error',
-        description: 'Failed to add recurring transactions.',
-      })
-    }
+  if (success) {
+    catagories.fetchCategories()
+    resetState(state)
+    toast.add({
+      title: 'Success',
+      description: state.isRecurring
+        ? `${addedTransactions} recurring transactions added successfully!`
+        : 'Transaction added successfully!',
+    })
+  } else {
+    toast.add({
+      title: 'Error',
+      description: 'Failed to add transaction.',
+    })
   }
 }
 </script>
