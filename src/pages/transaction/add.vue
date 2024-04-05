@@ -71,6 +71,19 @@
       </div>
       <UFormGroup v-if="state.isRecurring" label="Recurrence">
         <USelect v-model="state.recurrenceType" :options="recurrenceOptions" />
+        <div
+          v-if="state.recurrenceType !== ''"
+          style="display: flex; flex-direction: column; margin-top: 8px"
+        >
+          <label for="recurrenceEndDate">End Date of Recurrence</label>
+          <UInput
+            id="recurrenceEndDate"
+            v-model="state.recurrenceEndDate"
+            type="date"
+            name="RecurrenceEndDate"
+            placeholder="End Date of Recurrence"
+          />
+        </div>
       </UFormGroup>
     </UFormGroup>
 
@@ -101,6 +114,7 @@ const state = reactive({
   customCategoryName: '',
   isRecurring: false,
   recurrenceType: '',
+  recurrenceEndDate: '',
 })
 
 const transactions = useTransactionStore()
@@ -114,7 +128,8 @@ const canSubmit = computed(() => {
         state.customCategory
       : true
   const validRecurrenceSelected =
-    !state.isRecurring || state.recurrenceType !== ''
+    !state.isRecurring ||
+    (state.recurrenceType !== '' && state.recurrenceEndDate !== '')
 
   return (
     requiredFieldsFilled &&
@@ -142,7 +157,6 @@ async function submit() {
   if (isNaN(parsedAmount)) return
 
   const transactionDate = new Date(state.date + 'T00:00:00')
-  const recurrenceEndDate = new Date(new Date().getFullYear(), 11, 31)
 
   let success = false
 
@@ -159,6 +173,7 @@ async function submit() {
       budgetId: '',
     })
   } else {
+    const recurrenceEndDate = new Date(state.recurrenceEndDate + 'T00:00:00')
     const recurrenceType = state.recurrenceType
     const currentDate = new Date(transactionDate)
 
@@ -191,7 +206,6 @@ async function submit() {
     }
     if (success && state.customCategory) {
       if (!filteredCategories.value.includes(state.customCategoryName)) {
-        // Manually add the new custom category to the reactive state
         catagories.categories.push(state.customCategoryName)
       }
     }
@@ -205,5 +219,24 @@ async function submit() {
       description: 'Failed to add transaction.',
     })
   }
+}
+
+function toggleRecurring() {
+  if (!state.isRecurring) {
+    state.recurrenceType = ''
+    state.recurrenceEndDate = ''
+  }
+}
+
+function resetState(state) {
+  state.store = ''
+  state.amount = ''
+  state.date = ''
+  state.category = ''
+  state.customCategory = false
+  state.customCategoryName = ''
+  state.isRecurring = false
+  state.recurrenceType = ''
+  state.recurrenceEndDate = ''
 }
 </script>
