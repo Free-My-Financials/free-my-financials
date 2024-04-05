@@ -90,6 +90,7 @@ const catagories = useCategoryStore()
 const filteredCategories = computed(() => {
   return catagories.categories.filter((category) => category.trim() !== '')
 })
+
 const state = reactive({
   store: '',
   amount: '',
@@ -158,7 +159,6 @@ async function submit() {
       budgetId: '',
     })
   } else {
-    // Handle recurring transaction
     const recurrenceType = state.recurrenceType
     let currentDate = new Date(transactionDate)
 
@@ -189,17 +189,16 @@ async function submit() {
           break
       }
     }
+    if (success && state.customCategory) {
+      if (!filteredCategories.value.includes(state.customCategoryName)) {
+        // Manually add the new custom category to the reactive state
+        catagories.categories.push(state.customCategoryName)
+      }
+    }
   }
 
   if (success) {
-    catagories.fetchCategories()
     resetState(state)
-    toast.add({
-      title: 'Success',
-      description: state.isRecurring
-        ? `${addedTransactions} recurring transactions added successfully!`
-        : 'Transaction added successfully!',
-    })
   } else {
     toast.add({
       title: 'Error',
