@@ -57,6 +57,7 @@
     "oslo": "^1.0.3",
     "pinia": "^2.1.7",
     "trpc-nuxt": "^0.10.15",
+    "vue-toastification": "^2.0.0-rc.5",
     "zod": "^3.22.4"
   }
 }

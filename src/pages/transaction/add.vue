@@ -66,19 +66,27 @@
     <UFormGroup label="Date">
       <UInput id="date" v-model="state.date" type="date" name="Date" />
       <div style="display: flex; align-items: center; margin-top: 8px">
-        <UCheckbox v-model="state.isRecurring" />
+        <UCheckbox v-model="state.isRecurring" @change="toggleRecurring" />
         <label style="margin-left: 8px">Is this transaction recurring?</label>
       </div>
+      <UFormGroup v-if="state.isRecurring" label="Recurrence">
+        <USelect v-model="state.recurrenceType" :options="recurrenceOptions" />
+      </UFormGroup>
     </UFormGroup>
 
     <UButton type="submit"> Submit </UButton>
   </UForm>
 </template>
 
-<script lang="ts" setup>
-const transactions = useTransactionStore()
+<script setup>
+import { reactive, computed } from 'vue'
+import { useTransactionStore } from '@/stores/transaction'
+const recurrenceOptions = [
+  { value: 'weekly', label: 'Weekly' },
+  { value: 'biweekly', label: 'Biweekly' },
+  { value: 'monthly', label: 'Monthly' },
+]
 const catagories = useCategoryStore()
-const toast = useToast()
 const filteredCategories = computed(() => {
   return catagories.categories.filter((category) => category.trim() !== '')
 })
@@ -91,7 +99,11 @@ const state = reactive({
   customCategory: false,
   customCategoryName: '',
   isRecurring: false,
+  recurrenceType: '',
 })
+
+const transactions = useTransactionStore()
+const toast = useToast()
 
 const canSubmit = computed(() => {
   const requiredFieldsFilled = state.store && state.amount !== '' && state.date
@@ -113,7 +125,6 @@ async function submit() {
       title: 'Invalid Input',
       description: 'Please fill in all the fields.',
     })
-
     return
   }
 
@@ -121,39 +132,86 @@ async function submit() {
 
   if (isNaN(parsedAmount)) return
 
-  if (
-    !(await transactions.addTransaction({
+  const transactionDate = new Date(state.date + 'T00:00:00')
+  const recurrenceEndDate = new Date(new Date().getFullYear(), 11, 31) // End of current year
+
+  if (!state.isRecurring) {
+    const success = await transactions.addTransaction({
       id: Math.random().toString(36).substring(7),
       type: state.type,
       store: state.store,
       amount: Math.round(parsedAmount * 100),
-      date: new Date(state.date + 'T00:00:00'),
+      date: transactionDate,
       category: state.customCategory
         ? state.customCategoryName
         : state.category,
       budgetId: '',
-    }))
-  )
-    return
+    })
 
-  catagories.fetchCategories()
+    if (success) {
+      catagories.fetchCategories()
+      resetState()
+      toast.add({
+        title: 'Success',
+        description: 'Transaction added successfully!',
+      })
+    } else {
+      toast.add({
+        title: 'Error',
+        description: 'Failed to add transaction.',
+      })
+    }
+  } else {
+    // Handle recurring transaction
+    const recurrenceType = state.recurrenceType
+    let currentDate = new Date(transactionDate)
 
-  resetState()
-  toast.add({
-    title: 'Success',
-    description: 'Transaction added successfully!',
-  })
-}
-function toggleRecurring() {
-  state.isRecurring = !state.isRecurring
-}
-function resetState() {
-  state.store = ''
-  state.amount = ''
-  state.date = ''
-  state.type = TransactionType.EXPENSE
-  state.category = ''
-  state.customCategory = false
-  state.customCategoryName = ''
+    let addedTransactions = 0
+    while (currentDate <= recurrenceEndDate) {
+      const success = await transactions.addTransaction({
+        id: Math.random().toString(36).substring(7),
+        type: state.type,
+        store: state.store,
+        amount: Math.round(parsedAmount * 100),
+        date: currentDate,
+        category: state.customCategory
+          ? state.customCategoryName
+          : state.category,
+        budgetId: '',
+      })
+
+      if (success) {
+        addedTransactions++
+      }
+
+      switch (recurrenceType) {
+        case 'weekly':
+          currentDate.setDate(currentDate.getDate() + 7)
+          break
+        case 'biweekly':
+          currentDate.setDate(currentDate.getDate() + 14)
+          break
+        case 'monthly':
+          currentDate.setMonth(currentDate.getMonth() + 1)
+          break
+        default:
+          break
+      }
+    }
+
+    if (addedTransactions > 0) {
+      catagories.fetchCategories()
+      resetState()
+      toast.add({
+        title: 'Success',
+        description: `${addedTransactions} recurring transactions added successfully!`,
+      })
+    } else {
+      toast.add({
+        title: 'Error',
+        description: 'Failed to add recurring transactions.',
+      })
+    }
+  }
 }
 </script>
