@@ -17,27 +17,19 @@
       </p>
       <ul class="feature-list">
         <li class="feature-item">
-          <h2 class="feature-title">Add transactions</h2>
+          <h2 class="feature-title">Add and View Transactions</h2>
           <p class="feature-text">
             Visit the
-            <NuxtLink to="/transaction/add" class="green-text-link">
-              Add Transaction
+            <NuxtLink to="/transaction/transactions" class="green-text-link">
+              Transactions
             </NuxtLink>
             page. Input accurate information to enhance transaction tracking.
+            View your transaction history and use the search bar for specific
+            insights.
           </p>
         </li>
         <li class="feature-item">
-          <h2 class="feature-title">Analyze transactions and balance</h2>
-          <p class="feature-text">
-            Visit the
-            <NuxtLink to="/transaction/history" class="green-text-link">
-              View Transactions
-            </NuxtLink>
-            page. Use the search bar for specific insights.
-          </p>
-        </li>
-        <li class="feature-item">
-          <h2 class="feature-title">Create a personalized budget</h2>
+          <h2 class="feature-title">Create a Personalized Budget</h2>
           <p class="feature-text">
             Visit the
             <NuxtLink to="/budget/editBudget" class="green-text-link">
@@ -48,7 +40,7 @@
           </p>
         </li>
         <li class="feature-item">
-          <h2 class="feature-title">Review budgeting information</h2>
+          <h2 class="feature-title">Review Budgeting Information</h2>
           <p class="feature-text">
             Visit the
             <NuxtLink to="/budget/budget" class="green-text-link">
@@ -60,7 +52,7 @@
           </p>
         </li>
         <li class="feature-item">
-          <h2 class="feature-title">Visualize financial data</h2>
+          <h2 class="feature-title">Visualize Financial Data</h2>
           <p class="feature-text">
             Visit the
             <NuxtLink to="/calendar" class="green-text-link">
