@@ -105,7 +105,7 @@
         <UButton type="submit"> Submit </UButton>
       </UForm>
     </div>
-    <div class="history-container">
+    <div class="history-container" v-if="transactions.transactions.length > 0">
       <div class="search-container">
         <span class="search-icon">&#128269;</span>
         <input
@@ -122,7 +122,7 @@
           FILTERED TOTAL:
           <DollarAmount :amount="calculateFilteredTotalBalance" />
         </h3>
-        <div v-if="filteredTransactions.length === 0">
+        <div v-if="searchQuery !== '' && filteredTransactions.length === 0">
           <p>No matching results for the search: "{{ searchQuery }}"</p>
         </div>
         <UTable
