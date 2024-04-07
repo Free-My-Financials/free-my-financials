@@ -7,9 +7,13 @@
         to shift your mindset from living paycheck-to-paycheck to a cashflow
         approach.
       </p>
-      <NuxtLink v-if="!auth.isLoggedIn" to="/login" class="get-started-button">
+      <a
+        v-if="!auth.isLoggedIn"
+        href="auth/login/github"
+        class="get-started-button"
+      >
         Get Started
-      </NuxtLink>
+      </a>
     </div>
     <div class="use-container">
       <h1>Current Contents</h1>
