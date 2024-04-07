@@ -106,6 +106,13 @@
       </UForm>
     </div>
     <div class="history-container">
+      <div class="search-container">
+        <span class="search-icon">&#128269;</span>
+        <input
+          v-model="searchQuery"
+          placeholder="Search transactions by store or category"
+        />
+      </div>
       <div id="transaction-page" class="table-container">
         <h3>
           TOTAL BALANCE:
@@ -154,13 +161,6 @@
         >
           Print Transaction Data
         </UButton>
-      </div>
-      <div class="search-container">
-        <span class="search-icon">&#128269;</span>
-        <input
-          v-model="searchQuery"
-          placeholder="Search transactions by store or category"
-        />
       </div>
       <ConfirmationModal
         :is-open="deleteModalActive"
@@ -445,6 +445,7 @@ function onDeleteModalConfirm() {
 }
 
 .table-container {
+  padding-top: 20px;
   flex: 1;
   margin-right: 20px;
 }
@@ -457,7 +458,6 @@ function onDeleteModalConfirm() {
   padding-left: 20px;
   height: 2.5rem;
   box-shadow: 0px 0px 0px;
-  width: 35%;
   font-size: 16px;
   line-height: 125%;
   display: flex;
