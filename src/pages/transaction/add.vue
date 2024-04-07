@@ -1,159 +1,174 @@
-<!-- eslint-disable vue/no-multiple-template-root -->
 <template>
-  <UForm :state="state" @submit="submit">
-    <UFormGroup label="Type of Transaction">
-      <USelect v-model="state.type" :options="Object.values(TransactionType)" />
-    </UFormGroup>
-
-    <UFormGroup
-      :label="
-        state.type === TransactionType.INCOME
-          ? 'Source of Income'
-          : 'Place of Purchase'
-      "
-    >
-      <UInput
-        id="store"
-        v-model="state.store"
-        type="text"
-        name="Store"
-        :placeholder="
-          state.type === TransactionType.INCOME
-            ? 'Source of Income'
-            : 'Place of Purchase'
-        "
-      />
-    </UFormGroup>
-
-    <UFormGroup v-if="state.type === TransactionType.EXPENSE" label="Category">
-      <USelect
-        v-if="!state.customCategory"
-        v-model="state.category"
-        :options="filteredCategories"
-        :placeholder="'Category of Purchase'"
-      />
-
-      <UInput
-        v-if="state.customCategory"
-        id="customCategory"
-        :key="state.customCategory.toString()"
-        v-model="state.customCategoryName"
-        type="text"
-        name="CustomCategory"
-        :placeholder="'Category'"
-      />
-      <div style="display: flex; align-items: center; margin-top: 8px">
-        <UCheckbox v-model="state.customCategory" />
-        <label style="margin-left: 8px">Click to enter a custom category</label>
-      </div>
-    </UFormGroup>
-
-    <UFormGroup label="Amount">
-      <UInput
-        id="amount"
-        v-model="state.amount"
-        type="number"
-        step="0.01"
-        min="0"
-        name="Amount"
-        :placeholder="
-          state.type === TransactionType.INCOME
-            ? 'Amount Gained'
-            : 'Amount Spent'
-        "
-      />
-    </UFormGroup>
-
-    <UFormGroup label="Date">
-      <UInput id="date" v-model="state.date" type="date" name="Date" />
-      <div style="display: flex; align-items: center; margin-top: 8px">
-        <UCheckbox v-model="state.isRecurring" @change="toggleRecurring" />
-        <label style="margin-left: 8px">Is this transaction recurring?</label>
-      </div>
-      <UFormGroup v-if="state.isRecurring" label="Recurrence">
-        <USelect v-model="state.recurrenceType" :options="recurrenceOptions" />
-        <div
-          v-if="state.recurrenceType !== ''"
-          style="display: flex; flex-direction: column; margin-top: 8px"
-        >
-          <label for="recurrenceEndDate">End Date of Recurrence</label>
-          <UInput
-            id="recurrenceEndDate"
-            v-model="state.recurrenceEndDate"
-            type="date"
-            name="RecurrenceEndDate"
-            placeholder="End Date of Recurrence"
-          />
-        </div>
-      </UFormGroup>
-    </UFormGroup>
-
-    <UButton type="submit"> Submit </UButton>
-  </UForm>
-
   <div class="page-container">
-    <div id="transaction-page" class="table-container">
-      <h3>
-        TOTAL BALANCE:
-        <DollarAmount :amount="transactions.totalBalance" />
-      </h3>
-      <h3 v-if="searchQuery !== ''">
-        FILTERED TOTAL:
-        <DollarAmount :amount="calculateFilteredTotalBalance" />
-      </h3>
-      <div v-if="filteredTransactions.length === 0">
-        <p>No matching results for the search: "{{ searchQuery }}"</p>
-      </div>
-      <UTable
-        v-else
-        :sort="{ column: 'date', direction: 'desc' }"
-        :rows="filteredTransactions"
-        :columns="columns"
-        style="width: 100%"
-      >
-        <template #amount-data="{ row }">
-          <DollarAmount
-            :amount="
-              row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)
+    <div class="form-container">
+      <UForm :state="state" @submit="submit">
+        <UFormGroup label="Type of Transaction">
+          <USelect
+            v-model="state.type"
+            :options="Object.values(TransactionType)"
+          />
+        </UFormGroup>
+
+        <UFormGroup
+          :label="
+            state.type === TransactionType.INCOME
+              ? 'Source of Income'
+              : 'Place of Purchase'
+          "
+        >
+          <UInput
+            id="store"
+            v-model="state.store"
+            type="text"
+            name="Store"
+            :placeholder="
+              state.type === TransactionType.INCOME
+                ? 'Source of Income'
+                : 'Place of Purchase'
             "
           />
-        </template>
-        <template #category-data="{ row }">
-          <span>{{
-            row.type === TransactionType.INCOME ? 'Income' : row.category
-          }}</span>
-        </template>
-        <template #delete-data="{ row }">
-          <UButton
-            icon="i-heroicons-trash-20-solid"
-            @click="confirmDeleteTransaction(row.id)"
+        </UFormGroup>
+
+        <UFormGroup
+          v-if="state.type === TransactionType.EXPENSE"
+          label="Category"
+        >
+          <USelect
+            v-if="!state.customCategory"
+            v-model="state.category"
+            :options="filteredCategories"
+            :placeholder="'Category of Purchase'"
           />
-        </template>
-        <template #date-data="{ row }">
-          <span>{{ formatDate(row.date) }}</span>
-        </template>
-      </UTable>
-      <UButton
-        type="button"
-        class="nav-button"
-        @click="printDiv('transaction-page')"
-      >
-        Print Transaction Data
-      </UButton>
+
+          <UInput
+            v-if="state.customCategory"
+            id="customCategory"
+            :key="state.customCategory.toString()"
+            v-model="state.customCategoryName"
+            type="text"
+            name="CustomCategory"
+            :placeholder="'Category'"
+          />
+          <div style="display: flex; align-items: center; margin-top: 8px">
+            <UCheckbox v-model="state.customCategory" />
+            <label style="margin-left: 8px"
+              >Click to enter a custom category</label
+            >
+          </div>
+        </UFormGroup>
+
+        <UFormGroup label="Amount">
+          <UInput
+            id="amount"
+            v-model="state.amount"
+            type="number"
+            step="0.01"
+            min="0"
+            name="Amount"
+            :placeholder="
+              state.type === TransactionType.INCOME
+                ? 'Amount Gained'
+                : 'Amount Spent'
+            "
+          />
+        </UFormGroup>
+
+        <UFormGroup label="Date">
+          <UInput id="date" v-model="state.date" type="date" name="Date" />
+          <div style="display: flex; align-items: center; margin-top: 8px">
+            <UCheckbox v-model="state.isRecurring" @change="toggleRecurring" />
+            <label style="margin-left: 8px"
+              >Is this transaction recurring?</label
+            >
+          </div>
+          <UFormGroup v-if="state.isRecurring" label="Recurrence">
+            <USelect
+              v-model="state.recurrenceType"
+              :options="recurrenceOptions"
+            />
+            <div
+              v-if="state.recurrenceType !== ''"
+              style="display: flex; flex-direction: column; margin-top: 8px"
+            >
+              <label for="recurrenceEndDate">End Date of Recurrence</label>
+              <UInput
+                id="recurrenceEndDate"
+                v-model="state.recurrenceEndDate"
+                type="date"
+                name="RecurrenceEndDate"
+                placeholder="End Date of Recurrence"
+              />
+            </div>
+          </UFormGroup>
+        </UFormGroup>
+
+        <UButton type="submit"> Submit </UButton>
+      </UForm>
     </div>
-    <div class="search-container">
-      <span class="search-icon">&#128269;</span>
-      <input
-        v-model="searchQuery"
-        placeholder="Search transactions by store or category"
+    <div class="history-container">
+      <div id="transaction-page" class="table-container">
+        <h3>
+          TOTAL BALANCE:
+          <DollarAmount :amount="transactions.totalBalance" />
+        </h3>
+        <h3 v-if="searchQuery !== ''">
+          FILTERED TOTAL:
+          <DollarAmount :amount="calculateFilteredTotalBalance" />
+        </h3>
+        <div v-if="filteredTransactions.length === 0">
+          <p>No matching results for the search: "{{ searchQuery }}"</p>
+        </div>
+        <UTable
+          v-else
+          :sort="{ column: 'date', direction: 'desc' }"
+          :rows="filteredTransactions"
+          :columns="columns"
+          style="width: 100%"
+        >
+          <template #amount-data="{ row }">
+            <DollarAmount
+              :amount="
+                row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)
+              "
+            />
+          </template>
+          <template #category-data="{ row }">
+            <span>{{
+              row.type === TransactionType.INCOME ? 'Income' : row.category
+            }}</span>
+          </template>
+          <template #delete-data="{ row }">
+            <UButton
+              icon="i-heroicons-trash-20-solid"
+              @click="confirmDeleteTransaction(row.id)"
+            />
+          </template>
+          <template #date-data="{ row }">
+            <span>{{ formatDate(row.date) }}</span>
+          </template>
+        </UTable>
+        <UButton
+          type="button"
+          class="nav-button"
+          @click="printDiv('transaction-page')"
+        >
+          Print Transaction Data
+        </UButton>
+      </div>
+      <div class="search-container">
+        <span class="search-icon">&#128269;</span>
+        <input
+          v-model="searchQuery"
+          placeholder="Search transactions by store or category"
+        />
+      </div>
+      <ConfirmationModal
+        :is-open="deleteModalActive"
+        :content="deleteModalContent"
+        @cancel="onDeleteModalCancel"
+        @confirm="onDeleteModalConfirm"
       />
     </div>
-    <ConfirmationModal
-      :is-open="deleteModalActive"
-      :content="deleteModalContent"
-      @cancel="onDeleteModalCancel"
-      @confirm="onDeleteModalConfirm"
-    />
   </div>
 </template>
 
@@ -465,5 +480,18 @@ function onDeleteModalConfirm() {
   top: 5px;
   font-size: 18px;
   color: #555;
+}
+
+.page-container {
+  display: flex;
+  gap: 20px;
+}
+
+.form-container {
+  flex: 1;
+}
+
+.history-container {
+  flex: 1;
 }
 </style>
