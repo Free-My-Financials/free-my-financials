@@ -7,7 +7,9 @@
         to shift your mindset from living paycheck-to-paycheck to a cashflow
         approach.
       </p>
-      <NuxtLink to="/login" class="get-started-button"> Get Started </NuxtLink>
+      <NuxtLink v-if="!auth.isLoggedIn" to="/login" class="get-started-button">
+        Get Started
+      </NuxtLink>
     </div>
     <div class="use-container">
       <h1>Current Contents</h1>
@@ -89,6 +91,11 @@
     </div>
   </div>
 </template>
+
+<script setup>
+import { useAuthStore } from '@/stores/auth'
+const auth = useAuthStore()
+</script>
 
 <style scoped>
 .feature-list {
