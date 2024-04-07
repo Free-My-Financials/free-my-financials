@@ -13,19 +13,7 @@
         'hover:text-white',
       ]"
     >
-      <NuxtLink to="/transaction/add"> Add Transaction </NuxtLink>
-    </p>
-    <p
-      v-if="auth.isLoggedIn"
-      :class="[
-        {
-          'text-white dark:text-gray-800': route.name === 'transaction-history',
-        },
-        'hover:text-white',
-        'dark:hover:text-gray-800',
-      ]"
-    >
-      <NuxtLink to="/transaction/history"> View Transactions </NuxtLink>
+      <NuxtLink to="/transaction/transactions"> Transactions </NuxtLink>
     </p>
     <p
       v-if="auth.isLoggedIn"

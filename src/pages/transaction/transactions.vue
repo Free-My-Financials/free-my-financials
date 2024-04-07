@@ -105,7 +105,7 @@
         <UButton type="submit"> Submit </UButton>
       </UForm>
     </div>
-    <div class="history-container" v-if="transactions.transactions.length > 0">
+    <div v-if="transactions.transactions.length > 0" class="history-container">
       <div class="search-container">
         <span class="search-icon">&#128269;</span>
         <input
