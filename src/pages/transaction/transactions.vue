@@ -145,15 +145,22 @@
             }}</span>
           </template>
           <template #delete-data="{ row }">
-            <UButton
-              icon="i-heroicons-trash-20-solid"
-              @click="confirmDeleteTransaction(row.id)"
-            />
+            <div class="action-buttons">
+              <UButton
+                icon="i-heroicons-pencil-20-solid"
+                @click="editTransaction(row.id)"
+              />
+              <UButton
+                icon="i-heroicons-trash-20-solid"
+                @click="confirmDeleteTransaction(row.id)"
+              />
+            </div>
           </template>
           <template #date-data="{ row }">
             <span>{{ formatDate(row.date) }}</span>
           </template>
         </UTable>
+
         <UButton
           type="button"
           class="nav-button"
