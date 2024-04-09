@@ -1,3 +1,4 @@
+/** 
 import { OAuth2RequestError } from 'arctic'
 import { github, lucia } from '~/server/utils/auth'
 import { getUserByGithubId } from '~/server/utils/prisma/user'
@@ -64,3 +65,5 @@ interface GitHubUser {
   id: number
   login: string
 }
+
+**/
