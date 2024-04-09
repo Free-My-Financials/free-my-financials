@@ -319,7 +319,7 @@ function editTransaction(id) {
   const transaction = transactions.getTransactionById(id)
   state.store = transaction.store
   state.amount = transaction.amount / 100
-  state.date = transaction.date
+  state.date = transaction.date.toISOString().split('T')[0]
   state.type = transaction.type
   state.category = transaction.category
   state.customCategory = transaction.customCategory
@@ -327,6 +327,8 @@ function editTransaction(id) {
   state.isRecurring = transaction.isRecurring
   state.recurrenceType = transaction.recurrenceType
   state.recurrenceEndDate = transaction.recurrenceEndDate
+    .toISOString()
+    .split('T')[0]
 }
 
 function resetState(state) {
