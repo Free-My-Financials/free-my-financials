@@ -1,5 +1,5 @@
 <template>
-  <div class="page-container">
+  <div class="page-container" :style="pageStyles">
     <div class="form-container">
       <UForm :state="state" @submit="submit">
         <UFormGroup label="Type of Transaction">
@@ -226,7 +226,22 @@ const canSubmit = computed(() => {
     validRecurrenceSelected
   )
 })
+const pageStyles = computed(() => {
+  let gradientColor = 'rgba(90, 90, 90, 0.1)'
+  const fallbackColor = 'rgba(28, 28, 28, 0.1)'
+  if (transactions.totalBalance > 0) {
+    gradientColor = 'rgba(39, 174, 96, 0.1)'
+  } else if (transactions.totalBalance < 0) {
+    gradientColor = 'rgba(255, 0, 0, 0.1)'
+  }
 
+  return {
+    background: `radial-gradient(circle at right center, ${gradientColor}, ${fallbackColor})`,
+    marginBottom: '20px',
+    borderRadius: '10px',
+    color: 'white',
+  }
+})
 async function submit() {
   if (!canSubmit.value) {
     toast.add({
@@ -493,7 +508,7 @@ function onDeleteModalConfirm() {
   box-shadow: 0px 0px 0px;
   width: 100%;
   padding-top: 10px;
-  padding-left: 20px;
+  padding-right: 25px;
   height: 2.5rem;
   box-shadow: 0px 0px 0px;
   font-size: 16px;
