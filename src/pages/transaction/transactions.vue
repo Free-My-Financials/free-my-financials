@@ -182,16 +182,24 @@
 <script setup>
 import { reactive, computed, ref } from 'vue'
 import { useTransactionStore } from '@/stores/transaction'
+import { useCategoryStore } from '@/stores/categories'
+
 const recurrenceOptions = [
   { value: 'weekly', label: 'Weekly' },
   { value: 'biweekly', label: 'Biweekly' },
   { value: 'monthly', label: 'Monthly' },
 ]
 const catagories = useCategoryStore()
-const filteredCategories = computed(() => {
-  return catagories.categories.filter((category) => category.trim() !== '')
+const filteredCategories = ref([])
+
+onMounted(async () => {
+  await catagories.fetchCategories()
+  filteredCategories.value = catagories.categories.filter(
+    (category) => category.trim() !== ''
+  )
 })
 
+onMounted(fetch)
 const state = reactive({
   store: '',
   amount: '',
