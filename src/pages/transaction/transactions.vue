@@ -317,18 +317,34 @@ function toggleRecurring() {
 }
 function editTransaction(id) {
   const transaction = transactions.getTransactionById(id)
-  state.store = transaction.store
-  state.amount = transaction.amount / 100
-  state.date = transaction.date.toISOString().split('T')[0]
-  state.type = transaction.type
-  state.category = transaction.category
-  state.customCategory = transaction.customCategory
-  state.customCategoryName = transaction.customCategoryName
-  state.isRecurring = transaction.isRecurring
-  state.recurrenceType = transaction.recurrenceType
-  state.recurrenceEndDate = transaction.recurrenceEndDate
-    .toISOString()
-    .split('T')[0]
+
+  const confirmEdit = confirm(
+    'Are you sure you want to edit transaction from ' +
+      formatDate(transaction.date) +
+      ' at ' +
+      transaction.store +
+      ' for $' +
+      transaction.amount / 100.0 +
+      ' in the ' +
+      transaction.category +
+      ' category?'
+  )
+
+  if (confirmEdit) {
+    transactions.removeTransaction(id)
+    state.store = transaction.store
+    state.amount = transaction.amount / 100
+    state.date = transaction.date.toISOString().split('T')[0]
+    state.type = transaction.type
+    state.category = transaction.category
+    state.customCategory = transaction.customCategory
+    state.customCategoryName = transaction.customCategoryName
+    state.isRecurring = transaction.isRecurring
+    state.recurrenceType = transaction.recurrenceType
+    state.recurrenceEndDate = transaction.recurrenceEndDate
+      .toISOString()
+      .split('T')[0]
+  }
 }
 
 function resetState(state) {
