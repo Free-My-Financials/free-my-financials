@@ -94,6 +94,8 @@
 <script setup>
 import { reactive, computed } from 'vue'
 import { useTransactionStore } from '@/stores/transaction'
+
+const budget = useBudgetStore()
 const recurrenceOptions = [
   { value: 'weekly', label: 'Weekly' },
   { value: 'biweekly', label: 'Biweekly' },
@@ -170,7 +172,7 @@ async function submit() {
       category: state.customCategory
         ? state.customCategoryName
         : state.category,
-      budgetId: '',
+      budgetId: budget.budget.budgetId,
     })
   } else {
     const recurrenceEndDate = new Date(state.recurrenceEndDate + 'T00:00:00')
@@ -187,7 +189,7 @@ async function submit() {
         category: state.customCategory
           ? state.customCategoryName
           : state.category,
-        budgetId: '',
+        budgetId: budget.budget.budgetId,
       })
 
       switch (recurrenceType) {
