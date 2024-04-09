@@ -315,6 +315,19 @@ function toggleRecurring() {
     state.recurrenceEndDate = ''
   }
 }
+function editTransaction(id) {
+  const transaction = transactions.getTransactionById(id)
+  state.store = transaction.store
+  state.amount = transaction.amount / 100
+  state.date = transaction.date
+  state.type = transaction.type
+  state.category = transaction.category
+  state.customCategory = transaction.customCategory
+  state.customCategoryName = transaction.customCategoryName
+  state.isRecurring = transaction.isRecurring
+  state.recurrenceType = transaction.recurrenceType
+  state.recurrenceEndDate = transaction.recurrenceEndDate
+}
 
 function resetState(state) {
   state.store = ''
