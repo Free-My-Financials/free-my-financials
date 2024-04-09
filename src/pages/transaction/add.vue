@@ -65,19 +65,47 @@
 
     <UFormGroup label="Date">
       <UInput id="date" v-model="state.date" type="date" name="Date" />
+      <div style="display: flex; align-items: center; margin-top: 8px">
+        <UCheckbox v-model="state.isRecurring" @change="toggleRecurring" />
+        <label style="margin-left: 8px">Is this transaction recurring?</label>
+      </div>
+      <UFormGroup v-if="state.isRecurring" label="Recurrence">
+        <USelect v-model="state.recurrenceType" :options="recurrenceOptions" />
+        <div
+          v-if="state.recurrenceType !== ''"
+          style="display: flex; flex-direction: column; margin-top: 8px"
+        >
+          <label for="recurrenceEndDate">End Date of Recurrence</label>
+          <UInput
+            id="recurrenceEndDate"
+            v-model="state.recurrenceEndDate"
+            type="date"
+            name="RecurrenceEndDate"
+            placeholder="End Date of Recurrence"
+          />
+        </div>
+      </UFormGroup>
     </UFormGroup>
 
     <UButton type="submit"> Submit </UButton>
   </UForm>
 </template>
 
-<script lang="ts" setup>
-const transactions = useTransactionStore()
+<script setup>
+import { reactive, computed } from 'vue'
+import { useTransactionStore } from '@/stores/transaction'
+
+const budget = useBudgetStore()
+const recurrenceOptions = [
+  { value: 'weekly', label: 'Weekly' },
+  { value: 'biweekly', label: 'Biweekly' },
+  { value: 'monthly', label: 'Monthly' },
+]
 const catagories = useCategoryStore()
-const toast = useToast()
 const filteredCategories = computed(() => {
   return catagories.categories.filter((category) => category.trim() !== '')
 })
+
 const state = reactive({
   store: '',
   amount: '',
@@ -86,7 +114,13 @@ const state = reactive({
   category: '',
   customCategory: false,
   customCategoryName: '',
+  isRecurring: false,
+  recurrenceType: '',
+  recurrenceEndDate: '',
 })
+
+const transactions = useTransactionStore()
+const toast = useToast()
 
 const canSubmit = computed(() => {
   const requiredFieldsFilled = state.store && state.amount !== '' && state.date
@@ -95,10 +129,15 @@ const canSubmit = computed(() => {
       ? (state.category !== null && state.category !== '') ||
         state.customCategory
       : true
+  const validRecurrenceSelected =
+    !state.isRecurring ||
+    (state.recurrenceType !== '' && state.recurrenceEndDate !== '')
+
   return (
     requiredFieldsFilled &&
     validCategorySelected &&
-    (state.customCategory ? state.customCategoryName.trim() !== '' : true)
+    (state.customCategory ? state.customCategoryName.trim() !== '' : true) &&
+    validRecurrenceSelected
   )
 })
 
@@ -108,44 +147,98 @@ async function submit() {
       title: 'Invalid Input',
       description: 'Please fill in all the fields.',
     })
-
     return
+  } else {
+    toast.add({
+      title: 'Success',
+      description: 'Transaction added successfully.',
+    })
   }
-
   const parsedAmount = parseFloat(state.amount)
 
   if (isNaN(parsedAmount)) return
 
-  if (
-    !(await transactions.addTransaction({
+  const transactionDate = new Date(state.date + 'T00:00:00')
+
+  let success = false
+
+  if (!state.isRecurring) {
+    success = await transactions.addTransaction({
       id: Math.random().toString(36).substring(7),
       type: state.type,
       store: state.store,
       amount: Math.round(parsedAmount * 100),
-      date: new Date(state.date + 'T00:00:00'),
+      date: transactionDate,
       category: state.customCategory
         ? state.customCategoryName
         : state.category,
-    }))
-  )
-    return
+      budgetId: budget.budget.budgetId,
+    })
+  } else {
+    const recurrenceEndDate = new Date(state.recurrenceEndDate + 'T00:00:00')
+    const recurrenceType = state.recurrenceType
+    const currentDate = new Date(transactionDate)
 
-  catagories.fetchCategories()
+    while (currentDate <= recurrenceEndDate) {
+      success = await transactions.addTransaction({
+        id: Math.random().toString(36).substring(7),
+        type: state.type,
+        store: state.store,
+        amount: Math.round(parsedAmount * 100),
+        date: currentDate,
+        category: state.customCategory
+          ? state.customCategoryName
+          : state.category,
+        budgetId: budget.budget.budgetId,
+      })
 
-  resetState()
-  toast.add({
-    title: 'Success',
-    description: 'Transaction added successfully!',
-  })
+      switch (recurrenceType) {
+        case 'weekly':
+          currentDate.setDate(currentDate.getDate() + 7)
+          break
+        case 'biweekly':
+          currentDate.setDate(currentDate.getDate() + 14)
+          break
+        case 'monthly':
+          currentDate.setMonth(currentDate.getMonth() + 1)
+          break
+        default:
+          break
+      }
+    }
+    if (success && state.customCategory) {
+      if (!filteredCategories.value.includes(state.customCategoryName)) {
+        catagories.categories.push(state.customCategoryName)
+      }
+    }
+  }
+
+  if (success) {
+    resetState(state)
+  } else {
+    toast.add({
+      title: 'Error',
+      description: 'Failed to add transaction.',
+    })
+  }
 }
 
-function resetState() {
+function toggleRecurring() {
+  if (!state.isRecurring) {
+    state.recurrenceType = ''
+    state.recurrenceEndDate = ''
+  }
+}
+
+function resetState(state) {
   state.store = ''
   state.amount = ''
   state.date = ''
-  state.type = TransactionType.EXPENSE
   state.category = ''
   state.customCategory = false
   state.customCategoryName = ''
+  state.isRecurring = false
+  state.recurrenceType = ''
+  state.recurrenceEndDate = ''
 }
 </script>
