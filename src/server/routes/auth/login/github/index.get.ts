@@ -1,4 +1,3 @@
-/** 
 import { generateState } from 'arctic'
 import { github } from '~/server/utils/auth'
 
@@ -16,5 +15,3 @@ export default defineEventHandler(async (event) => {
 
   return sendRedirect(event, url.toString())
 })
-
-**/
