@@ -189,12 +189,12 @@ const recurrenceOptions = [
   { value: 'biweekly', label: 'Biweekly' },
   { value: 'monthly', label: 'Monthly' },
 ]
-const catagories = useCategoryStore()
+const categories = useCategoryStore()
 const filteredCategories = ref([])
 
 onMounted(async () => {
-  await catagories.fetchCategories()
-  filteredCategories.value = catagories.categories.filter(
+  await categories.fetchCategories()
+  filteredCategories.value = categories.categories.filter(
     (category) => category.trim() !== ''
   )
 })
@@ -317,7 +317,7 @@ async function submit() {
     }
     if (success && state.customCategory) {
       if (!filteredCategories.value.includes(state.customCategoryName)) {
-        catagories.categories.push(state.customCategoryName)
+        categories.categories.push(state.customCategoryName)
       }
     }
   }
