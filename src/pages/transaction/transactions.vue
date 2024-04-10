@@ -38,6 +38,7 @@
             v-model="state.category"
             :options="filteredCategories"
             :placeholder="'Category of Purchase'"
+            @click="handleNormalCategoryDropdownClick"
           />
 
           <UInput
@@ -48,6 +49,7 @@
             type="text"
             name="CustomCategory"
             :placeholder="'Category'"
+            @click="addCustomCategory"
           />
           <div style="display: flex; align-items: center; margin-top: 8px">
             <UCheckbox v-model="state.customCategory" />
@@ -198,6 +200,12 @@ onMounted(async () => {
     (category) => category.trim() !== ''
   )
 })
+const fetchCategories = async () => {
+  await categories.fetchCategories()
+  filteredCategories.value = categories.categories.filter(
+    (category) => category.trim() !== ''
+  )
+}
 
 onMounted(fetch)
 const state = reactive({
@@ -215,7 +223,15 @@ const state = reactive({
 
 const transactions = useTransactionStore()
 const toast = useToast()
-
+const addCustomCategory = () => {
+  if (state.customCategory && state.customCategoryName.trim() !== '') {
+    categories.categories.push(state.customCategoryName.trim())
+    fetchCategories() // Update the dropdown with the new category
+  }
+}
+const handleNormalCategoryDropdownClick = () => {
+  fetchCategories()
+}
 const canSubmit = computed(() => {
   const requiredFieldsFilled = state.store && state.amount !== '' && state.date
   const validCategorySelected =
@@ -315,6 +331,7 @@ async function submit() {
           break
       }
     }
+
     if (success && state.customCategory) {
       if (!filteredCategories.value.includes(state.customCategoryName)) {
         categories.categories.push(state.customCategoryName)
