@@ -44,10 +44,6 @@
               PRISMA_QUERY_ENGINE_BINARY = "${pkgs.prisma-engines}/bin/query-engine";
               PRISMA_QUERY_ENGINE_LIBRARY = "${pkgs.prisma-engines}/lib/libquery_engine.node";
               PRISMA_FMT_BINARY = "${pkgs.prisma-engines}/bin/prisma-fmt";
-
-              # Connection string for the local database
-              DATABASE_URL = "postgresql://postgres@localhost:5432/postgres";
-              JWT_SECRET = "DEV_SECRET";
             };
 
             packages = [

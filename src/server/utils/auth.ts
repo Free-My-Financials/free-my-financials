@@ -3,11 +3,13 @@ import { GitHub } from 'arctic'
 import { PrismaAdapter } from '@lucia-auth/adapter-prisma'
 import prisma from './prisma'
 
+const config = useRuntimeConfig()
+
 const adapter = new PrismaAdapter(prisma.session, prisma.user)
 
 export const github = new GitHub(
-  process.env.GITHUB_CLIENT_ID!,
-  process.env.GITHUB_CLIENT_SECRET!
+  config.githubClientId!,
+  config.githubClientSecret!
 )
 
 export const lucia = new Lucia(adapter, {
