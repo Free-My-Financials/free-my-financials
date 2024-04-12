@@ -7,7 +7,12 @@
         to shift your mindset from living paycheck-to-paycheck to a cashflow
         approach.
       </p>
-      <NuxtLink to="/login" class="get-started-button"> Get Started </NuxtLink>
+      <a
+        v-if="!auth.isLoggedIn"
+        class="get-started-button"
+        href="auth/login/github"
+        >Login with GitHub
+      </a>
     </div>
     <div class="use-container">
       <h1>Current Contents</h1>
@@ -97,6 +102,10 @@
     </div>
   </div>
 </template>
+
+<script lang="ts" setup>
+const auth = useAuthStore()
+</script>
 
 <style scoped>
 .feature-list {

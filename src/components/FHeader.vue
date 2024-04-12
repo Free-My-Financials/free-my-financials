@@ -105,7 +105,7 @@
         'dark:hover:text-gray-800',
       ]"
     >
-      <NuxtLink to="/login"> Login </NuxtLink>
+      <a href="auth/login/github"> Login </a>
     </p>
   </header>
   <BudgetDropDown v-if="auth.isLoggedIn"></BudgetDropDown>

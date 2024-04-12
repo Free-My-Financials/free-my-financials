@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', () => {
 
     user.value = null
 
-    await navigateTo('/login')
+    await navigateTo('/')
   }
 
   const isLoggedIn = computed(() => user.value !== null)
