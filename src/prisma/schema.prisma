@@ -21,7 +21,7 @@ model User {
   stores       Store[]
 
   // Auth
-  githubId Int?      @unique
+  googleId String?      @unique
   sessions Session[]
 }
 
