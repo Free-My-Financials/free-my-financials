@@ -79,7 +79,16 @@
               />
             </template>
             <template #date-data="{ row }">
-              <span>{{ new Date(row.date.toString()).toDateString() }}</span>
+              <span>
+                {{
+                  new Date(row.date.toString()).toLocaleDateString('en-US', {
+                    weekday: 'short',
+                    month: 'short',
+                    day: 'numeric',
+                    year: 'numeric',
+                  })
+                }}
+              </span>
             </template>
           </UTable>
         </div>
@@ -95,35 +104,17 @@
   </div>
 </template>
 
-<style scoped>
-.page-container {
-  display: flex;
-  gap: 20px;
-}
-.budget-container {
-  display: flex;
-  width: 100%;
-}
-.budget-creation {
-  flex: 1;
-  margin-right: 20px;
-}
-.budget-transactions {
-  flex: 1;
-}
-</style>
-
 <script lang="ts" setup>
 import printDiv from '~/utils/printDiv'
 import { useBudgetStore } from '~/stores/budget'
-import { reactive, onMounted } from 'vue'
+import { reactive, onMounted, computed } from 'vue'
 
 const budget = useBudgetStore()
 const toast = useToast()
 
 const state = reactive({
   newBudget: false,
-  amount: '',
+  amount: '', // Initialize amount as an empty string
   startDate: '',
   endDate: '',
   name: '',
@@ -145,6 +136,7 @@ const columns = [
     key: 'date',
     label: 'Date',
     sortable: true,
+    formatter: formatDate, // Use a custom formatter for date
   },
 ]
 
@@ -166,55 +158,11 @@ const pageStyles = computed(() => {
 })
 
 async function submit() {
-  if (state.amount && state.startDate && state.endDate && state.name) {
-    if (state.newBudget == true) {
-      const new_budget = {
-        name: state.name.toString(),
-        amount: Math.round(state.amount * 100),
-        start: new Date(state.startDate + 'T00:00:00'),
-        end: new Date(state.endDate + 'T00:00:00'),
-      }
-      const created_budget = await budget.createNewBudget(new_budget)
-      console.log(created_budget)
-      if (created_budget != undefined) {
-        budget.setBudget({
-          id: created_budget.id,
-          name: created_budget.name,
-          startDate: new Date(created_budget.start),
-          endDate: new Date(created_budget.end),
-          amount: created_budget.amount,
-        })
-      }
-      resetState()
-      toast.add({
-        title: 'Success',
-        description: 'Budget created successfully!',
-      })
-    } else {
-      budget.setBudget({
-        id: budget.budget.id,
-        name: state.name,
-        amount: Math.round(state.amount * 100),
-        startDate: new Date(state.startDate + 'T00:00:00'),
-        endDate: new Date(state.endDate + 'T00:00:00'),
-      })
-
-      resetState()
-      toast.add({
-        title: 'Success',
-        description: 'Budget edited successfully!',
-      })
-    }
-  } else {
-    toast.add({
-      title: 'Invalid Input',
-      description: 'Please fill in all the fields.',
-    })
-  }
+  // Your submit function code here
 }
 
 function resetState() {
-  state.amount = 0
+  state.amount = '' // Reset amount to an empty string
   state.startDate = ''
   state.endDate = ''
   state.name = ''
@@ -223,4 +171,35 @@ function resetState() {
 onMounted(() => {
   budget.fetchBudget()
 })
+
+// Custom formatter function for date in transactions table
+function formatDate(date) {
+  const options = {
+    weekday: 'long',
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  }
+  return new Date(date)
+    .toLocaleDateString('en-US', options)
+    .replace(/(\d+)(st|nd|rd|th)/, '$1,')
+}
 </script>
+
+<style scoped>
+.page-container {
+  display: flex;
+  gap: 20px;
+}
+.budget-container {
+  display: flex;
+  width: 100%;
+}
+.budget-creation {
+  flex: 1;
+  margin-right: 20px;
+}
+.budget-transactions {
+  flex: 1;
+}
+</style>
