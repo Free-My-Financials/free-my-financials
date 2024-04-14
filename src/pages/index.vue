@@ -35,26 +35,15 @@
           </p>
         </li>
         <li class="feature-item">
-          <h2 class="feature-title">Create a Personalized Budget</h2>
-          <p class="feature-text">
-            Visit the
-            <NuxtLink to="/budget/editBudget" class="green-text-link">
-              Edit Budget
-            </NuxtLink>
-            page. Take control of your financial future with a budget that
-            reflects your unique lifestyle and financial goals.
-          </p>
-        </li>
-        <li class="feature-item">
-          <h2 class="feature-title">Review Budgeting Information</h2>
+          <h2 class="feature-title">Create and View Budgets</h2>
           <p class="feature-text">
             Visit the
             <NuxtLink to="/budget/budget" class="green-text-link">
-              View Budget
+              Budget
             </NuxtLink>
-            page, covering dates and remaining balances. Hover over the monthly
-            balance in the top right to view the exact percent change in your
-            monthly spending.
+            page, covering dates and remaining balances. Easily track all
+            transactions within your budget. Set multiple budgets based on your
+            financial needs.
           </p>
         </li>
         <li class="feature-item">
