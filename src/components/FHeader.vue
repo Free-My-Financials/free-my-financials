@@ -45,7 +45,7 @@
         'dark:hover:text-gray-800',
       ]"
     >
-      <NuxtLink to="/specs"> Specs </NuxtLink>
+      <NuxtLink to="/specs"> Graphs </NuxtLink>
     </p>
 
     <p

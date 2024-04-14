@@ -62,7 +62,7 @@
           <h2 class="feature-title">Monitor Monthly Changes</h2>
           <p class="feature-text">
             Visit the
-            <NuxtLink to="/specs" class="green-text-link"> Specs </NuxtLink>
+            <NuxtLink to="/specs" class="green-text-link"> Graphs </NuxtLink>
             page. Visualize your spending through graphs, showcasing your
             monthly purchases in graph format, as well as key statistics on your
             budgeting progress.
