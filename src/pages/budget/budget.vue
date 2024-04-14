@@ -1,86 +1,111 @@
 <template>
-  <div>
-    <div id="budget-page">
-      <h3>
-        Start of budget:
-        <UBadge :label="budget.startDate.toDateString()" />
-      </h3>
-      <h3>
-        End of budget:
-        <UBadge :label="budget.endDate.toDateString()" />
-      </h3>
-      <h3>
-        TOTAL BALANCE:
-        <DollarAmount :amount="budget.totalBalance" />
-        <UBadge label="Out of" />
-        <DollarAmount :amount="budget.amount" />
-      </h3>
-
-      <UTable
-        :sort="{ column: 'date', direction: 'desc' }"
-        :rows="budget.transactions"
-        :columns="columns"
-      >
-        <template #amount-data="{ row }">
-          <DollarAmount
-            :amount="
-              row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)
-            "
+  <div class="budget-container">
+    <!-- Left Section: Budget Creation -->
+    <div class="budget-creation">
+      <UForm :state="state" @submit="submit">
+        <UFormGroup label="Click to create a new budget">
+          <UCheckbox v-model="state.newBudget" name="newBudget" />
+        </UFormGroup>
+        <UFormGroup label="Name">
+          <UInput
+            id="name"
+            v-model="state.name"
+            name="name"
+            :placeholder="budget.budget.name"
           />
-        </template>
-        <template #date-data="{ row }">
-          <span>{{ new Date(row.date.toString()).toDateString() }}</span>
-        </template>
-      </UTable>
+        </UFormGroup>
+        <UFormGroup label="Budget Total">
+          <UInput
+            id="amount"
+            v-model="state.amount"
+            type="number"
+            step="0.01"
+            min="0"
+            name="Amount"
+          />
+        </UFormGroup>
+
+        <UFormGroup label="Start Date">
+          <UInput
+            id="startDate"
+            v-model="state.startDate"
+            type="date"
+            name="startDate"
+          />
+        </UFormGroup>
+        <UFormGroup label="End Date">
+          <UInput
+            id="endDate"
+            v-model="state.endDate"
+            type="date"
+            name="endDate"
+          />
+        </UFormGroup>
+
+        <UButton type="submit"> Submit </UButton>
+      </UForm>
     </div>
-    <UButton type="button" class="nav-button" @click="printDiv('budget-page')">
-      Print Your budget
-    </UButton>
 
-    <UForm :state="state" @submit="submit">
-      <UFormGroup label="Click to create a new budget">
-        <UCheckbox v-model="state.newBudget" name="newBudget" />
-      </UFormGroup>
-      <UFormGroup label="Name">
-        <UInput
-          id="name"
-          v-model="state.name"
-          name="name"
-          :placeholder="budget.budget.name"
-        />
-      </UFormGroup>
-      <UFormGroup label="Budget Total">
-        <UInput
-          id="amount"
-          v-model="state.amount"
-          type="number"
-          step="0.01"
-          min="0"
-          name="Amount"
-        />
-      </UFormGroup>
+    <!-- Right Section: Budget Transactions -->
+    <div class="budget-transactions">
+      <div id="budget-page">
+        <h3>
+          Start of budget:
+          <UBadge :label="budget.startDate.toDateString()" />
+        </h3>
+        <h3>
+          End of budget:
+          <UBadge :label="budget.endDate.toDateString()" />
+        </h3>
+        <h3>
+          TOTAL BALANCE:
+          <DollarAmount :amount="budget.totalBalance" />
+          <UBadge label="Out of" />
+          <DollarAmount :amount="budget.amount" />
+        </h3>
 
-      <UFormGroup label="Start Date">
-        <UInput
-          id="startDate"
-          v-model="state.startDate"
-          type="date"
-          name="startDate"
-        />
-      </UFormGroup>
-      <UFormGroup label="End Date">
-        <UInput
-          id="endDate"
-          v-model="state.endDate"
-          type="date"
-          name="endDate"
-        />
-      </UFormGroup>
-
-      <UButton type="submit"> Submit </UButton>
-    </UForm>
+        <UTable
+          :sort="{ column: 'date', direction: 'desc' }"
+          :rows="budget.transactions"
+          :columns="columns"
+        >
+          <template #amount-data="{ row }">
+            <DollarAmount
+              :amount="
+                row.amount * (row.type == TransactionType.EXPENSE ? -1 : 1)
+              "
+            />
+          </template>
+          <template #date-data="{ row }">
+            <span>{{ new Date(row.date.toString()).toDateString() }}</span>
+          </template>
+        </UTable>
+      </div>
+      <UButton
+        type="button"
+        class="nav-button"
+        @click="printDiv('budget-page')"
+      >
+        Print Your budget
+      </UButton>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.budget-container {
+  display: flex;
+}
+
+.budget-creation {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.budget-transactions {
+  flex: 1;
+}
+</style>
 
 <script lang="ts" setup>
 import printDiv from '~/utils/printDiv'
