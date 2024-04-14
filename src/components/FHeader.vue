@@ -18,22 +18,12 @@
     <p
       v-if="auth.isLoggedIn"
       :class="[
-        { 'text-white dark:text-gray-800': route.name === 'budget-editBudget' },
-        'hover:text-white',
-        'dark:hover:text-gray-800',
-      ]"
-    >
-      <NuxtLink to="/budget/editBudget"> Edit Budget </NuxtLink>
-    </p>
-    <p
-      v-if="auth.isLoggedIn"
-      :class="[
         { 'text-white dark:text-gray-800': route.name === 'budget-budget' },
         'hover:text-white',
         'dark:hover:text-gray-800',
       ]"
     >
-      <NuxtLink to="/budget/budget"> View Budget </NuxtLink>
+      <NuxtLink to="/budget/budget"> Budget </NuxtLink>
     </p>
     <p
       v-if="auth.isLoggedIn"
