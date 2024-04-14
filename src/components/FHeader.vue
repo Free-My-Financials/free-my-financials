@@ -61,35 +61,54 @@
       <NuxtLink to="/information"> Information </NuxtLink>
     </p>
     <div class="flex-grow" />
+    <template v-if="auth.isLoggedIn">
+      <h3>
+        Budget:
+        <UDropdown
+          :items="budgetOptions"
+          :popper="{ placement: 'bottom-start' }"
+        >
+          <UButton
+            color="white"
+            :label="budget.budget.name"
+            trailing-icon="i-heroicons-chevron-down-20-solid"
+          />
+        </UDropdown>
+      </h3>
+      <!-- Logout -->
+      <p
+        v-if="auth.isLoggedIn"
+        :class="[
+          { 'text-white dark:text-gray-800': route.name === 'logout' },
+          'hover:text-white',
+          'dark:hover:text-gray-800',
+        ]"
+      >
+        <NuxtLink to="/" @click="auth.logout()"> Logout </NuxtLink>
+      </p>
 
-    <!-- Logout -->
-    <p
-      v-if="auth.isLoggedIn"
-      :class="[
-        { 'text-white dark:text-gray-800': route.name === 'logout' },
-        'hover:text-white',
-        'dark:hover:text-gray-800',
-      ]"
-    >
-      <NuxtLink to="/" @click="auth.logout()"> Logout </NuxtLink>
-    </p>
-
-    <!-- Login -->
-    <p
-      v-if="!auth.isLoggedIn"
-      :class="[
-        { 'text-white dark:text-gray-800': route.name === 'login' },
-        'hover:text-white',
-        'dark:hover:text-gray-800',
-      ]"
-    >
-      <a href="/auth/login/github"> Login </a>
-    </p>
+      <!-- Login -->
+      <p
+        v-if="!auth.isLoggedIn"
+        :class="[
+          { 'text-white dark:text-gray-800': route.name === 'login' },
+          'hover:text-white',
+          'dark:hover:text-gray-800',
+        ]"
+      >
+        <a href="/auth/login/github"> Login </a>
+      </p>
+    </template>
   </header>
-  <BudgetDropDown v-if="auth.isLoggedIn"></BudgetDropDown>
 </template>
 
 <script lang="ts" setup>
 const route = useRoute()
 const auth = useAuthStore()
+const budget = useBudgetStore()
+const budgetOptions = await budget.createBudgetSelection()
+
+onMounted(() => {
+  budget.fetchBudget()
+})
 </script>
