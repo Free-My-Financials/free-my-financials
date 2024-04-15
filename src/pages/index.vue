@@ -10,8 +10,9 @@
       <a
         v-if="!auth.isLoggedIn"
         class="get-started-button"
-        href="auth/login/github"
-        >Login with GitHub
+        href="auth/login/google"
+      >
+        Login with Google
       </a>
     </div>
     <div class="use-container">

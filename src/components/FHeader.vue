@@ -105,7 +105,7 @@
         'dark:hover:text-gray-800',
       ]"
     >
-      <a href="auth/login/github"> Login </a>
+      <a href="auth/login/google"> Login </a>
     </p>
   </header>
   <BudgetDropDown v-if="auth.isLoggedIn"></BudgetDropDown>
