@@ -7,7 +7,7 @@
   },
   "scripts": {
     "build": "nuxt build",
-    "dev": "nuxt dev --port 5000",
+    "dev": "nuxt dev --port 3000",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
@@ -52,7 +52,6 @@
     "@trpc/server": "^10.45.0",
     "arctic": "^1.1.0",
     "chart.js": "^3.9.1",
-    "D": "^1.0.0",
     "jsonwebtoken": "^9.0.2",
     "lucia": "^3.0.1",
     "oslo": "^1.0.3",

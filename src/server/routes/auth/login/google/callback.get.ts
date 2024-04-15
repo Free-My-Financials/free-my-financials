@@ -1,12 +1,13 @@
 import { OAuth2RequestError } from 'arctic'
-import { github, lucia } from '~/server/utils/auth'
-import { getUserByGithubId } from '~/server/utils/prisma/user'
+import { google, lucia } from '~/server/utils/auth'
+import { getUserByGoogleId } from '~/server/utils/prisma/user'
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
   const code = query.code?.toString() ?? null
   const state = query.state?.toString() ?? null
-  const storedState = getCookie(event, 'github_oauth_state') ?? null
+  const storedState = getCookie(event, 'google_oauth_state') ?? null
+
   if (!code || !state || !storedState || state !== storedState) {
     throw createError({
       status: 400,
@@ -14,15 +15,18 @@ export default defineEventHandler(async (event) => {
   }
 
   try {
-    const tokens = await github.validateAuthorizationCode(code)
-    const githubUserResponse = await fetch('https://api.github.com/user', {
-      headers: {
-        Authorization: `Bearer ${tokens.accessToken}`,
-      },
-    })
-    const githubUser: GitHubUser = await githubUserResponse.json()
+    const tokens = await google.validateAuthorizationCode(code, 'AHAHAHA')
+    const googleUserResponse = await fetch(
+      'https://openidconnect.googleapis.com/v1/userinfo',
+      {
+        headers: {
+          Authorization: `Bearer ${tokens.accessToken}`,
+        },
+      }
+    )
+    const googleUser: GoogleUser = await googleUserResponse.json()
 
-    const existingUser = await getUserByGithubId(githubUser.id)
+    const existingUser = await getUserByGoogleId(googleUser.sub)
 
     if (existingUser) {
       const session = await lucia.createSession(existingUser.id, {})
@@ -35,8 +39,8 @@ export default defineEventHandler(async (event) => {
     }
 
     const user = await createUser({
-      username: githubUser.login,
-      githubId: githubUser.id,
+      username: googleUser.sub,
+      googleId: googleUser.sub,
     })
 
     const session = await lucia.createSession(user.id, {})
@@ -60,7 +64,6 @@ export default defineEventHandler(async (event) => {
   }
 })
 
-interface GitHubUser {
-  id: number
-  login: string
+interface GoogleUser {
+  sub: string
 }

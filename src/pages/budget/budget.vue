@@ -105,12 +105,7 @@
 </template>
 
 <script lang="ts" setup>
-import printDiv from '~/utils/printDiv'
-import { useBudgetStore } from '~/stores/budget'
-import { reactive, onMounted, computed } from 'vue'
-
 const budget = useBudgetStore()
-const toast = useToast()
 
 const state = reactive({
   newBudget: false,
@@ -159,13 +154,6 @@ const pageStyles = computed(() => {
 
 async function submit() {
   // Your submit function code here
-}
-
-function resetState() {
-  state.amount = '' // Reset amount to an empty string
-  state.startDate = ''
-  state.endDate = ''
-  state.name = ''
 }
 
 onMounted(() => {

@@ -3,6 +3,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "rhel-openssl-1.0.x"] // Fix for AWS Amplify
 }
 
 datasource db {
@@ -20,7 +21,7 @@ model User {
   stores       Store[]
 
   // Auth
-  githubId Int?      @unique
+  googleId String?      @unique
   sessions Session[]
 }
 

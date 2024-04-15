@@ -1,11 +1,11 @@
 import { generateState } from 'arctic'
-import { github } from '~/server/utils/auth'
+import { google } from '~/server/utils/auth'
 
 export default defineEventHandler(async (event) => {
   const state = generateState()
-  const url = await github.createAuthorizationURL(state)
+  const url = await google.createAuthorizationURL(state, 'AHAHAHA')
 
-  setCookie(event, 'github_oauth_state', state, {
+  setCookie(event, 'google_oauth_state', state, {
     path: '/',
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,

@@ -182,10 +182,6 @@
 </template>
 
 <script setup>
-import { reactive, computed, ref } from 'vue'
-import { useTransactionStore } from '@/stores/transaction'
-import { useCategoryStore } from '@/stores/categories'
-
 const recurrenceOptions = [
   { value: 'weekly', label: 'Weekly' },
   { value: 'biweekly', label: 'Biweekly' },

@@ -20,7 +20,7 @@ const user = {
   categories: [],
   stores: [],
   // Auth
-  githubId: 99,
+  googleId: '99',
   sessions: [],
 }
 

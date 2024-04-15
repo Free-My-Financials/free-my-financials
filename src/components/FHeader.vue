@@ -86,18 +86,6 @@
       >
         <NuxtLink to="/" @click="auth.logout()"> Logout </NuxtLink>
       </p>
-
-      <!-- Login -->
-      <p
-        v-if="!auth.isLoggedIn"
-        :class="[
-          { 'text-white dark:text-gray-800': route.name === 'login' },
-          'hover:text-white',
-          'dark:hover:text-gray-800',
-        ]"
-      >
-        <a href="/auth/login/github"> Login </a>
-      </p>
     </template>
   </header>
 </template>

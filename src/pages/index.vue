@@ -9,10 +9,10 @@
       </p>
       <a
         v-if="!auth.isLoggedIn"
-        href="auth/login/github"
         class="get-started-button"
+        href="auth/login/google"
       >
-        Get Started
+        Login with Google
       </a>
     </div>
     <div class="use-container">
@@ -85,8 +85,7 @@
   </div>
 </template>
 
-<script setup>
-import { useAuthStore } from '@/stores/auth'
+<script lang="ts" setup>
 const auth = useAuthStore()
 </script>
 
