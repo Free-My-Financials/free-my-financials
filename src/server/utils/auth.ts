@@ -1,5 +1,5 @@
 import { Lucia } from 'lucia'
-import { GitHub } from 'arctic'
+import { Google } from 'arctic'
 import { PrismaAdapter } from '@lucia-auth/adapter-prisma'
 import prisma from './prisma'
 
@@ -7,9 +7,10 @@ const config = useRuntimeConfig()
 
 const adapter = new PrismaAdapter(prisma.session, prisma.user)
 
-export const github = new GitHub(
-  config.githubClientId!,
-  config.githubClientSecret!
+export const google = new Google(
+  config.googleClientId!,
+  config.googleClientSecret!,
+  `${config.baseUrl}/auth/login/google/callback`
 )
 
 export const lucia = new Lucia(adapter, {
@@ -29,6 +30,6 @@ declare module 'lucia' {
 }
 
 interface DatabaseUserAttributes {
-  githubId: number
+  googleId: string
   username: string
 }

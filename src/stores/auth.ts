@@ -8,13 +8,11 @@ export const useAuthStore = defineStore('auth', () => {
 
   const user = ref<User | null>(null)
 
-  const register = async () => {
-    location.href = '/auth/login/github'
+  const login = async () => {
+    location.href = '/auth/login/google'
   }
 
-  const login = async () => {
-    location.href = '/auth/login/github'
-  }
+  const register = login
 
   const logout = async () => {
     await useFetch('/api/auth/logout', {

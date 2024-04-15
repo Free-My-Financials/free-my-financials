@@ -5,7 +5,7 @@
     <br />
     <br />
 
-    <a href="auth/login/github">Sign in with GitHub </a>
+    <a href="auth/login/google">Sign in with Google</a>
   </div>
 </template>
 
