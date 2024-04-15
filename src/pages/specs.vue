@@ -82,7 +82,7 @@
         </p>
       </div>
       <div class="button-container">
-        <NuxtLink to="/budget/editBudget" class="green-button">
+        <NuxtLink to="/budget/budget" class="green-button">
           Add Budget
         </NuxtLink>
       </div>
