@@ -104,10 +104,11 @@
 
 <script lang="ts" setup>
 const budget = useBudgetStore()
+const toast = useToast()
 
 const state = reactive({
   newBudget: false,
-  amount: '',
+  amount: 0,
   startDate: '',
   endDate: '',
   name: '',
@@ -151,7 +152,7 @@ const pageStyles = computed(() => {
 })
 
 async function submit() {
-  if (state.amount && state.startDate && state.endDate && state.name) {
+  if (state.startDate && state.endDate && state.name) {
     if (state.newBudget == true) {
       const new_budget = {
         name: state.name.toString(),
@@ -195,6 +196,13 @@ async function submit() {
       description: 'Please fill in all the fields.',
     })
   }
+}
+
+function resetState() {
+  state.amount = 0
+  state.startDate = ''
+  state.endDate = ''
+  state.name = ''
 }
 
 onMounted(() => {
