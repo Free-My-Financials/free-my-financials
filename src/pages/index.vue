@@ -23,50 +23,31 @@
       </p>
       <ul class="feature-list">
         <li class="feature-item">
-          <h2 class="feature-title">Add transactions</h2>
+          <h2 class="feature-title">Add and View Transactions</h2>
           <p class="feature-text">
             Visit the
-            <NuxtLink to="/transaction/add" class="green-text-link">
-              Add Transaction
+            <NuxtLink to="/transaction/transactions" class="green-text-link">
+              Transactions
             </NuxtLink>
             page. Input accurate information to enhance transaction tracking.
+            View your transaction history and use the search bar for specific
+            insights.
           </p>
         </li>
         <li class="feature-item">
-          <h2 class="feature-title">Analyze transactions and balance</h2>
-          <p class="feature-text">
-            Visit the
-            <NuxtLink to="/transaction/history" class="green-text-link">
-              View Transactions
-            </NuxtLink>
-            page. Use the search bar for specific insights.
-          </p>
-        </li>
-        <li class="feature-item">
-          <h2 class="feature-title">Create a personalized budget</h2>
-          <p class="feature-text">
-            Visit the
-            <NuxtLink to="/budget/editBudget" class="green-text-link">
-              Edit Budget
-            </NuxtLink>
-            page. Take control of your financial future with a budget that
-            reflects your unique lifestyle and financial goals.
-          </p>
-        </li>
-        <li class="feature-item">
-          <h2 class="feature-title">Review budgeting information</h2>
+          <h2 class="feature-title">Create and View Budgets</h2>
           <p class="feature-text">
             Visit the
             <NuxtLink to="/budget/budget" class="green-text-link">
-              View Budget
+              Budget
             </NuxtLink>
-            page, covering dates and remaining balances. Hover over the monthly
-            balance in the top right to view the exact percent change in your
-            monthly spending.
+            page, covering dates and remaining balances. Easily track all
+            transactions within your budget. Set multiple budgets based on your
+            financial needs.
           </p>
         </li>
         <li class="feature-item">
-          <h2 class="feature-title">Visualize financial data</h2>
+          <h2 class="feature-title">Visualize Financial Data</h2>
           <p class="feature-text">
             Visit the
             <NuxtLink to="/calendar" class="green-text-link">
@@ -81,7 +62,7 @@
           <h2 class="feature-title">Monitor Monthly Changes</h2>
           <p class="feature-text">
             Visit the
-            <NuxtLink to="/specs" class="green-text-link"> Specs </NuxtLink>
+            <NuxtLink to="/specs" class="green-text-link"> Graphs </NuxtLink>
             page. Visualize your spending through graphs, showcasing your
             monthly purchases in graph format, as well as key statistics on your
             budgeting progress.
