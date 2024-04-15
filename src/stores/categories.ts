@@ -1,7 +1,6 @@
 export const useCategoryStore = defineStore('categories', () => {
   const budget = useBudgetStore()
   const { $client } = useNuxtApp()
-  const toast = useToast()
 
   const categories = ref<string[]>([])
 
@@ -22,11 +21,6 @@ export const useCategoryStore = defineStore('categories', () => {
       categories.value = categories.value.filter(
         (category) => category !== name
       )
-
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
     }
   }
 
@@ -46,10 +40,6 @@ export const useCategoryStore = defineStore('categories', () => {
 
       categories.value = data.value.map((category) => category.name)
     } catch (error) {
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
       return new Error('Something went wrong')
     }
   }

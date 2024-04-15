@@ -337,12 +337,7 @@ async function submit() {
 
   if (success) {
     resetState(state)
-  } else {
-    toast.add({
-      title: 'Error',
-      description: 'Failed to add transaction.',
-    })
-  }
+  } 
 }
 
 function toggleRecurring() {

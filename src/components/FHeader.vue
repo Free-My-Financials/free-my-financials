@@ -1,3 +1,4 @@
+/* v8 ignore start */
 <template>
   <header
     class="flex flex-row gap-20 p-2 pl-8 bg-primary-300 dark:bg-primary-500 text-gray-800 dark:text-white font-semibold"

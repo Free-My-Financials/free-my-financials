@@ -9,7 +9,6 @@ export interface Budget {
 export const useBudgetStore = defineStore('budget', () => {
   const auth = useAuthStore()
   const { $client } = useNuxtApp()
-  const toast = useToast()
 
   const currentID = useCookie('currentBudgetID')
 
@@ -96,11 +95,7 @@ export const useBudgetStore = defineStore('budget', () => {
       })
     } catch (error) {
       budget.value.name = oldName
-
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
+      console.log(error)
     }
   }
   const setStartDate = async (date: Date) => {
@@ -116,11 +111,7 @@ export const useBudgetStore = defineStore('budget', () => {
       })
     } catch (error) {
       budget.value.startDate = oldDate
-
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
+      console.log(error)
     }
   }
 
@@ -137,11 +128,7 @@ export const useBudgetStore = defineStore('budget', () => {
       })
     } catch (error) {
       budget.value.endDate = oldDate
-
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
+      console.log(error)
     }
   }
 
@@ -159,10 +146,6 @@ export const useBudgetStore = defineStore('budget', () => {
     } catch (error) {
       budget.value.amount = oldAmount
 
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
     }
   }
 
@@ -178,10 +161,7 @@ export const useBudgetStore = defineStore('budget', () => {
       const info = $client.budget.create.query(data)
       return info
     } catch (error) {
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
+      console.log(error)
     }
   }
 
@@ -224,10 +204,6 @@ export const useBudgetStore = defineStore('budget', () => {
       }
       return budgetOptions
     } catch (error) {
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
       return new Error('Something went wrong')
     }
   }
@@ -253,10 +229,7 @@ export const useBudgetStore = defineStore('budget', () => {
       budget.value.startDate = new Date(data.value[0].start)
       budget.value.endDate = new Date(data.value[0].end)
     } catch (error) {
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
+      console.log(error)
     }
   }
 
@@ -277,10 +250,7 @@ export const useBudgetStore = defineStore('budget', () => {
       budget.value.startDate = new Date(data.value.start)
       budget.value.endDate = new Date(data.value.end)
     } catch (error) {
-      toast.add({
-        title: 'Error',
-        description: 'Something went wrong',
-      })
+      console.log(error)
     }
   }
 

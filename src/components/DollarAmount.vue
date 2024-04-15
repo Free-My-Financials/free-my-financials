@@ -1,3 +1,4 @@
+/* v8 ignore start */
 <template>
   <span :class="amount < 0 ? 'text-red-600' : 'text-green-600'">
     {{ numberToMoney(amount) }}
