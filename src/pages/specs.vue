@@ -82,7 +82,7 @@
         </p>
       </div>
       <div class="button-container">
-        <NuxtLink to="/budget/editBudget" class="green-button">
+        <NuxtLink to="/budget/budget" class="green-button">
           Add Budget
         </NuxtLink>
       </div>
@@ -125,10 +125,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from 'vue'
 import Chart from 'chart.js/auto'
-import { useTransactionStore } from '~/stores/transaction'
-import { useBudgetStore } from '~/stores/budget'
 
 const showRelevantLinks = computed(() => {
   return showUnnecessarySpendingLink.value || showBudgetingHelpLink.value

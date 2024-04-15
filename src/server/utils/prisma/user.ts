@@ -4,7 +4,7 @@ import { createDefaultCategories } from './category'
 
 export async function createUser(data: {
   username: string
-  githubId?: number
+  googleId?: string
 }) {
   const existingUser = await getUserByUsername(data.username)
 
@@ -34,10 +34,10 @@ export async function getUserByUsername(username: string) {
   })
 }
 
-export async function getUserByGithubId(githubId: number) {
+export async function getUserByGoogleId(googleId: string) {
   return await prisma.user.findUnique({
     where: {
-      githubId,
+      googleId,
     },
   })
 }
