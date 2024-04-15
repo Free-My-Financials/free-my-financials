@@ -204,7 +204,7 @@ export const useBudgetStore = defineStore('budget', () => {
           label: 'Create New Budget',
           value: '',
           click: () => {
-            window.location.assign('/budget/editBudget')
+            window.location.assign('/budget/budget')
           },
         },
       ])
