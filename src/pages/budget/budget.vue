@@ -1,7 +1,6 @@
 <template>
   <div class="page-container" :style="pageStyles">
     <div class="budget-container">
-      <!-- Left Section: Budget Creation -->
       <div class="budget-creation">
         <UForm :state="state" @submit="submit">
           <UFormGroup label="Click to create a new budget">
@@ -48,7 +47,6 @@
         </UForm>
       </div>
 
-      <!-- Right Section: Budget Transactions -->
       <div class="budget-transactions">
         <div id="budget-page">
           <h3>
@@ -106,10 +104,11 @@
 
 <script lang="ts" setup>
 const budget = useBudgetStore()
+const toast = useToast()
 
 const state = reactive({
   newBudget: false,
-  amount: '', // Initialize amount as an empty string
+  amount: 0,
   startDate: '',
   endDate: '',
   name: '',
@@ -131,7 +130,7 @@ const columns = [
     key: 'date',
     label: 'Date',
     sortable: true,
-    formatter: formatDate, // Use a custom formatter for date
+    formatter: formatDate,
   },
 ]
 
@@ -153,14 +152,63 @@ const pageStyles = computed(() => {
 })
 
 async function submit() {
-  // Your submit function code here
+  if (state.startDate && state.endDate && state.name) {
+    if (state.newBudget == true) {
+      const new_budget = {
+        name: state.name.toString(),
+        amount: Math.round(state.amount * 100),
+        start: new Date(state.startDate + 'T00:00:00'),
+        end: new Date(state.endDate + 'T00:00:00'),
+      }
+      const created_budget = await budget.createNewBudget(new_budget)
+      console.log(created_budget)
+      if (created_budget != undefined) {
+        budget.setBudget({
+          id: created_budget.id,
+          name: created_budget.name,
+          startDate: new Date(created_budget.start),
+          endDate: new Date(created_budget.end),
+          amount: created_budget.amount,
+        })
+      }
+      resetState()
+      toast.add({
+        title: 'Success',
+        description: 'Budget created successfully!',
+      })
+    } else {
+      budget.setBudget({
+        id: budget.budget.id,
+        name: state.name,
+        amount: Math.round(state.amount * 100),
+        startDate: new Date(state.startDate + 'T00:00:00'),
+        endDate: new Date(state.endDate + 'T00:00:00'),
+      })
+      resetState()
+      toast.add({
+        title: 'Success',
+        description: 'Budget edited successfully!',
+      })
+    }
+  } else {
+    toast.add({
+      title: 'Invalid Input',
+      description: 'Please fill in all the fields.',
+    })
+  }
+}
+
+function resetState() {
+  state.amount = 0
+  state.startDate = ''
+  state.endDate = ''
+  state.name = ''
 }
 
 onMounted(() => {
   budget.fetchBudget()
 })
 
-// Custom formatter function for date in transactions table
 function formatDate(date) {
   const options = {
     weekday: 'long',
