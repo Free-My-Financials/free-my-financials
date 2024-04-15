@@ -17,8 +17,9 @@ export default defineNuxtConfig({
     transpile: ['trpc-nuxt'],
   },
   runtimeConfig: {
+    baseUrl: process.env.BASE_URL || 'http://localhost:3000',
     databaseUrl: process.env.DATABASE_URL,
-    githubClientId: process.env.GITHUB_CLIENT_ID,
-    githubClientSecret: process.env.GITHUB_CLIENT_SECRET,
+    googleClientId: process.env.GOOGLE_CLIENT_ID,
+    googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
   },
 })

@@ -3,7 +3,7 @@ import prisma from '~/server/utils/prisma/__mocks__'
 import {
   createUser,
   getUserById,
-  getUserByGithubId,
+  getUserByGoogleId,
   getUserByUsername,
 } from '~/server/utils/prisma/user'
 
@@ -19,7 +19,7 @@ const user = {
   categories: [],
   stores: [],
   // Auth
-  githubId: 99,
+  googleId: '99',
   sessions: [],
 }
 
@@ -57,16 +57,16 @@ test('Finding a user by Id should return a user with the same name', async () =>
   expect(testUser?.username).toBe(user.username)
 })
 
-test('Finding a user by githubId should return a user with the same name', async () => {
+test('Finding a user by googleId should return a user with the same name', async () => {
   prisma.user.findUnique.mockResolvedValue(user)
-  const testUser = await getUserByGithubId(user.githubId)
+  const testUser = await getUserByGoogleId(user.googleId)
 
   expect(testUser?.username).toBe(user.username)
 })
 
-test('Finding a user by username should return a user with the same githubId', async () => {
+test('Finding a user by username should return a user with the same googleId', async () => {
   prisma.user.findUnique.mockResolvedValue(user)
   const testUser = await getUserByUsername(user.username)
 
-  expect(testUser?.githubId).toBe(user.githubId)
+  expect(testUser?.googleId).toBe(user.googleId)
 })
