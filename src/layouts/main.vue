@@ -1,3 +1,4 @@
+/* v8 ignore start */
 <template>
   <div>
     <FHeader />

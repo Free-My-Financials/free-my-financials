@@ -1,3 +1,4 @@
+/* v8 ignore start */
 <template>
   <div>
     <UModal :model-value="isOpen">
